@@ -24,10 +24,13 @@ class Engine:
         # Add all pseudo-legal moves first then filter after
         move_list.extend(self.generate_pawn_moves())
         move_list.extend(self.generate_knight_moves())
+        move_list.extend(self.generate_bishop_moves())
         
         return move_list
 
-    
+    #TODO: incoroprate piece lists so no need to loop through entire board each time
+
+    # Return a list of all valid pawn moves (including en passant) in current board state
     def generate_pawn_moves(self):
         pawn_moves = []
         for i in range(64):
@@ -70,6 +73,7 @@ class Engine:
 
         return pawn_moves
 
+    # Return a list of all valid knight moves in current board state
     def generate_knight_moves(self):
         knight_moves = []
         for i in range(64):
@@ -144,15 +148,79 @@ class Engine:
                         knight_moves.append(move)
         return knight_moves
                         
+    # Return a list of all valid bishop moves in current board state
     def generate_bishop_moves(self):
-        pass
+        bishop_moves = []
+        for i in range(64):
+            piece = self.board.get(i)
+            if isinstance(piece, Bishop) and piece.color == self.board.side_to_move:
+                # NE Diagonal
+                j = i + 9
+                while self.board.get(j) == "-" and Board.index_2_coord(j)[0] < "h" and int(Board.index_2_coord(j)[1]) < 8:
+                    move = "B" + Board.index_2_coord(j)
+                    bishop_moves.append(move)
+                    j += 9
+                if self.board.get(j) == "-":
+                    move = "B" + Board.index_2_coord(j)
+                    bishop_moves.append(move)
+                elif self.board.get(j) != None and self.board.get(j).color == piece.color * -1:
+                    move = "Bx" + Board.index_2_coord(j)
+                    bishop_moves.append(move)
 
+                # SE Diagonal
+                j = i - 7
+                while self.board.get(j) == "-" and Board.index_2_coord(j)[0] < "h" and int(Board.index_2_coord(j)[1]) > 1:
+                    move = "B" + Board.index_2_coord(j)
+                    bishop_moves.append(move)
+                    j -= 7
+                if self.board.get(j) == "-":
+                    move = "B" + Board.index_2_coord(j)
+                    bishop_moves.append(move)
+                elif self.board.get(j) != None and self.board.get(j).color == piece.color * -1:
+                    move = "Bx" + Board.index_2_coord(j)
+                    bishop_moves.append(move)
+
+                # SW Diagonal
+                j = i - 9
+                while self.board.get(j) == "-" and Board.index_2_coord(j)[0] > "a" and int(Board.index_2_coord(j)[1]) > 1:
+                    move = "B" + Board.index_2_coord(j)
+                    bishop_moves.append(move)
+                    j -= 9
+                if self.board.get(j) == "-":
+                    move = "B" + Board.index_2_coord(j)
+                    bishop_moves.append(move)
+                elif self.board.get(j) != None and self.board.get(j).color == piece.color * -1:
+                    move = "Bx" + Board.index_2_coord(j)
+                    bishop_moves.append(move)
+
+                # NW Diagonal
+                j = i + 7
+                while self.board.get(j) == "-" and Board.index_2_coord(j)[0] > "a" and int(Board.index_2_coord(j)[1]) < 8:
+                    move = "B" + Board.index_2_coord(j)
+                    bishop_moves.append(move)
+                    j += 7
+                if self.board.get(j) == "-":
+                    move = "B" + Board.index_2_coord(j)
+                    bishop_moves.append(move)
+                elif self.board.get(j) != None and self.board.get(j).color == piece.color * -1:
+                    move = "Bx" + Board.index_2_coord(j)
+                    bishop_moves.append(move)
+
+        return bishop_moves
+    
+    # Return a list of all valid queen moves in current board state
     def generate_queen_moves(self):
         pass
 
+    # Return a list of all valid king moves in current board state
     def generate_king_moves(self):
         pass
 
+    # Return a list of all valid rook moves in current board state
+    def generate_rook_moves(self):
+        pass
+
+    # Return a list of all valid castling moves in current board state
     def generate_castle_moves(self):
         pass
 
