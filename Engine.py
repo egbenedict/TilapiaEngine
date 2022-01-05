@@ -27,6 +27,7 @@ class Engine:
         move_list.extend(self.generate_bishop_moves())
         move_list.extend(self.generate_rook_moves())
         move_list.extend(self.generate_queen_moves())
+        move_list.extend(self.generate_king_moves())
         
         return move_list
 
@@ -324,7 +325,74 @@ class Engine:
 
     # Return a list of all valid king moves in current board state
     def generate_king_moves(self):
-        pass
+        king_moves = []
+        for i in range(64):
+            piece = self.board.get(i)
+            if isinstance(piece, King) and piece.color == self.board.side_to_move:
+                # N
+                if self.board.get(i + 8) == "-":
+                    move = "K" + Board.index_2_coord(i + 8)
+                    king_moves.append(move)
+                elif self.board.get(i + 8) != None and self.board.get(i + 8).color == piece.color * -1:
+                    move = "Kx" + Board.index_2_coord(i + 8)
+                    king_moves.append(move)
+                
+                # S
+                if self.board.get(i - 8) == "-":
+                    move = "K" + Board.index_2_coord(i - 8)
+                    king_moves.append(move)
+                elif self.board.get(i - 8) != None and self.board.get(i - 8).color == piece.color * -1:
+                    move = "Kx" + Board.index_2_coord(i - 8)
+                    king_moves.append(move)
+                
+                # W
+                if Board.index_2_coord(i)[0] != "a" and self.board.get(i - 1) == "-":
+                    move = "K" + Board.index_2_coord(i - 1)
+                    king_moves.append(move)
+                elif Board.index_2_coord(i)[0] != "a" and self.board.get(i - 1) != None and self.board.get(i - 1).color == piece.color * -1:
+                    move = "Kx" + Board.index_2_coord(i - 1)
+                    king_moves.append(move)
+
+                # E
+                if Board.index_2_coord(i)[0] != "h" and self.board.get(i + 1) == "-":
+                    move = "K" + Board.index_2_coord(i + 1)
+                    king_moves.append(move)
+                elif Board.index_2_coord(i)[0] != "h" and self.board.get(i + 1) != None and self.board.get(i + 1).color == piece.color * -1:
+                    move = "Kx" + Board.index_2_coord(i + 1)
+                    king_moves.append(move)
+
+                # NW
+                if Board.index_2_coord(i)[0] != "a" and int(Board.index_2_coord(i)[1]) != 8 and self.board.get(i + 7) == "-":
+                    move = "K" + Board.index_2_coord(i + 7)
+                    king_moves.append(move)
+                elif Board.index_2_coord(i)[0] != "a" and int(Board.index_2_coord(i)[1]) != 8 and self.board.get(i + 7) != None and self.board.get(i + 7).color == piece.color * -1:
+                    move = "Kx" + Board.index_2_coord(i + 7)
+                    king_moves.append(move)
+
+                # NE
+                if Board.index_2_coord(i)[0] != "h" and int(Board.index_2_coord(i)[1]) != 8 and self.board.get(i + 9) == "-":
+                    move = "K" + Board.index_2_coord(i + 9)
+                    king_moves.append(move)
+                elif Board.index_2_coord(i)[0] != "h" and int(Board.index_2_coord(i)[1]) != 8 and self.board.get(i + 9) != None and self.board.get(i + 9).color == piece.color * -1:
+                    move = "Kx" + Board.index_2_coord(i + 9)
+                    king_moves.append(move)
+
+                # SW
+                if Board.index_2_coord(i)[0] != "a" and int(Board.index_2_coord(i)[1]) != 1 and self.board.get(i - 9) == "-":
+                    move = "K" + Board.index_2_coord(i - 9)
+                    king_moves.append(move)
+                elif Board.index_2_coord(i)[0] != "a" and int(Board.index_2_coord(i)[1]) != 1 and self.board.get(i - 9) != None and self.board.get(i - 9).color == piece.color * -1:
+                    move = "Kx" + Board.index_2_coord(i - 9)
+                    king_moves.append(move)
+
+                # SE
+                if Board.index_2_coord(i)[0] != "h" and int(Board.index_2_coord(i)[1]) != 1 and self.board.get(i - 7) == "-":
+                    move = "K" + Board.index_2_coord(i - 7)
+                    king_moves.append(move)
+                elif Board.index_2_coord(i)[0] != "h" and int(Board.index_2_coord(i)[1]) != 1 and self.board.get(i - 7) != None and self.board.get(i - 7).color == piece.color * -1:
+                    move = "Kx" + Board.index_2_coord(i - 7)
+                    king_moves.append(move)
+        return king_moves
 
     # Return a list of all valid rook moves in current board state
     def generate_rook_moves(self):
