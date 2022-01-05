@@ -29,7 +29,7 @@ class Engine:
     
     def generate_pawn_moves(self):
         pawn_moves = []
-        print(self.board.get(20))
+        # print(self.board.get(20))
         for i in range(64):
             piece = self.board.get(i)
             if isinstance(piece, Pawn) and piece.color == self.board.side_to_move:
@@ -47,16 +47,25 @@ class Engine:
 
                 # Diagonal Captures
                 if (self.board.get(i + 7 * piece.color) != None and self.board.get(i + 7 * piece.color) != "-") and self.board.get(i + 7 * piece.color).color == piece.color * -1:
-                    if not((Board.index_2_coord(i + 7 * piece.color)[0] == "a" and piece.color == 1) or (Board.index_2_coord(i + 7 * piece.color)[0] == "h" and piece.color == -1)):
+                    if not((Board.index_2_coord(i)[0] == "a" and piece.color == 1) or (Board.index_2_coord(i)[0] == "h" and piece.color == -1)):
                         move = Board.index_2_coord(i)[0] + "x" + Board.index_2_coord(i + 7 * piece.color)
                         pawn_moves.append(move)
 
                 if (self.board.get(i + 9 * piece.color) != None and self.board.get(i + 9 * piece.color) != "-") and self.board.get(i + 9 * piece.color).color == piece.color * -1:
-                    if not((Board.index_2_coord(i + 9 * piece.color)[0] == "h" and piece.color == 1) or (Board.index_2_coord(i + 9 * piece.color)[0] == "a" and piece.color == -1)):
+                    if not((Board.index_2_coord(i)[0] == "h" and piece.color == 1) or (Board.index_2_coord(i)[0] == "a" and piece.color == -1)):
                         move = Board.index_2_coord(i)[0] + "x" + Board.index_2_coord(i + 9 * piece.color)
                         pawn_moves.append(move)
 
                 # En Passant (at some point...)
+                if (self.board.get(i + 7 * piece.color) != None and Board.index_2_coord(i + 7 * piece.color) == self.board.en_passant_square):
+                    if not((Board.index_2_coord(i)[0] == "a" and piece.color == 1) or (Board.index_2_coord(i)[0] == "h" and piece.color == -1)):
+                        move = Board.index_2_coord(i)[0] + "x" + self.board.en_passant_square
+                        pawn_moves.append(move)
+
+                if (self.board.get(i + 9 * piece.color) != None and Board.index_2_coord(i + 9 * piece.color) == self.board.en_passant_square):
+                    if not((Board.index_2_coord(i)[0] == "h" and piece.color == 1) or (Board.index_2_coord(i)[0] == "a" and piece.color == -1)):
+                        move = Board.index_2_coord(i)[0] + "x" + self.board.en_passant_square
+                        pawn_moves.append(move)
 
         return pawn_moves
 

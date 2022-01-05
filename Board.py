@@ -165,7 +165,7 @@ class Board:
     def process_FEN(self, fen):
         index = 56
         for character in fen:
-            print(self.BOARD)
+            # print(self.BOARD)
             if character == "R":
                 self.set(index, Rook(1))
                 index += 1
