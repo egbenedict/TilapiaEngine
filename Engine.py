@@ -156,5 +156,3 @@ class Engine:
     def generate_castle_moves(self):
         pass
 
-    def generate_en_passant_moves(self):
-        pass # Later
