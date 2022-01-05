@@ -42,7 +42,14 @@ class Engine:
                 # 1 Square Ahead
                 if self.board.get(i + 8 * piece.color) == "-":
                     move = Board.index_2_coord(i) + Board.index_2_coord(i + 8 * piece.color)
-                    pawn_moves.append(move)
+                    # Promotion
+                    if (int(Board.index_2_coord(i)[1]) == 7 and piece.color == 1) or (int(Board.index_2_coord(i)[1]) == 2 and piece.color == -1):
+                        pawn_moves.append(Board.index_2_coord(i + 8 * piece.color) + "=Q")
+                        pawn_moves.append(Board.index_2_coord(i + 8 * piece.color) + "=R")
+                        pawn_moves.append(Board.index_2_coord(i + 8 * piece.color) + "=B")
+                        pawn_moves.append(Board.index_2_coord(i + 8 * piece.color) + "=N")
+                    else:
+                        pawn_moves.append(move)
 
                 # 2 Squares Ahead
                 if (((Board.index_2_coord(i)[1] == "2" and piece.color == 1)
@@ -56,12 +63,26 @@ class Engine:
                 if (self.board.get(i + 7 * piece.color) != None and self.board.get(i + 7 * piece.color) != "-") and self.board.get(i + 7 * piece.color).color == piece.color * -1:
                     if not((Board.index_2_coord(i)[0] == "a" and piece.color == 1) or (Board.index_2_coord(i)[0] == "h" and piece.color == -1)):
                         move = Board.index_2_coord(i)[0] + "x" + Board.index_2_coord(i + 7 * piece.color)
-                        pawn_moves.append(move)
+                        # Promotion
+                        if (int(Board.index_2_coord(i)[1]) == 7 and piece.color == 1) or (int(Board.index_2_coord(i)[1]) == 2 and piece.color == -1):
+                            pawn_moves.append(Board.index_2_coord(i)[0] + "x" + Board.index_2_coord(i + 7 * piece.color) + "=Q")
+                            pawn_moves.append(Board.index_2_coord(i)[0] + "x" + Board.index_2_coord(i + 7 * piece.color) + "=R")
+                            pawn_moves.append(Board.index_2_coord(i)[0] + "x" + Board.index_2_coord(i + 7 * piece.color) + "=B")
+                            pawn_moves.append(Board.index_2_coord(i)[0] + "x" + Board.index_2_coord(i + 7 * piece.color) + "=N")
+                        else:
+                            pawn_moves.append(move)
 
                 if (self.board.get(i + 9 * piece.color) != None and self.board.get(i + 9 * piece.color) != "-") and self.board.get(i + 9 * piece.color).color == piece.color * -1:
                     if not((Board.index_2_coord(i)[0] == "h" and piece.color == 1) or (Board.index_2_coord(i)[0] == "a" and piece.color == -1)):
                         move = Board.index_2_coord(i)[0] + "x" + Board.index_2_coord(i + 9 * piece.color)
-                        pawn_moves.append(move)
+                        # Promotion
+                        if (int(Board.index_2_coord(i)[1]) == 7 and piece.color == 1) or (int(Board.index_2_coord(i)[1]) == 2 and piece.color == -1):
+                            pawn_moves.append(Board.index_2_coord(i)[0] + "x" + Board.index_2_coord(i + 9 * piece.color) + "=Q")
+                            pawn_moves.append(Board.index_2_coord(i)[0] + "x" + Board.index_2_coord(i + 9 * piece.color) + "=R")
+                            pawn_moves.append(Board.index_2_coord(i)[0] + "x" + Board.index_2_coord(i + 9 * piece.color) + "=B")
+                            pawn_moves.append(Board.index_2_coord(i)[0] + "x" + Board.index_2_coord(i + 9 * piece.color) + "=N")
+                        else:
+                            pawn_moves.append(move)
 
                 # En Passant
                 if (self.board.get(i + 7 * piece.color) != None and Board.index_2_coord(i + 7 * piece.color) == self.board.en_passant_square):
