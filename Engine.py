@@ -25,6 +25,7 @@ class Engine:
         move_list.extend(self.generate_pawn_moves())
         move_list.extend(self.generate_knight_moves())
         move_list.extend(self.generate_bishop_moves())
+        move_list.extend(self.generate_rook_moves())
         
         return move_list
 
@@ -218,7 +219,63 @@ class Engine:
 
     # Return a list of all valid rook moves in current board state
     def generate_rook_moves(self):
-        pass
+        rook_moves = []
+        for i in range(64):
+            piece = self.board.get(i)
+            if isinstance(piece, Rook) and piece.color == self.board.side_to_move:
+                # North
+                j = i + 8
+                while self.board.get(j) == "-" and int(Board.index_2_coord(j)[1]) < 8:
+                    move = "R" + Board.index_2_coord(j)
+                    rook_moves.append(move)
+                    j += 8
+                if self.board.get(j) == "-":
+                    move = "R" + Board.index_2_coord(j)
+                    rook_moves.append(move)
+                elif self.board.get(j) != None and self.board.get(j).color == piece.color * -1:
+                    move = "Rx" + Board.index_2_coord(j)
+                    rook_moves.append(move)
+
+                # South
+                j = i - 8
+                while self.board.get(j) == "-" and int(Board.index_2_coord(j)[1]) > 1:
+                    move = "R" + Board.index_2_coord(j)
+                    rook_moves.append(move)
+                    j -= 8
+                if self.board.get(j) == "-":
+                    move = "R" + Board.index_2_coord(j)
+                    rook_moves.append(move)
+                elif self.board.get(j) != None and self.board.get(j).color == piece.color * -1:
+                    move = "Rx" + Board.index_2_coord(j)
+                    rook_moves.append(move)
+
+                # West
+                j = i - 1
+                while self.board.get(j) == "-" and Board.index_2_coord(j)[0] > "a":
+                    move = "R" + Board.index_2_coord(j)
+                    rook_moves.append(move)
+                    j -= 1
+                if self.board.get(j) == "-":
+                    move = "R" + Board.index_2_coord(j)
+                    rook_moves.append(move)
+                elif self.board.get(j) != None and self.board.get(j).color == piece.color * -1:
+                    move = "Rx" + Board.index_2_coord(j)
+                    rook_moves.append(move)
+
+                # East
+                j = i + 1
+                while self.board.get(j) == "-" and Board.index_2_coord(j)[0] < "h":
+                    move = "R" + Board.index_2_coord(j)
+                    rook_moves.append(move)
+                    j += 1
+                if self.board.get(j) == "-":
+                    move = "R" + Board.index_2_coord(j)
+                    rook_moves.append(move)
+                elif self.board.get(j) != None and self.board.get(j).color == piece.color * -1:
+                    move = "Rx" + Board.index_2_coord(j)
+                    rook_moves.append(move)
+
+        return rook_moves
 
     # Return a list of all valid castling moves in current board state
     def generate_castle_moves(self):
