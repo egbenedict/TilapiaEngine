@@ -26,6 +26,7 @@ class Engine:
         move_list.extend(self.generate_knight_moves())
         move_list.extend(self.generate_bishop_moves())
         move_list.extend(self.generate_rook_moves())
+        move_list.extend(self.generate_queen_moves())
         
         return move_list
 
@@ -211,7 +212,115 @@ class Engine:
     
     # Return a list of all valid queen moves in current board state
     def generate_queen_moves(self):
-        pass
+        queen_moves = []
+        for i in range(64):
+            piece = self.board.get(i)
+            if isinstance(piece, Queen) and piece.color == self.board.side_to_move:
+                # NE Diagonal
+                j = i + 9
+                while self.board.get(j) == "-" and Board.index_2_coord(j)[0] < "h" and int(Board.index_2_coord(j)[1]) < 8:
+                    move = "Q" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+                    j += 9
+                if self.board.get(j) == "-":
+                    move = "Q" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+                elif self.board.get(j) != None and self.board.get(j).color == piece.color * -1:
+                    move = "Qx" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+
+                # SE Diagonal
+                j = i - 7
+                while self.board.get(j) == "-" and Board.index_2_coord(j)[0] < "h" and int(Board.index_2_coord(j)[1]) > 1:
+                    move = "Q" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+                    j -= 7
+                if self.board.get(j) == "-":
+                    move = "Q" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+                elif self.board.get(j) != None and self.board.get(j).color == piece.color * -1:
+                    move = "Qx" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+
+                # SW Diagonal
+                j = i - 9
+                while self.board.get(j) == "-" and Board.index_2_coord(j)[0] > "a" and int(Board.index_2_coord(j)[1]) > 1:
+                    move = "Q" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+                    j -= 9
+                if self.board.get(j) == "-":
+                    move = "Q" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+                elif self.board.get(j) != None and self.board.get(j).color == piece.color * -1:
+                    move = "Qx" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+
+                # NW Diagonal
+                j = i + 7
+                while self.board.get(j) == "-" and Board.index_2_coord(j)[0] > "a" and int(Board.index_2_coord(j)[1]) < 8:
+                    move = "Q" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+                    j += 7
+                if self.board.get(j) == "-":
+                    move = "Q" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+                elif self.board.get(j) != None and self.board.get(j).color == piece.color * -1:
+                    move = "Qx" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+
+                # North
+                j = i + 8
+                while self.board.get(j) == "-" and int(Board.index_2_coord(j)[1]) < 8:
+                    move = "Q" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+                    j += 8
+                if self.board.get(j) == "-":
+                    move = "Q" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+                elif self.board.get(j) != None and self.board.get(j).color == piece.color * -1:
+                    move = "Qx" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+
+                # South
+                j = i - 8
+                while self.board.get(j) == "-" and int(Board.index_2_coord(j)[1]) > 1:
+                    move = "Q" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+                    j -= 8
+                if self.board.get(j) == "-":
+                    move = "Q" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+                elif self.board.get(j) != None and self.board.get(j).color == piece.color * -1:
+                    move = "Qx" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+
+                # West
+                j = i - 1
+                while self.board.get(j) == "-" and Board.index_2_coord(j)[0] > "a":
+                    move = "Q" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+                    j -= 1
+                if self.board.get(j) == "-":
+                    move = "Q" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+                elif self.board.get(j) != None and self.board.get(j).color == piece.color * -1:
+                    move = "Qx" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+
+                # East
+                j = i + 1
+                while self.board.get(j) == "-" and Board.index_2_coord(j)[0] < "h":
+                    move = "Q" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+                    j += 1
+                if self.board.get(j) == "-":
+                    move = "Q" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+                elif self.board.get(j) != None and self.board.get(j).color == piece.color * -1:
+                    move = "Qx" + Board.index_2_coord(j)
+                    queen_moves.append(move)
+
+        return queen_moves
 
     # Return a list of all valid king moves in current board state
     def generate_king_moves(self):
