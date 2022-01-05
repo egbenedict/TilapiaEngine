@@ -28,6 +28,7 @@ class Engine:
         move_list.extend(self.generate_rook_moves())
         move_list.extend(self.generate_queen_moves())
         move_list.extend(self.generate_king_moves())
+        move_list.extend(self.generate_castle_moves())
         
         return move_list
 
@@ -477,5 +478,18 @@ class Engine:
 
     # Return a list of all valid castling moves in current board state
     def generate_castle_moves(self):
-        pass
+        castle_moves = []
+        # White
+        if self.board.side_to_move == 1:
+            if self.board.white_can_castle_kingside and self.board.get_coord("f1") == "-" and self.board.get_coord("g1") == "-":
+                castle_moves.append("O-O")
+            if self.board.white_can_castle_queenside and self.board.get_coord("b1") == "-" and self.board.get_coord("c1") == "-" and self.board.get_coord("d1") == "-":
+                castle_moves.append("O-O-O")
+        else: # Black
+            if self.board.black_can_castle_kingside and self.board.get_coord("f8") == "-" and self.board.get_coord("g8") == "-":
+                castle_moves.append("O-O")
+            if self.board.black_can_castle_queenside and self.board.get_coord("b8") == "-" and self.board.get_coord("c8") == "-" and self.board.get_coord("d8") == "-":
+                castle_moves.append("O-O-O")
+
+        return castle_moves
 

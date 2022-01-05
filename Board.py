@@ -218,6 +218,10 @@ class Board:
     def get(self, index):
         return None if index < 0 or index > 63 else self.BOARD[index]
 
+    # Return valu located at specifiec board square by algebraic notation
+    def get_coord(self, coord):
+        return None if Board.coord_to_index.get(coord, -1) == -1 else self.BOARD[Board.coord_to_index.get(coord, -1)]
+
     # Modify square on board
     def set(self, index, val):
         self.BOARD[index] = val
