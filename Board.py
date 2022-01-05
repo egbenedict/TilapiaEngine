@@ -226,6 +226,10 @@ class Board:
     def set(self, index, val):
         self.BOARD[index] = val
 
+    # Modify square on board specified by coordinate
+    def set_coord(self, coord, val):
+        self.BOARD[Board.coord_to_index[coord]] = val
+
     def __str__(self):
         i = 56
         final_string = ""
@@ -250,5 +254,32 @@ class Board:
     # Returns the associated coordinate (algebraic notation) based on board index
     def index_2_coord(index):
         return Board.index_to_coord[index]
+
+    def move(self, move_tuple):
+        if move_tuple[0] == "0-0" and self.side_to_move == 1:
+            self.set_coord("g1", self.get_coord("e1"))
+            self.set_coord("f1", self.get_coord("h1"))
+            self.set_coord("e1", "-")
+            self.set_coord("h1", "-")
+        elif move_tuple[0] == "0-0-0" and self.side_to_move == 1:
+            self.set_coord("c1", self.get_coord("e1"))
+            self.set_coord("d1", self.get_coord("a1"))
+            self.set_coord("e1", "-")
+            self.set_coord("a1", "-")
+        elif move_tuple[0] == "0-0" and self.side_to_move == -1:
+            self.set_coord("g8", self.get_coord("e8"))
+            self.set_coord("f8", self.get_coord("h8"))
+            self.set_coord("e8", "-")
+            self.set_coord("h8", "-")
+        elif move_tuple[0] == "0-0-0" and self.side_to_move == -1:
+            self.set_coord("c8", self.get_coord("e8"))
+            self.set_coord("d8", self.get_coord("a8"))
+            self.set_coord("e8", "-")
+            self.set_coord("a8", "-")
+        else:
+            self.set(move_tuple[2], self.get(move_tuple[1]))
+            self.set(move_tuple[1], "-")
+            if len(move_tuple) == 4:
+                self.set(move_tuple[3], "-")
 
 
