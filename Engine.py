@@ -562,6 +562,8 @@ class Engine:
 
 
     def make_random_move(self):
-        self.board.move(random.choice(self.generate_legal_moves()))
+        move = random.choice(self.generate_legal_moves())
+        self.board.move(move)
+        self.move_log.append(move[0])
 
 

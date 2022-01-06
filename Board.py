@@ -161,6 +161,10 @@ class Board:
             self.BOARD = ["-" for i in range(64)]
 
             self.process_FEN(fen_parts[0])
+
+            self.history = {}
+
+            self.threefold = False
         else:
             self.side_to_move = board.side_to_move
             self.white_can_castle_kingside = board.white_can_castle_kingside
@@ -172,6 +176,10 @@ class Board:
             self.full_move_count = board.full_move_count
 
             self.BOARD = board.BOARD[:]
+
+            self.history = {str(self) : 1}
+
+            self.threefold = False
 
 
 
@@ -336,6 +344,10 @@ class Board:
         if (("N" in move_tuple[0] or "B" in move_tuple[0] or "Q" in move_tuple[0] or "R" in move_tuple[0] or "K" in move_tuple[0]) and "x" not in move_tuple[0]) or "O-O" in move_tuple[0]:
             self.half_move_count += 1
         self.side_to_move *= -1
+
+        self.history[str(self)] = self.history.get(str(self), 0) + 1
+        if self.history[str(self)] == 3:
+            self.threefold = True
 
     # Check if current position includes any checks on the king of specified color
     def check_for_checks(self, color):

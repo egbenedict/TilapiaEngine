@@ -12,6 +12,10 @@ def random_move_game():
         if e.board.half_move_count == 100:
             print("Draw by 50 Move Rule")
             break
+        if e.board.threefold:
+            print("Draw by threefold repetition")
+            break
         e.make_random_move()
         print(e.get_board())
 
+random_move_game()
