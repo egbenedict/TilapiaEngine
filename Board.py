@@ -272,25 +272,25 @@ class Board:
 
     # Execute given move and update board metadata accordingly
     def move(self, move_tuple):
-        if move_tuple[0] == "0-0" and self.side_to_move == 1:
+        if move_tuple[0] == "O-O" and self.side_to_move == 1:
             self.set_coord("g1", self.get_coord("e1"))
             self.set_coord("f1", self.get_coord("h1"))
             self.set_coord("e1", "-")
             self.set_coord("h1", "-")
             self.white_can_castle_kingside = False
-        elif move_tuple[0] == "0-0-0" and self.side_to_move == 1:
+        elif move_tuple[0] == "O-O-O" and self.side_to_move == 1:
             self.set_coord("c1", self.get_coord("e1"))
             self.set_coord("d1", self.get_coord("a1"))
             self.set_coord("e1", "-")
             self.set_coord("a1", "-")
             self.white_can_castle_queenside = False
-        elif move_tuple[0] == "0-0" and self.side_to_move == -1:
+        elif move_tuple[0] == "O-O" and self.side_to_move == -1:
             self.set_coord("g8", self.get_coord("e8"))
             self.set_coord("f8", self.get_coord("h8"))
             self.set_coord("e8", "-")
             self.set_coord("h8", "-")
             self.black_can_castle_kingside = False
-        elif move_tuple[0] == "0-0-0" and self.side_to_move == -1:
+        elif move_tuple[0] == "O-O-O" and self.side_to_move == -1:
             self.set_coord("c8", self.get_coord("e8"))
             self.set_coord("d8", self.get_coord("a8"))
             self.set_coord("e8", "-")

@@ -502,8 +502,51 @@ class Engine:
         legal_moves = []
 
         for move_tuple in move_list:
-            if move_tuple[0] == "0-0" or move_tuple[0] == "0-0-0":
-                pass
+            if move_tuple[0] == "O-O":
+                if self.board.side_to_move == 1: # White
+                    variation_board = Board(None, self.board)
+                    legal = not variation_board.check_for_checks(self.board.side_to_move)
+                    variation_board.move(("", 4, 5))
+                    legal = legal and not variation_board.check_for_checks(self.board.side_to_move)
+                    variation_board = Board(None, self.board)
+                    variation_board.move(move_tuple)
+                    legal = legal and not variation_board.check_for_checks(self.board.side_to_move)
+                    if legal:
+                        legal_moves.append(move_tuple)
+
+                else: # Black
+                    variation_board = Board(None, self.board)
+                    legal = not variation_board.check_for_checks(self.board.side_to_move)
+                    variation_board.move(("", 60, 61))
+                    legal = legal and not variation_board.check_for_checks(self.board.side_to_move)
+                    variation_board = Board(None, self.board)
+                    variation_board.move(move_tuple)
+                    legal = legal and not variation_board.check_for_checks(self.board.side_to_move)
+                    if legal:
+                        legal_moves.append(move_tuple)
+            elif move_tuple[0] == "O-O-O":
+                if self.board.side_to_move == 1: # White
+                    variation_board = Board(None, self.board)
+                    legal = not variation_board.check_for_checks(self.board.side_to_move)
+                    variation_board.move(("", 4, 3))
+                    legal = legal and not variation_board.check_for_checks(self.board.side_to_move)
+                    variation_board = Board(None, self.board)
+                    variation_board.move(move_tuple)
+                    legal = legal and not variation_board.check_for_checks(self.board.side_to_move)
+                    if legal:
+                        legal_moves.append(move_tuple)
+
+                else: # Black
+                    variation_board = Board(None, self.board)
+                    legal = not variation_board.check_for_checks(self.board.side_to_move)
+                    variation_board.move(("", 60, 59))
+                    legal = legal and not variation_board.check_for_checks(self.board.side_to_move)
+                    variation_board = Board(None, self.board)
+                    variation_board.move(move_tuple)
+                    legal = legal and not variation_board.check_for_checks(self.board.side_to_move)
+                    if legal:
+                        legal_moves.append(move_tuple)
+
             else:
                 variation_board = Board(None, self.board)
                 variation_board.move(move_tuple)
