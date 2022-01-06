@@ -1,10 +1,10 @@
 from Engine import *
 
-e = Engine("rn1qk2r/ppp2ppp/3p3n/2b1p3/6b1/8/PPPPPPPP/RNBQKBNR w Qq - 0 1")
+e = Engine("r2q1rn1/3bbp1k/p5Pp/1p1P4/P2p2Q1/3Pp1R1/BPP1N1PP/R3B2K b - - 0 23")
 
 # print(e.get_board())
 # print(e.generate_legal_moves())
-# print(e.get_board())
+print(e.get_board())
 
 # Play random moves against itself
 def random_move_game(): 
@@ -18,7 +18,7 @@ def random_move_game():
         e.make_random_move()
         
     print(e.get_board())
-    print(e.move_log)
+    # print(e.move_log)
         
 
 # random_move_game()

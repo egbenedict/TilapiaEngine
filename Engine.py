@@ -595,7 +595,7 @@ class Engine:
         endgame = board.is_endgame()
         for i in range(64):
             piece = board.get(i)
-            if piece != None and piece != "-" and (isinstance(piece, Bishop) or isinstance(piece, Knight)):
+            if piece != None and piece != "-":
                 piece_square_bonuses[piece.color] += piece.get_bonus(i, endgame)
 
         square_bonus_factor = piece_square_bonuses[1] - piece_square_bonuses[-1]

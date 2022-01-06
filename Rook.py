@@ -64,7 +64,7 @@ class Rook:
         self.base_value = 500
 
     def __str__(self):
-        return "R" if self.color == 1 else "r"
+        return "♖" if self.color == 1 else "♜"
 
     def get_bonus(self, i, endgame):
         if endgame:

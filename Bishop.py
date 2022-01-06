@@ -82,7 +82,7 @@ class Bishop:
         self.base_value = 330
 
     def __str__(self):
-        return "B" if self.color == 1 else "b"
+        return "♗" if self.color == 1 else "♝"
 
     def get_bonus(self, i, endgame):
         if endgame:

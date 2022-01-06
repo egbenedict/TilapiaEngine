@@ -61,7 +61,7 @@ class Knight:
         self.base_value = 320
 
     def __str__(self):
-        return "N" if self.color == 1 else "n"
+        return "♘" if self.color == 1 else "♞"
 
     def get_bonus(self, i, endgame):
         if endgame:
