@@ -363,7 +363,41 @@ class Board:
         if (color == -1 and ((isinstance(self.get(loc - 7), Pawn) and self.get(loc + 7).color == color * -1 and Board.index_2_coord(loc)[0] <= "g") or (isinstance(self.get(loc - 9), Pawn) and self.get(loc + 9).color == color * -1 and Board.index_2_coord(loc)[0] >= "b"))):
             return True
 
-        
+        # Check for bishop checks
+        # NE Diagonal
+        j = loc
+        while self.get(j + 9) == "-" and Board.index_2_coord(j + 9)[0] != "a":
+            j += 9
+        j += 9
+        if isinstance(self.get(j), Bishop) and self.get(j).color == color * -1:
+            return True
+
+        # NW Diagonal
+        j = loc
+        while self.get(j + 7) == "-" and Board.index_2_coord(j + 7)[0] != "h":
+            j += 7
+        j += 7
+        if isinstance(self.get(j), Bishop) and self.get(j).color == color * -1:
+            return True
+
+        # SW Diagonal
+        j = loc
+        while self.get(j - 9) == "-" and Board.index_2_coord(j - 9)[0] != "h":
+            j -= 9
+        j -= 9
+        if isinstance(self.get(j), Bishop) and self.get(j).color == color * -1:
+            return True
+
+        # SE Diagonal
+        j = loc
+        while self.get(j - 7) == "-" and Board.index_2_coord(j - 7)[0] != "a":
+            j -= 7
+        j -= 7
+        if isinstance(self.get(j), Bishop) and self.get(j).color == color * -1:
+            return True
+
+
+
         return False
 
 
