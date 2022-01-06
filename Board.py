@@ -369,7 +369,7 @@ class Board:
         while self.get(j + 9) == "-" and Board.index_2_coord(j + 9)[0] != "a":
             j += 9
         j += 9
-        if isinstance(self.get(j), Bishop) and self.get(j).color == color * -1:
+        if (isinstance(self.get(j), Bishop) or isinstance(self.get(j), Queen)) and self.get(j).color == color * -1:
             return True
 
         # NW Diagonal
@@ -377,7 +377,7 @@ class Board:
         while self.get(j + 7) == "-" and Board.index_2_coord(j + 7)[0] != "h":
             j += 7
         j += 7
-        if isinstance(self.get(j), Bishop) and self.get(j).color == color * -1:
+        if (isinstance(self.get(j), Bishop) or isinstance(self.get(j), Queen)) and self.get(j).color == color * -1:
             return True
 
         # SW Diagonal
@@ -385,7 +385,7 @@ class Board:
         while self.get(j - 9) == "-" and Board.index_2_coord(j - 9)[0] != "h":
             j -= 9
         j -= 9
-        if isinstance(self.get(j), Bishop) and self.get(j).color == color * -1:
+        if (isinstance(self.get(j), Bishop) or isinstance(self.get(j), Queen)) and self.get(j).color == color * -1:
             return True
 
         # SE Diagonal
@@ -393,10 +393,43 @@ class Board:
         while self.get(j - 7) == "-" and Board.index_2_coord(j - 7)[0] != "a":
             j -= 7
         j -= 7
-        if isinstance(self.get(j), Bishop) and self.get(j).color == color * -1:
+        if (isinstance(self.get(j), Bishop) or isinstance(self.get(j), Queen)) and self.get(j).color == color * -1:
             return True
 
+        # Check for rook checks
+        # North
+        j = loc
+        while self.get(j + 8) == "-":
+            j += 8
+        j += 8
+        if (isinstance(self.get(j), Rook) or isinstance(self.get(j), Queen)) and self.get(j).color == color * -1:
+            return True
 
+        # South
+        j = loc
+        while self.get(j - 8) == "-":
+            j -= 8
+        j -= 8
+        if (isinstance(self.get(j), Rook) or isinstance(self.get(j), Queen)) and self.get(j).color == color * -1:
+            return True
+
+        # East
+        j = loc
+        while self.get(j + 1) == "-" and Board.index_2_coord(j + 1)[0] != "a":
+            j += 1
+        j += 1
+        if (isinstance(self.get(j), Rook) or isinstance(self.get(j), Queen)) and self.get(j).color == color * -1:
+            return True
+
+        # West
+        j = loc
+        while self.get(j - 1) == "-" and Board.index_2_coord(j - 1)[0] != "h":
+            j -= 1
+        j -= 1
+        if (isinstance(self.get(j), Rook) or isinstance(self.get(j), Queen)) and self.get(j).color == color * -1:
+            return True
+
+        # Queen checks will be checked for within the bishop and rook check code
 
         return False
 
