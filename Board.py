@@ -345,7 +345,17 @@ class Board:
             or (isinstance(self.get(loc - 7), King) and Board.index_2_coord(loc)[0] != "h")
             or (isinstance(self.get(loc - 9), King) and Board.index_2_coord(loc)[0] != "a")):
             return True
-        
+
+        # Check for knight attacks
+        if ((isinstance(self.get(loc + 10), Knight) and Board.index_2_coord(loc)[0] <= "f" and self.get(loc + 10).color == color * -1) or
+            (isinstance(self.get(loc + 17), Knight) and Board.index_2_coord(loc)[0] <= "g" and self.get(loc + 17).color == color * -1) or
+            (isinstance(self.get(loc + 6), Knight) and Board.index_2_coord(loc)[0] >= "c" and self.get(loc + 6).color == color * -1) or
+            (isinstance(self.get(loc + 15), Knight) and Board.index_2_coord(loc)[0] >= "b" and self.get(loc + 15).color == color * -1) or
+            (isinstance(self.get(loc - 10), Knight) and Board.index_2_coord(loc)[0] >= "c" and self.get(loc - 10).color == color * -1) or
+            (isinstance(self.get(loc - 17), Knight) and Board.index_2_coord(loc)[0] >= "b" and self.get(loc - 17).color == color * -1) or
+            (isinstance(self.get(loc - 6), Knight) and Board.index_2_coord(loc)[0] <= "f" and self.get(loc - 6).color == color * -1) or
+            (isinstance(self.get(loc - 15), Knight) and Board.index_2_coord(loc)[0] <= "g" and self.get(loc - 15).color == color * -1)):
+            return True
         
         
         
