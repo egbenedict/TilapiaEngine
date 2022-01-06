@@ -316,14 +316,25 @@ class Board:
                 self.black_can_castle_queenside = False
                 self.black_can_castle_kingside = False
         
+            if "=Q" in move_tuple[0]:
+                self.set(move_tuple[2], Queen(self.side_to_move))
+            if "=R" in move_tuple[0]:
+                self.set(move_tuple[2], Rook(self.side_to_move))
+            if "=B" in move_tuple[0]:
+                self.set(move_tuple[2], Bishop(self.side_to_move))
+            if "=N" in move_tuple[0]:
+                self.set(move_tuple[2], Knight(self.side_to_move))
+
             if len(move_tuple) == 5:
                 self.en_passant_square = move_tuple[4]
             else:
                 self.en_passant_square = "-"
 
-        self.half_move_count += 1
-        if self.half_move_count % 2 == 0:
+        if self.side_to_move == -1:
             self.full_move_count += 1
+        
+        if (("N" in move_tuple[0] or "B" in move_tuple[0] or "Q" in move_tuple[0] or "R" in move_tuple[0] or "K" in move_tuple[0]) and "x" not in move_tuple[0]) or "O-O" in move_tuple[0]:
+            self.half_move_count += 1
         self.side_to_move *= -1
 
     # Check if current position includes any checks on the king of specified color
@@ -360,7 +371,7 @@ class Board:
         # Check for pawn checks
         if (color == 1 and ((isinstance(self.get(loc + 7), Pawn) and self.get(loc + 7).color == color * -1 and Board.index_2_coord(loc)[0] >= "b") or (isinstance(self.get(loc + 9), Pawn) and self.get(loc + 9).color == color * -1 and Board.index_2_coord(loc)[0] <= "g"))):
             return True
-        if (color == -1 and ((isinstance(self.get(loc - 7), Pawn) and self.get(loc + 7).color == color * -1 and Board.index_2_coord(loc)[0] <= "g") or (isinstance(self.get(loc - 9), Pawn) and self.get(loc + 9).color == color * -1 and Board.index_2_coord(loc)[0] >= "b"))):
+        if (color == -1 and ((isinstance(self.get(loc - 7), Pawn) and self.get(loc - 7).color == color * -1 and Board.index_2_coord(loc)[0] <= "g") or (isinstance(self.get(loc - 9), Pawn) and self.get(loc - 9).color == color * -1 and Board.index_2_coord(loc)[0] >= "b"))):
             return True
 
         # Check for bishop checks

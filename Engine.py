@@ -5,6 +5,7 @@ from Knight import *
 from Bishop import *
 from King import *
 from Pawn import *
+import random
 
 class Engine:
 
@@ -550,11 +551,17 @@ class Engine:
             else:
                 variation_board = Board(None, self.board)
                 variation_board.move(move_tuple)
-                print(variation_board)
+                # print(variation_board)
 
                 legal = not variation_board.check_for_checks(self.board.side_to_move)
-                print(legal)
+                # print(legal)
                 if legal:
                     legal_moves.append(move_tuple)
 
         return legal_moves
+
+
+    def make_random_move(self):
+        self.board.move(random.choice(self.generate_legal_moves()))
+
+
