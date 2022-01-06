@@ -11,6 +11,14 @@ class Engine:
 
     startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
+    piece_values = {
+        "pawn" : 1.0,
+        "knight" : 3.0,
+        "bishop" : 3.1,
+        "rook" : 5.0,
+        "queen" : 9.0
+    }
+
     def __init__(self, fen = startingFEN):
         self.board = Board(fen)
         self.move_log = []
@@ -560,10 +568,41 @@ class Engine:
 
         return legal_moves
 
-
+    # Make a random legal move on the current board
     def make_random_move(self):
         move = random.choice(self.generate_legal_moves())
         self.board.move(move)
         self.move_log.append(move[0])
 
+
+
+    # Compute an objective evalutation of the strenght of the position for the side to move
+    def evaluate(self, board):
+        
+        # Material points
+        material_count = [0, 0, 0]
+        for i in range(64):
+            piece = board.get(i)
+            if piece != None and piece != "-" and not isinstance(piece, King):
+                material_count[piece.color] += piece.base_value
+        
+        material_factor = material_count[board.side_to_move] - material_count[-1 * board.side_to_move]
+
+
+        # Piece Square Bonuses
+
+        # Pawn Structure
+
+        # Mobility
+
+        # Center Control
+
+        # King Safety
+
+        # Space (?)
+
+        # Tempo Bonus (?)
+        
+        
+        return material_factor
 

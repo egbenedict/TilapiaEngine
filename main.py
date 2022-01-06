@@ -4,7 +4,7 @@ e = Engine("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 
 # print(e.get_board())
 # print(e.generate_legal_moves())
-print(e.get_board())
+# print(e.get_board())
 
 # Play random moves against itself
 def random_move_game(): 
@@ -16,6 +16,11 @@ def random_move_game():
             print("Draw by threefold repetition")
             break
         e.make_random_move()
-        print(e.get_board())
+        
+    print(e.get_board())
+    print(e.move_log)
+        
 
-random_move_game()
+# random_move_game()
+
+print(e.evaluate(e.board))
