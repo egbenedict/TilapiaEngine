@@ -141,25 +141,40 @@ class Board:
         63 : "h8",
     }
 
-    def __init__(self, fen):
-        fen_parts = fen.split(" ")
+    def __init__(self, fen, board = None):
+        if board == None:
+            fen_parts = fen.split(" ")
 
-        self.side_to_move = 1 if fen_parts[1] == "w" else -1
+            self.side_to_move = 1 if fen_parts[1] == "w" else -1
 
-        self.white_can_castle_kingside = True if "K" in fen_parts[2] else False
-        self.white_can_castle_queenside = True if "Q" in fen_parts[2] else False
-        self.black_can_castle_kingside = True if "k" in fen_parts[2] else False
-        self.black_can_castle_queenside = True if "q" in fen_parts[2] else False
+            self.white_can_castle_kingside = True if "K" in fen_parts[2] else False
+            self.white_can_castle_queenside = True if "Q" in fen_parts[2] else False
+            self.black_can_castle_kingside = True if "k" in fen_parts[2] else False
+            self.black_can_castle_queenside = True if "q" in fen_parts[2] else False
 
-        self.en_passant_square = None if fen_parts[3] == "-" else fen_parts[3]
+            self.en_passant_square = None if fen_parts[3] == "-" else fen_parts[3]
 
-        self.half_move_count = int(fen_parts[4])
+            self.half_move_count = int(fen_parts[4])
 
-        self.full_move_count = int(fen_parts[5])
+            self.full_move_count = int(fen_parts[5])
 
-        self.BOARD = ["-" for i in range(64)]
+            self.BOARD = ["-" for i in range(64)]
 
-        self.process_FEN(fen_parts[0])
+            self.process_FEN(fen_parts[0])
+        else:
+            self.side_to_move = board.side_to_move
+            self.white_can_castle_kingside = board.white_can_castle_kingside
+            self.white_can_castle_queenside = board.white_can_castle_queenside
+            self.black_can_castle_kingside = board.black_can_castle_kingside
+            self.black_can_castle_queenside = board.black_can_castle_queenside
+            self.en_passant_square = board.en_passant_square
+            self.half_move_count = board.half_move_count
+            self.full_move_count = board.full_move_count
+
+            self.BOARD = board.BOARD[:]
+
+
+
 
     # Populate board squares
     def process_FEN(self, fen):
@@ -255,31 +270,85 @@ class Board:
     def index_2_coord(index):
         return Board.index_to_coord[index]
 
+    # Execute given move and update board metadata accordingly
     def move(self, move_tuple):
         if move_tuple[0] == "0-0" and self.side_to_move == 1:
             self.set_coord("g1", self.get_coord("e1"))
             self.set_coord("f1", self.get_coord("h1"))
             self.set_coord("e1", "-")
             self.set_coord("h1", "-")
+            self.white_can_castle_kingside = False
         elif move_tuple[0] == "0-0-0" and self.side_to_move == 1:
             self.set_coord("c1", self.get_coord("e1"))
             self.set_coord("d1", self.get_coord("a1"))
             self.set_coord("e1", "-")
             self.set_coord("a1", "-")
+            self.white_can_castle_queenside = False
         elif move_tuple[0] == "0-0" and self.side_to_move == -1:
             self.set_coord("g8", self.get_coord("e8"))
             self.set_coord("f8", self.get_coord("h8"))
             self.set_coord("e8", "-")
             self.set_coord("h8", "-")
+            self.black_can_castle_kingside = False
         elif move_tuple[0] == "0-0-0" and self.side_to_move == -1:
             self.set_coord("c8", self.get_coord("e8"))
             self.set_coord("d8", self.get_coord("a8"))
             self.set_coord("e8", "-")
             self.set_coord("a8", "-")
+            self.black_can_castle_queenside = False
         else:
             self.set(move_tuple[2], self.get(move_tuple[1]))
             self.set(move_tuple[1], "-")
             if len(move_tuple) == 4:
                 self.set(move_tuple[3], "-")
+            if move_tuple[1] == 0 and self.side_to_move == 1:
+                self.white_can_castle_queenside = False
+            if move_tuple[1] == 7 and self.side_to_move == 1:
+                self.white_can_castle_kingside = False
+            if move_tuple[1] == 4 and self.side_to_move == 1:
+                self.white_can_castle_queenside = False
+                self.white_can_castle_kingside = False
+            if move_tuple[1] == 0 and self.side_to_move == -1:
+                self.black_can_castle_queenside = False
+            if move_tuple[1] == 7 and self.side_to_move == -1:
+                self.black_can_castle_kingside = False
+            if move_tuple[1] == 4 and self.side_to_move == -1:
+                self.black_can_castle_queenside = False
+                self.black_can_castle_kingside = False
+        
+            if len(move_tuple) == 5:
+                self.en_passant_square = move_tuple[4]
+            else:
+                self.en_passant_square = "-"
+
+        self.half_move_count += 1
+        if self.half_move_count % 2 == 0:
+            self.full_move_count += 1
+        self.side_to_move *= -1
+
+    # Check if current position includes any checks on the king of specified color
+    def check_for_checks(self, color):
+        
+        # First find the king's location
+        loc = -1
+        for i in range(64):
+            if isinstance(self.get(i), King) and self.get(i).color == color:
+                loc = i
+        
+        # Check for king attacks
+        if (isinstance(self.get(loc + 1), King) 
+            or isinstance(self.get(loc - 1), King) 
+            or isinstance(self.get(loc + 8), King) 
+            or isinstance(self.get(loc - 8), King)
+            or (isinstance(self.get(loc + 7), King) and Board.index_2_coord(loc)[0] != "a")
+            or (isinstance(self.get(loc + 9), King) and Board.index_2_coord(loc)[0] != "h")
+            or (isinstance(self.get(loc - 7), King) and Board.index_2_coord(loc)[0] != "h")
+            or (isinstance(self.get(loc - 9), King) and Board.index_2_coord(loc)[0] != "a")):
+            return True
+        
+        
+        
+        
+        return False
 
 

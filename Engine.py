@@ -63,7 +63,7 @@ class Engine:
                  and self.board.get(i + 8 * piece.color) == "-" 
                  and self.board.get(i + 16 * piece.color) == "-"):
                     move = Board.index_2_coord(i + 16 * piece.color)
-                    pawn_moves.append((move, i, i + 16 * piece.color))
+                    pawn_moves.append((move, i, i + 16 * piece.color, None, i + 8 * piece.color))
 
                 # Diagonal Captures
                 if (self.board.get(i + 7 * piece.color) != None and self.board.get(i + 7 * piece.color) != "-") and self.board.get(i + 7 * piece.color).color == piece.color * -1:
@@ -499,6 +499,19 @@ class Engine:
         return castle_moves
 
     def filter_legal_moves(self, move_list):
-        return move_list
+        legal_moves = []
 
+        for move_tuple in move_list:
+            if move_tuple[0] == "0-0" or move_tuple[0] == "0-0-0":
+                pass
+            else:
+                variation_board = Board(None, self.board)
+                variation_board.move(move_tuple)
+                print(variation_board)
 
+                legal = not variation_board.check_for_checks(self.board.side_to_move)
+                print(legal)
+                if legal:
+                    legal_moves.append(move_tuple)
+
+        return legal_moves
