@@ -335,7 +335,7 @@ class Board:
             if isinstance(self.get(i), King) and self.get(i).color == color:
                 loc = i
         
-        # Check for king attacks
+        # Check for king checks (?)
         if (isinstance(self.get(loc + 1), King) 
             or isinstance(self.get(loc - 1), King) 
             or isinstance(self.get(loc + 8), King) 
@@ -346,7 +346,7 @@ class Board:
             or (isinstance(self.get(loc - 9), King) and Board.index_2_coord(loc)[0] != "a")):
             return True
 
-        # Check for knight attacks
+        # Check for knight checks
         if ((isinstance(self.get(loc + 10), Knight) and Board.index_2_coord(loc)[0] <= "f" and self.get(loc + 10).color == color * -1) or
             (isinstance(self.get(loc + 17), Knight) and Board.index_2_coord(loc)[0] <= "g" and self.get(loc + 17).color == color * -1) or
             (isinstance(self.get(loc + 6), Knight) and Board.index_2_coord(loc)[0] >= "c" and self.get(loc + 6).color == color * -1) or
@@ -357,7 +357,12 @@ class Board:
             (isinstance(self.get(loc - 15), Knight) and Board.index_2_coord(loc)[0] <= "g" and self.get(loc - 15).color == color * -1)):
             return True
         
-        
+        # Check for pawn checks
+        if (color == 1 and ((isinstance(self.get(loc + 7), Pawn) and self.get(loc + 7).color == color * -1 and Board.index_2_coord(loc)[0] >= "b") or (isinstance(self.get(loc + 9), Pawn) and self.get(loc + 9).color == color * -1 and Board.index_2_coord(loc)[0] <= "g"))):
+            return True
+        if (color == -1 and ((isinstance(self.get(loc - 7), Pawn) and self.get(loc + 7).color == color * -1 and Board.index_2_coord(loc)[0] <= "g") or (isinstance(self.get(loc - 9), Pawn) and self.get(loc + 9).color == color * -1 and Board.index_2_coord(loc)[0] >= "b"))):
+            return True
+
         
         return False
 
