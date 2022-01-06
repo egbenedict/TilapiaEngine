@@ -457,3 +457,26 @@ class Board:
         return False
 
 
+    def is_endgame(self):
+        black_queens = 0
+        white_queens = 0
+        minor_black = 0
+        minor_white = 0
+        for i in range(64):
+            piece = self.get(i)
+            if piece != None and piece != "-":
+                if piece.color == 1 and isinstance(piece, Queen):
+                    white_queens += 1
+                if piece.color == -1 and isinstance(piece, Queen):
+                    black_queens += 1
+                if piece.color == 1 and (isinstance(piece, Knight) or isinstance(piece, Bishop)):
+                    minor_white += 1
+                if piece.color == -1 and (isinstance(piece, Knight) or isinstance(piece, Bishop)):
+                    minor_black += 1
+        
+        if black_queens == 0 and white_queens == 0:
+            return True
+        if minor_black == 0 and minor_white == 0:
+            return True
+        return False
+

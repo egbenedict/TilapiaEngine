@@ -576,7 +576,7 @@ class Engine:
 
 
 
-    # Compute an objective evalutation of the strenght of the position for the side to move
+    # Compute an objective evalutation of the strength of the position for the side to move
     def evaluate(self, board):
         
         # Material points
@@ -586,10 +586,20 @@ class Engine:
             if piece != None and piece != "-" and not isinstance(piece, King):
                 material_count[piece.color] += piece.base_value
         
-        material_factor = material_count[board.side_to_move] - material_count[-1 * board.side_to_move]
-
+        material_factor = material_count[1] - material_count[-1]
+        print("Material Factor: " + str(material_factor))
 
         # Piece Square Bonuses
+        # Will have opening/middlegame bonuses and endgame bonuses
+        piece_square_bonuses = [0, 0, 0]
+        endgame = board.is_endgame()
+        for i in range(64):
+            piece = board.get(i)
+            if piece != None and piece != "-" and (isinstance(piece, Bishop) or isinstance(piece, Knight)):
+                piece_square_bonuses[piece.color] += piece.get_bonus(i, endgame)
+
+        square_bonus_factor = piece_square_bonuses[1] - piece_square_bonuses[-1]
+        print("Square Bonus Factor: " + str(square_bonus_factor))
 
         # Pawn Structure
 
@@ -599,10 +609,15 @@ class Engine:
 
         # King Safety
 
+        # Development
+
         # Space (?)
 
         # Tempo Bonus (?)
+
+        tempo_bonus = 0.2
+
+        # Check for checkmate / stalemate
         
-        
-        return material_factor
+        return (material_factor + square_bonus_factor) * board.side_to_move / 100.0 + tempo_bonus
 

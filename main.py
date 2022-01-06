@@ -1,6 +1,6 @@
 from Engine import *
 
-e = Engine("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+e = Engine("rn1qk2r/ppp2ppp/3p3n/2b1p3/6b1/8/PPPPPPPP/RNBQKBNR w Qq - 0 1")
 
 # print(e.get_board())
 # print(e.generate_legal_moves())
@@ -24,3 +24,4 @@ def random_move_game():
 # random_move_game()
 
 print(e.evaluate(e.board))
+# print(e.board.is_endgame())
