@@ -1,28 +1,11 @@
 from Engine import *
 
-e = Engine("1K6/7q/8/2k5/8/8/8/8 w - - 3 3")
+engine = Engine("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 
-# print(e.get_board())
-print(e.generate_legal_moves(e.official_board))
-print(e.get_board())
+def play_itself(engine):
+    for _ in range(20):
+        print(engine.official_board)
+        move_tuple = engine.search(engine.official_board, 2)[1]
+        engine.move(move_tuple)
 
-# Play random moves against itself
-def random_move_game(): 
-    while e.generate_legal_moves(e.official_board):
-        if e.official_board.half_move_count == 100:
-            print("Draw by 50 Move Rule")
-            break
-        if e.official_board.threefold:
-            print("Draw by threefold repetition")
-            break
-        e.make_random_move(e.official_board)
-        
-    print(e.get_board())
-    # print(e.move_log)
-        
-# val, meep = e.negamax(e.official_board, 3)
-# print(val)
-# random_move_game()
-
-# print("Evaluation: " + str(e.evaluate(e.official_board)))
-# print(e.official_board.is_endgame())
+play_itself(engine)

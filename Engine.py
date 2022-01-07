@@ -614,7 +614,7 @@ class Engine:
 
         if is_checkmate:
             return -float("inf")
-        if is_stalemate:
+        if is_stalemate or board.threefold or board.half_move_count == 100:
             return 0.0
         
         return (material_factor + square_bonus_factor + pawn_factor + mobility_factor + tempo_bonus) * board.side_to_move / 100.0
@@ -769,25 +769,37 @@ class Engine:
 
 
 
-    def negamax(self, board, depth=3, count=10):
+    def negamax(self, board, depth=3, first=True):
         if depth == 0:
-            return self.evaluate(board), depth
+            return self.evaluate(board)
         max_val = -float("inf")
         move_list = self.generate_legal_moves(board)
         best_move = move_list[0][0] if len(move_list) > 0 else None
-        biggest_depth_val = 0
         for move_tuple in move_list:
             variation_board = Board(None, board)
             variation_board.move(move_tuple)
-            score, d = self.negamax(variation_board, depth - 1, count - 1)
-            score *= -1
-            if score > max_val or (score == max_val and d > biggest_depth_val):
+            score = -self.negamax(variation_board, depth - 1, False)
+            if score >= max_val:
                 max_val = score
-                best_move = move_tuple[0]
+                best_move = move_tuple
 
-        if count == 10:
-            print(best_move)
+        return (max_val, best_move) if first else max_val
 
-        return max_val, depth
-        
 
+    def search(self, board, final_depth):
+        depth = 1
+        max_val = -float("inf")
+        while depth <= final_depth:
+            val, move = self.negamax(board, depth)
+            if val > max_val:
+                max_val = val
+                best_move = move
+            if max_val == float("inf"):
+                return max_val, best_move
+            depth += 1
+        return max_val, best_move
+
+    def move(self, move_tuple):
+        self.official_board.move(move_tuple)
+
+    

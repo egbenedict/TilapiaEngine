@@ -177,7 +177,7 @@ class Board:
 
             self.BOARD = board.BOARD[:]
 
-            self.history = {str(self) : 1}
+            self.history = board.history.copy()
 
             self.threefold = False
 
