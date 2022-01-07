@@ -576,7 +576,7 @@ class Engine:
 
 
 
-    # Compute an objective evalutation of the strength of the position for the side to move
+    # Compute an objective evalutation of the strength of the position relative to the side to move
     def evaluate(self, board):
         
         # Material points
@@ -615,11 +615,76 @@ class Engine:
                 i += 8
             doubled_pawns[1] -= (max(0, white_pawns - 1)) * 50
             doubled_pawns[-1] -= (max(0, black_pawns - 1)) * 50
-            
+
         doubled_pawns_factor = doubled_pawns[1] - doubled_pawns[-1]
-        print("Doubled Pawns Factor: " + str(doubled_pawns_factor))
+        # print("Doubled Pawns Factor: " + str(doubled_pawns_factor))
 
+        # Backward Pawns:
+        back_white_pawns = [0, 0, 0, 0, 0, 0, 0, 0]
+        back_black_pawns = [0, 0, 0, 0, 0, 0, 0, 0]
+        for i in range(8):
+            j = i
+            c = 1
+            while not (isinstance(board.get(j), Pawn) and board.get(j).color == 1) and j < 64:
+                j += 8
+                c += 1
+            if j < 64:
+                back_white_pawns[i] = c 
+        for i in range(8):
+            j = i
+            c = 1
+            while j < 64:
+                if isinstance(board.get(j), Pawn) and board.get(j).color == -1:
+                    back_black_pawns[i] = c
+                j += 8
+                c += 1
 
+        white_backward_pawns = 0
+        black_backward_pawns = 0
+        for n in range(1, 7):
+            if back_white_pawns[n] != 0 and back_white_pawns[n] < back_white_pawns[n - 1] and back_white_pawns[n] < back_white_pawns[n + 1]:
+                white_backward_pawns += 1
+            if back_black_pawns[n] > back_black_pawns[n - 1] and back_black_pawns[n] > back_black_pawns[n + 1]:
+                black_backward_pawns += 1
+
+        backward_pawn_factor = (white_backward_pawns - black_backward_pawns) * -30
+        # print("Backward Pawns Factor: " + str(backward_pawn_factor))
+
+        # Passed Pawns (TODO: Fix for flank pawns)
+        front_white_pawns = [0, 0, 0, 0, 0, 0, 0, 0]
+        front_black_pawns = [0, 0, 0, 0, 0, 0, 0, 0]
+
+        for i in range(8):
+            j = i
+            c = 1
+            while j < 64:
+                if isinstance(board.get(j), Pawn) and board.get(j).color == 1:
+                    front_white_pawns[i] = c
+                j += 8
+                c += 1
+        for i in range(8):
+            j = i
+            c = 1
+            while not (isinstance(board.get(j), Pawn) and board.get(j).color == -1) and j < 64:
+                j += 8
+                c += 1
+            if j < 64:
+                front_black_pawns[i] = c 
+
+        white_passed_pawns = 0
+        black_passed_pawns = 0
+        for n in range(1, 7):
+            if front_white_pawns[n] >= back_black_pawns[n - 1] and front_white_pawns[n] >= back_black_pawns[n + 1] and front_white_pawns[n] >= back_black_pawns[n]:
+                white_passed_pawns += 1
+            if front_black_pawns[n] != 0 and front_black_pawns[n] <= back_white_pawns[n - 1] and front_black_pawns[n] <= back_white_pawns[n + 1] and front_black_pawns[n] <= back_white_pawns[n]:
+                black_passed_pawns += 1
+
+        passed_pawn_factor = (white_passed_pawns - black_passed_pawns) * 30
+        print("Passed Pawns Factor: " + str(passed_pawn_factor))
+        
+        pawn_factor = backward_pawn_factor + doubled_pawns_factor + passed_pawn_factor
+        print("Pawn Factor: " + str(pawn_factor))
+        
         # Mobility
 
         # Center Control
@@ -627,6 +692,8 @@ class Engine:
         # King Safety
 
         # Development
+
+        # Castling Bonus (?)
 
         # Space (?)
 
@@ -636,5 +703,5 @@ class Engine:
 
         # Check for checkmate / stalemate
         
-        return (material_factor + square_bonus_factor + doubled_pawns_factor) * board.side_to_move / 100.0 + tempo_bonus
+        return (material_factor + square_bonus_factor + pawn_factor ) * board.side_to_move / 100.0 + tempo_bonus
 

@@ -1,6 +1,6 @@
 from Engine import *
 
-e = Engine("r1bqkbnr/2pp1ppp/p1p5/4p3/4P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 1")
+e = Engine("rnbqkbnr/3ppppp/1P6/p1p5/8/8/P2PPPPP/RNBQKBNR w KQkq - 0 1")
 
 # print(e.get_board())
 # print(e.generate_legal_moves())
