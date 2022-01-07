@@ -189,56 +189,60 @@ class Engine:
             piece = board.get(i)
             if isinstance(piece, Bishop) and piece.color == board.side_to_move:
                 # NE Diagonal
-                j = i + 9
-                while board.get(j) == "-" and Board.index_2_coord(j)[0] < "h" and int(Board.index_2_coord(j)[1]) < 8:
-                    move = "B" + Board.index_2_coord(j)
-                    bishop_moves.append((move, i, j))
-                    j += 9
-                if board.get(j) == "-":
-                    move = "B" + Board.index_2_coord(j)
-                    bishop_moves.append((move, i, j))
-                elif board.get(j) != None and board.get(j).color == piece.color * -1:
-                    move = "Bx" + Board.index_2_coord(j)
-                    bishop_moves.append((move, i, j))
+                if Board.index_2_coord(i)[0] < "h":
+                    j = i + 9
+                    while board.get(j) == "-" and Board.index_2_coord(j)[0] < "h" and int(Board.index_2_coord(j)[1]) < 8:
+                        move = "B" + Board.index_2_coord(j)
+                        bishop_moves.append((move, i, j))
+                        j += 9
+                    if board.get(j) == "-":
+                        move = "B" + Board.index_2_coord(j)
+                        bishop_moves.append((move, i, j))
+                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                        move = "Bx" + Board.index_2_coord(j)
+                        bishop_moves.append((move, i, j))
 
                 # SE Diagonal
-                j = i - 7
-                while board.get(j) == "-" and Board.index_2_coord(j)[0] < "h" and int(Board.index_2_coord(j)[1]) > 1:
-                    move = "B" + Board.index_2_coord(j)
-                    bishop_moves.append((move, i, j))
-                    j -= 7
-                if board.get(j) == "-":
-                    move = "B" + Board.index_2_coord(j)
-                    bishop_moves.append((move, i, j))
-                elif board.get(j) != None and board.get(j).color == piece.color * -1:
-                    move = "Bx" + Board.index_2_coord(j)
-                    bishop_moves.append((move, i, j))
+                if Board.index_2_coord(i)[0] < "h":
+                    j = i - 7
+                    while board.get(j) == "-" and Board.index_2_coord(j)[0] < "h" and int(Board.index_2_coord(j)[1]) > 1:
+                        move = "B" + Board.index_2_coord(j)
+                        bishop_moves.append((move, i, j))
+                        j -= 7
+                    if board.get(j) == "-":
+                        move = "B" + Board.index_2_coord(j)
+                        bishop_moves.append((move, i, j))
+                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                        move = "Bx" + Board.index_2_coord(j)
+                        bishop_moves.append((move, i, j))
 
                 # SW Diagonal
-                j = i - 9
-                while board.get(j) == "-" and Board.index_2_coord(j)[0] > "a" and int(Board.index_2_coord(j)[1]) > 1:
-                    move = "B" + Board.index_2_coord(j)
-                    bishop_moves.append((move, i, j))
-                    j -= 9
-                if board.get(j) == "-":
-                    move = "B" + Board.index_2_coord(j)
-                    bishop_moves.append((move, i, j))
-                elif board.get(j) != None and board.get(j).color == piece.color * -1:
-                    move = "Bx" + Board.index_2_coord(j)
-                    bishop_moves.append((move, i, j))
+                if Board.index_2_coord(i)[0] > "a":
+                    j = i - 9
+                    while board.get(j) == "-" and Board.index_2_coord(j)[0] > "a" and int(Board.index_2_coord(j)[1]) > 1:
+                        move = "B" + Board.index_2_coord(j)
+                        bishop_moves.append((move, i, j))
+                        j -= 9
+                    if board.get(j) == "-":
+                        move = "B" + Board.index_2_coord(j)
+                        bishop_moves.append((move, i, j))
+                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                        move = "Bx" + Board.index_2_coord(j)
+                        bishop_moves.append((move, i, j))
 
                 # NW Diagonal
-                j = i + 7
-                while board.get(j) == "-" and Board.index_2_coord(j)[0] > "a" and int(Board.index_2_coord(j)[1]) < 8:
-                    move = "B" + Board.index_2_coord(j)
-                    bishop_moves.append((move, i, j))
-                    j += 7
-                if board.get(j) == "-":
-                    move = "B" + Board.index_2_coord(j)
-                    bishop_moves.append((move, i, j))
-                elif board.get(j) != None and board.get(j).color == piece.color * -1:
-                    move = "Bx" + Board.index_2_coord(j)
-                    bishop_moves.append((move, i, j))
+                if Board.index_2_coord(i)[0] > "a":
+                    j = i + 7
+                    while board.get(j) == "-" and Board.index_2_coord(j)[0] > "a" and int(Board.index_2_coord(j)[1]) < 8:
+                        move = "B" + Board.index_2_coord(j)
+                        bishop_moves.append((move, i, j))
+                        j += 7
+                    if board.get(j) == "-":
+                        move = "B" + Board.index_2_coord(j)
+                        bishop_moves.append((move, i, j))
+                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                        move = "Bx" + Board.index_2_coord(j)
+                        bishop_moves.append((move, i, j))
 
         return bishop_moves
     
@@ -249,56 +253,60 @@ class Engine:
             piece = board.get(i)
             if isinstance(piece, Queen) and piece.color == board.side_to_move:
                 # NE Diagonal
-                j = i + 9
-                while board.get(j) == "-" and Board.index_2_coord(j)[0] < "h" and int(Board.index_2_coord(j)[1]) < 8:
-                    move = "Q" + Board.index_2_coord(j)
-                    queen_moves.append((move, i, j))
-                    j += 9
-                if board.get(j) == "-":
-                    move = "Q" + Board.index_2_coord(j)
-                    queen_moves.append((move, i, j))
-                elif board.get(j) != None and board.get(j).color == piece.color * -1:
-                    move = "Qx" + Board.index_2_coord(j)
-                    queen_moves.append((move, i, j))
+                if Board.index_2_coord(i)[0] < "h":
+                    j = i + 9
+                    while board.get(j) == "-" and Board.index_2_coord(j)[0] < "h" and int(Board.index_2_coord(j)[1]) < 8:
+                        move = "Q" + Board.index_2_coord(j)
+                        queen_moves.append((move, i, j))
+                        j += 9
+                    if board.get(j) == "-":
+                        move = "Q" + Board.index_2_coord(j)
+                        queen_moves.append((move, i, j))
+                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                        move = "Qx" + Board.index_2_coord(j)
+                        queen_moves.append((move, i, j))
 
                 # SE Diagonal
-                j = i - 7
-                while board.get(j) == "-" and Board.index_2_coord(j)[0] < "h" and int(Board.index_2_coord(j)[1]) > 1:
-                    move = "Q" + Board.index_2_coord(j)
-                    queen_moves.append((move, i, j))
-                    j -= 7
-                if board.get(j) == "-":
-                    move = "Q" + Board.index_2_coord(j)
-                    queen_moves.append((move, i, j))
-                elif board.get(j) != None and board.get(j).color == piece.color * -1:
-                    move = "Qx" + Board.index_2_coord(j)
-                    queen_moves.append((move, i, j))
+                if Board.index_2_coord(i)[0] < "h":
+                    j = i - 7
+                    while board.get(j) == "-" and Board.index_2_coord(j)[0] < "h" and int(Board.index_2_coord(j)[1]) > 1:
+                        move = "Q" + Board.index_2_coord(j)
+                        queen_moves.append((move, i, j))
+                        j -= 7
+                    if board.get(j) == "-":
+                        move = "Q" + Board.index_2_coord(j)
+                        queen_moves.append((move, i, j))
+                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                        move = "Qx" + Board.index_2_coord(j)
+                        queen_moves.append((move, i, j))
 
                 # SW Diagonal
-                j = i - 9
-                while board.get(j) == "-" and Board.index_2_coord(j)[0] > "a" and int(Board.index_2_coord(j)[1]) > 1:
-                    move = "Q" + Board.index_2_coord(j)
-                    queen_moves.append((move, i, j))
-                    j -= 9
-                if board.get(j) == "-":
-                    move = "Q" + Board.index_2_coord(j)
-                    queen_moves.append((move, i, j))
-                elif board.get(j) != None and board.get(j).color == piece.color * -1:
-                    move = "Qx" + Board.index_2_coord(j)
-                    queen_moves.append((move, i, j))
+                if Board.index_2_coord(i)[0] > "a":
+                    j = i - 9
+                    while board.get(j) == "-" and Board.index_2_coord(j)[0] > "a" and int(Board.index_2_coord(j)[1]) > 1:
+                        move = "Q" + Board.index_2_coord(j)
+                        queen_moves.append((move, i, j))
+                        j -= 9
+                    if board.get(j) == "-":
+                        move = "Q" + Board.index_2_coord(j)
+                        queen_moves.append((move, i, j))
+                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                        move = "Qx" + Board.index_2_coord(j)
+                        queen_moves.append((move, i, j))
 
                 # NW Diagonal
-                j = i + 7
-                while board.get(j) == "-" and Board.index_2_coord(j)[0] > "a" and int(Board.index_2_coord(j)[1]) < 8:
-                    move = "Q" + Board.index_2_coord(j)
-                    queen_moves.append((move, i, j))
-                    j += 7
-                if board.get(j) == "-":
-                    move = "Q" + Board.index_2_coord(j)
-                    queen_moves.append((move, i, j))
-                elif board.get(j) != None and board.get(j).color == piece.color * -1:
-                    move = "Qx" + Board.index_2_coord(j)
-                    queen_moves.append((move, i, j))
+                if Board.index_2_coord(i)[0] > "a":
+                    j = i + 7
+                    while board.get(j) == "-" and Board.index_2_coord(j)[0] > "a" and int(Board.index_2_coord(j)[1]) < 8:
+                        move = "Q" + Board.index_2_coord(j)
+                        queen_moves.append((move, i, j))
+                        j += 7
+                    if board.get(j) == "-":
+                        move = "Q" + Board.index_2_coord(j)
+                        queen_moves.append((move, i, j))
+                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                        move = "Qx" + Board.index_2_coord(j)
+                        queen_moves.append((move, i, j))
 
                 # North
                 j = i + 8
@@ -327,30 +335,32 @@ class Engine:
                     queen_moves.append((move, i, j))
 
                 # West
-                j = i - 1
-                while board.get(j) == "-" and Board.index_2_coord(j)[0] > "a":
-                    move = "Q" + Board.index_2_coord(j)
-                    queen_moves.append((move, i, j))
-                    j -= 1
-                if board.get(j) == "-":
-                    move = "Q" + Board.index_2_coord(j)
-                    queen_moves.append((move, i, j))
-                elif board.get(j) != None and board.get(j).color == piece.color * -1:
-                    move = "Qx" + Board.index_2_coord(j)
-                    queen_moves.append((move, i, j))
+                if Board.index_2_coord(i)[0] > "a":
+                    j = i - 1
+                    while board.get(j) == "-" and Board.index_2_coord(j)[0] > "a":
+                        move = "Q" + Board.index_2_coord(j)
+                        queen_moves.append((move, i, j))
+                        j -= 1
+                    if board.get(j) == "-":
+                        move = "Q" + Board.index_2_coord(j)
+                        queen_moves.append((move, i, j))
+                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                        move = "Qx" + Board.index_2_coord(j)
+                        queen_moves.append((move, i, j))
 
                 # East
-                j = i + 1
-                while board.get(j) == "-" and Board.index_2_coord(j)[0] < "h":
-                    move = "Q" + Board.index_2_coord(j)
-                    queen_moves.append((move, i, j))
-                    j += 1
-                if board.get(j) == "-":
-                    move = "Q" + Board.index_2_coord(j)
-                    queen_moves.append((move, i, j))
-                elif board.get(j) != None and board.get(j).color == piece.color * -1:
-                    move = "Qx" + Board.index_2_coord(j)
-                    queen_moves.append((move, i, j))
+                if Board.index_2_coord(i)[0] < "h":
+                    j = i + 1
+                    while board.get(j) == "-" and Board.index_2_coord(j)[0] < "h":
+                        move = "Q" + Board.index_2_coord(j)
+                        queen_moves.append((move, i, j))
+                        j += 1
+                    if board.get(j) == "-":
+                        move = "Q" + Board.index_2_coord(j)
+                        queen_moves.append((move, i, j))
+                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                        move = "Qx" + Board.index_2_coord(j)
+                        queen_moves.append((move, i, j))
 
         return queen_moves
 
@@ -609,7 +619,6 @@ class Engine:
         
         return (material_factor + square_bonus_factor + pawn_factor + mobility_factor + tempo_bonus) * board.side_to_move / 100.0
 
-
     def calculate_material_factor(self, board):
         material_count = [0, 0, 0]
         for i in range(64):
@@ -757,3 +766,6 @@ class Engine:
         if len(self.generate_legal_moves(board)) == 0 and not board.check_for_checks(board.side_to_move):
             return True
         return False
+
+
+

@@ -1,9 +1,9 @@
 from Engine import *
 
-e = Engine("6k1/8/5Q2/7Q/4K3/8/8/8 b - - 0 1")
+e = Engine("8/8/8/8/7K/8/8/8 w - - 0 1")
 
 # print(e.get_board())
-# print(e.generate_legal_moves())
+print(e.generate_legal_moves(e.official_board))
 print(e.get_board())
 
 # Play random moves against itself
@@ -23,5 +23,5 @@ def random_move_game():
 
 # random_move_game()
 
-print("Evaluation: " + str(e.evaluate(e.official_board)))
+# print("Evaluation: " + str(e.evaluate(e.official_board)))
 # print(e.official_board.is_endgame())
