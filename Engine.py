@@ -588,21 +588,21 @@ class Engine:
         
         # Material points
         material_factor = self.calculate_material_factor(board)
-        print("Material Factor: " + str(material_factor))
+        # print("Material Factor: " + str(material_factor))
 
         # TODO: Add Bishop Pair Bonus, Output Knight Bonus, Bad Bishops, Rook on Open File
 
         # Piece Square Bonuses
         square_bonus_factor = self.calculate_square_bonuses(board)
-        print("Square Bonus Factor: " + str(square_bonus_factor))
+        # print("Square Bonus Factor: " + str(square_bonus_factor))
 
         # Pawn Structure
         pawn_factor = self.calculate_pawn_factor(board)
-        print("Pawn Factor: " + str(pawn_factor))
+        # print("Pawn Factor: " + str(pawn_factor))
         
         # Mobility
         mobility_factor = len(self.generate_legal_moves(board)) * 0.8 * board.side_to_move
-        print("Mobility Factor: " + str(mobility_factor))
+        # print("Mobility Factor: " + str(mobility_factor))
 
         # Tempo Bonus
         tempo_bonus = 0.2 * board.side_to_move
@@ -768,4 +768,26 @@ class Engine:
         return False
 
 
+
+    def negamax(self, board, depth=3, count=10):
+        if depth == 0:
+            return self.evaluate(board), depth
+        max_val = -float("inf")
+        move_list = self.generate_legal_moves(board)
+        best_move = move_list[0][0] if len(move_list) > 0 else None
+        biggest_depth_val = 0
+        for move_tuple in move_list:
+            variation_board = Board(None, board)
+            variation_board.move(move_tuple)
+            score, d = self.negamax(variation_board, depth - 1, count - 1)
+            score *= -1
+            if score >= max_val and d > biggest_depth_val:
+                max_val = score
+                best_move = move_tuple[0]
+
+        if count == 10:
+            print(best_move)
+
+        return max_val, depth
+        
 
