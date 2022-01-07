@@ -580,17 +580,49 @@ class Engine:
     def evaluate(self, board):
         
         # Material points
+        material_factor = self.calculate_material_factor(board)
+        print("Material Factor: " + str(material_factor))
+
+        # Piece Square Bonuses
+        square_bonus_factor = self.calculate_square_bonuses(board)
+        print("Square Bonus Factor: " + str(square_bonus_factor))
+
+        # Pawn Structure
+        pawn_factor = self.calculate_pawn_factor(board)
+        print("Pawn Factor: " + str(pawn_factor))
+        
+        # Mobility
+
+        # Center Control
+
+        # King Safety
+
+        # Development
+
+        # Castling Bonus (?)
+
+        # Space (?)
+
+        # Tempo Bonus (?)
+
+        tempo_bonus = 0.2
+
+        # Check for checkmate / stalemate
+        
+        return (material_factor + square_bonus_factor + pawn_factor ) * board.side_to_move / 100.0 + tempo_bonus
+
+
+    def calculate_material_factor(self, board):
         material_count = [0, 0, 0]
         for i in range(64):
             piece = board.get(i)
             if piece != None and piece != "-" and not isinstance(piece, King):
                 material_count[piece.color] += piece.base_value
-        
+    
         material_factor = material_count[1] - material_count[-1]
-        print("Material Factor: " + str(material_factor))
+        return material_factor
 
-        # Piece Square Bonuses
-        # Will have opening/middlegame bonuses and endgame bonuses
+    def calculate_square_bonuses(self, board):
         piece_square_bonuses = [0, 0, 0]
         endgame = board.is_endgame()
         for i in range(64):
@@ -599,9 +631,9 @@ class Engine:
                 piece_square_bonuses[piece.color] += piece.get_bonus(i, endgame)
 
         square_bonus_factor = piece_square_bonuses[1] - piece_square_bonuses[-1]
-        print("Square Bonus Factor: " + str(square_bonus_factor))
+        return square_bonus_factor
 
-        # Pawn Structure
+    def calculate_pawn_factor(self, board):
         # Doubled pawns:
         doubled_pawns = [0, 0, 0]
         for i in range(8):
@@ -650,7 +682,7 @@ class Engine:
         backward_pawn_factor = (white_backward_pawns - black_backward_pawns) * -30
         # print("Backward Pawns Factor: " + str(backward_pawn_factor))
 
-        # Passed Pawns (TODO: Fix for flank pawns)
+        # Passed Pawns
         front_white_pawns = [0, 0, 0, 0, 0, 0, 0, 0]
         front_black_pawns = [0, 0, 0, 0, 0, 0, 0, 0]
 
@@ -676,32 +708,44 @@ class Engine:
         for n in range(1, 7):
             if front_white_pawns[n] >= back_black_pawns[n - 1] and front_white_pawns[n] >= back_black_pawns[n + 1] and front_white_pawns[n] >= back_black_pawns[n]:
                 white_passed_pawns += 1
-            if front_black_pawns[n] != 0 and front_black_pawns[n] <= back_white_pawns[n - 1] and front_black_pawns[n] <= back_white_pawns[n + 1] and front_black_pawns[n] <= back_white_pawns[n]:
+            if front_black_pawns[n] != 0 and (front_black_pawns[n] <= back_white_pawns[n - 1] or back_white_pawns[n - 1] == 0 ) and (front_black_pawns[n] <= back_white_pawns[n + 1] or back_white_pawns[n + 1] == 0) and (front_black_pawns[n] <= back_white_pawns[n] or back_white_pawns[n] == 0):
                 black_passed_pawns += 1
+        if front_white_pawns[0] >= back_black_pawns[1] and front_white_pawns[0] >= back_black_pawns[0]:
+            white_passed_pawns += 1
+        if front_white_pawns[7] >= back_black_pawns[6] and front_white_pawns[7] >= back_black_pawns[7]:
+            white_passed_pawns += 1
+        if (front_black_pawns[0] <= back_white_pawns[1] or back_white_pawns[1] == 0) and (back_white_pawns[0] == 0 or front_black_pawns[0] <= back_white_pawns[0]):
+            black_passed_pawns += 1
+        if (front_black_pawns[7] <= back_white_pawns[6] or back_white_pawns[6] == 0) and (front_black_pawns[7] <= back_white_pawns[7] or back_white_pawns[7] == 0):
+            black_passed_pawns += 1
 
         passed_pawn_factor = (white_passed_pawns - black_passed_pawns) * 30
-        print("Passed Pawns Factor: " + str(passed_pawn_factor))
+        # print("Passed Pawns Factor: " + str(passed_pawn_factor))
         
-        pawn_factor = backward_pawn_factor + doubled_pawns_factor + passed_pawn_factor
-        print("Pawn Factor: " + str(pawn_factor))
-        
-        # Mobility
+        # Pawn Islands
+        white_island, black_island = False, False
+        white_pawn_islands = 0
+        black_pawn_islands = 0
 
-        # Center Control
+        front_white_pawns.append(0)
+        front_black_pawns.append(0)
+        for i in range(9):
+            if front_white_pawns[i] == 0 and white_island == True:
+                white_pawn_islands += 1
+                white_island = False
+            if front_white_pawns[i] > 0:
+                white_island = True
 
-        # King Safety
+            if front_black_pawns[i] == 0 and black_island == True:
+                black_pawn_islands += 1
+                black_island = False
+            if front_black_pawns[i] > 0:
+                black_island = True
+            
 
-        # Development
+        print(white_pawn_islands, black_pawn_islands)
+        pawn_island_factor = (white_pawn_islands - black_pawn_islands) * -10 if black_pawn_islands == 0 else 0
+        print("Pawn Island Factor: " + str(pawn_island_factor))
 
-        # Castling Bonus (?)
-
-        # Space (?)
-
-        # Tempo Bonus (?)
-
-        tempo_bonus = 0.2
-
-        # Check for checkmate / stalemate
-        
-        return (material_factor + square_bonus_factor + pawn_factor ) * board.side_to_move / 100.0 + tempo_bonus
-
+        pawn_factor = backward_pawn_factor + doubled_pawns_factor + passed_pawn_factor + pawn_island_factor
+        return pawn_factor
