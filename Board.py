@@ -438,7 +438,7 @@ class Board:
 
         # East
         j = loc
-        while self.get(j + 1) == "-" and Board.index_2_coord(j + 1)[0] != "a":
+        while self.get(j + 1) == "-" and Board.index_2_coord(j + 1)[0] != "h":
             j += 1
         j += 1
         if (isinstance(self.get(j), Rook) or isinstance(self.get(j), Queen)) and self.get(j).color == color * -1:
@@ -446,7 +446,7 @@ class Board:
 
         # West
         j = loc
-        while self.get(j - 1) == "-" and Board.index_2_coord(j - 1)[0] != "h":
+        while self.get(j - 1) == "-" and Board.index_2_coord(j - 1)[0] != "a":
             j -= 1
         j -= 1
         if (isinstance(self.get(j), Rook) or isinstance(self.get(j), Queen)) and self.get(j).color == color * -1:

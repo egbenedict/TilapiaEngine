@@ -781,7 +781,7 @@ class Engine:
             variation_board.move(move_tuple)
             score, d = self.negamax(variation_board, depth - 1, count - 1)
             score *= -1
-            if score >= max_val and d > biggest_depth_val:
+            if score > max_val or (score == max_val and d > biggest_depth_val):
                 max_val = score
                 best_move = move_tuple[0]
 
