@@ -767,7 +767,8 @@ class Engine:
             return True
         return False
 
-
+    def is_it_over(self, board):
+        return self.is_it_checkmate(board) or self.is_it_stalemate(board) or self.official_board.threefold or self.official_board.half_move_count == 100
 
     def negamax(self, board, depth=3, first=True):
         if depth == 0:
@@ -791,7 +792,7 @@ class Engine:
         max_val = -float("inf")
         while depth <= final_depth:
             val, move = self.negamax(board, depth)
-            if val > max_val:
+            if val == float("inf") or depth == final_depth:
                 max_val = val
                 best_move = move
             if max_val == float("inf"):
@@ -801,5 +802,6 @@ class Engine:
 
     def move(self, move_tuple):
         self.official_board.move(move_tuple)
+        self.move_log.append(move_tuple[0])
 
     
