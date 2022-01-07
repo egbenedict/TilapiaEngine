@@ -602,6 +602,23 @@ class Engine:
         print("Square Bonus Factor: " + str(square_bonus_factor))
 
         # Pawn Structure
+        # Doubled pawns:
+        doubled_pawns = [0, 0, 0]
+        for i in range(8):
+            white_pawns = 0
+            black_pawns = 0
+            for _ in range(8):
+                if isinstance(board.get(i), Pawn) and board.get(i).color == 1:
+                    white_pawns += 1
+                if isinstance(board.get(i), Pawn) and board.get(i).color == -1:
+                    black_pawns += 1
+                i += 8
+            doubled_pawns[1] -= (max(0, white_pawns - 1)) * 50
+            doubled_pawns[-1] -= (max(0, black_pawns - 1)) * 50
+            
+        doubled_pawns_factor = doubled_pawns[1] - doubled_pawns[-1]
+        print("Doubled Pawns Factor: " + str(doubled_pawns_factor))
+
 
         # Mobility
 
@@ -619,5 +636,5 @@ class Engine:
 
         # Check for checkmate / stalemate
         
-        return (material_factor + square_bonus_factor) * board.side_to_move / 100.0 + tempo_bonus
+        return (material_factor + square_bonus_factor + doubled_pawns_factor) * board.side_to_move / 100.0 + tempo_bonus
 
