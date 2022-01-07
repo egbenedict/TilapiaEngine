@@ -459,7 +459,7 @@ class Engine:
 
                 # West
                 j = i - 1
-                while board.get(j) == "-" and Board.index_2_coord(j)[0] > "a":
+                while board.get(j) == "-" and Board.index_2_coord(j)[0] < "h":
                     move = "R" + Board.index_2_coord(j)
                     rook_moves.append((move, i, j))
                     j -= 1
@@ -472,7 +472,7 @@ class Engine:
 
                 # East
                 j = i + 1
-                while board.get(j) == "-" and Board.index_2_coord(j)[0] < "h":
+                while board.get(j) == "-" and Board.index_2_coord(j)[0] > "a":
                     move = "R" + Board.index_2_coord(j)
                     rook_moves.append((move, i, j))
                     j += 1
@@ -596,15 +596,19 @@ class Engine:
 
         # Development
 
-        # Castling Bonus (?)
-
-        # Space (?)
-
-        # Tempo Bonus (?)
-
+        # Tempo Bonus
         tempo_bonus = 0.2
 
         # Check for checkmate / stalemate
+
+        is_checkmate = self.is_it_checkmate(board)
+        print(is_checkmate)
+        is_stalemate = self.is_it_stalemate(board)
+
+        if is_checkmate:
+            return -float("inf")
+        if is_stalemate:
+            return 0.0
         
         return (material_factor + square_bonus_factor + pawn_factor + mobility_factor) * board.side_to_move / 100.0 + tempo_bonus
 
@@ -746,3 +750,14 @@ class Engine:
 
         pawn_factor = backward_pawn_factor + doubled_pawns_factor + passed_pawn_factor + pawn_island_factor
         return pawn_factor
+
+    def is_it_checkmate(self, board):
+        print(self.generate_legal_moves(board))
+        if len(self.generate_legal_moves(board)) == 0 and board.check_for_checks(board.side_to_move):
+            return True
+        return False
+    
+    def is_it_stalemate(self, board):
+        if len(self.generate_legal_moves(board)) == 0 and not board.check_for_checks(board.side_to_move):
+            return True
+        return False
