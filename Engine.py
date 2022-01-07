@@ -458,30 +458,32 @@ class Engine:
                     rook_moves.append((move, i, j))
 
                 # West
-                j = i - 1
-                while board.get(j) == "-" and Board.index_2_coord(j)[0] < "h":
-                    move = "R" + Board.index_2_coord(j)
-                    rook_moves.append((move, i, j))
-                    j -= 1
-                if board.get(j) == "-":
-                    move = "R" + Board.index_2_coord(j)
-                    rook_moves.append((move, i, j))
-                elif board.get(j) != None and board.get(j).color == piece.color * -1:
-                    move = "Rx" + Board.index_2_coord(j)
-                    rook_moves.append((move, i, j))
+                if Board.index_2_coord(i)[0] > "a":
+                    j = i - 1
+                    while board.get(j) == "-" and Board.index_2_coord(j)[0] > "a":
+                        move = "R" + Board.index_2_coord(j)
+                        rook_moves.append((move, i, j))
+                        j -= 1
+                    if board.get(j) == "-":
+                        move = "R" + Board.index_2_coord(j)
+                        rook_moves.append((move, i, j))
+                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                        move = "Rx" + Board.index_2_coord(j)
+                        rook_moves.append((move, i, j))
 
                 # East
-                j = i + 1
-                while board.get(j) == "-" and Board.index_2_coord(j)[0] > "a":
-                    move = "R" + Board.index_2_coord(j)
-                    rook_moves.append((move, i, j))
-                    j += 1
-                if board.get(j) == "-":
-                    move = "R" + Board.index_2_coord(j)
-                    rook_moves.append((move, i, j))
-                elif board.get(j) != None and board.get(j).color == piece.color * -1:
-                    move = "Rx" + Board.index_2_coord(j)
-                    rook_moves.append((move, i, j))
+                if Board.index_2_coord(i)[0] < "h":
+                    j = i + 1
+                    while board.get(j) == "-" and Board.index_2_coord(j)[0] < "h":
+                        move = "R" + Board.index_2_coord(j)
+                        rook_moves.append((move, i, j))
+                        j += 1
+                    if board.get(j) == "-":
+                        move = "R" + Board.index_2_coord(j)
+                        rook_moves.append((move, i, j))
+                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                        move = "Rx" + Board.index_2_coord(j)
+                        rook_moves.append((move, i, j))
 
         return rook_moves
 
@@ -578,6 +580,8 @@ class Engine:
         material_factor = self.calculate_material_factor(board)
         print("Material Factor: " + str(material_factor))
 
+        # TODO: Add Bishop Pair Bonus, Output Knight Bonus, Bad Bishops, Rook on Open File
+
         # Piece Square Bonuses
         square_bonus_factor = self.calculate_square_bonuses(board)
         print("Square Bonus Factor: " + str(square_bonus_factor))
@@ -590,19 +594,12 @@ class Engine:
         mobility_factor = len(self.generate_legal_moves(board)) * 0.8 * board.side_to_move
         print("Mobility Factor: " + str(mobility_factor))
 
-        # Center Control
-
-        # King Safety
-
-        # Development
-
         # Tempo Bonus
-        tempo_bonus = 0.2
+        tempo_bonus = 0.2 * board.side_to_move
 
         # Check for checkmate / stalemate
 
         is_checkmate = self.is_it_checkmate(board)
-        print(is_checkmate)
         is_stalemate = self.is_it_stalemate(board)
 
         if is_checkmate:
@@ -610,7 +607,7 @@ class Engine:
         if is_stalemate:
             return 0.0
         
-        return (material_factor + square_bonus_factor + pawn_factor + mobility_factor) * board.side_to_move / 100.0 + tempo_bonus
+        return (material_factor + square_bonus_factor + pawn_factor + mobility_factor + tempo_bonus) * board.side_to_move / 100.0
 
 
     def calculate_material_factor(self, board):
@@ -752,7 +749,6 @@ class Engine:
         return pawn_factor
 
     def is_it_checkmate(self, board):
-        print(self.generate_legal_moves(board))
         if len(self.generate_legal_moves(board)) == 0 and board.check_for_checks(board.side_to_move):
             return True
         return False
