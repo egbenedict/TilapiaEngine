@@ -286,24 +286,28 @@ class Board:
             self.set_coord("e1", "-")
             self.set_coord("h1", "-")
             self.white_can_castle_kingside = False
+            self.white_can_castle_queenside = False
         elif move_tuple[0] == "O-O-O" and self.side_to_move == 1:
             self.set_coord("c1", self.get_coord("e1"))
             self.set_coord("d1", self.get_coord("a1"))
             self.set_coord("e1", "-")
             self.set_coord("a1", "-")
             self.white_can_castle_queenside = False
+            self.white_can_castle_kingside = False
         elif move_tuple[0] == "O-O" and self.side_to_move == -1:
             self.set_coord("g8", self.get_coord("e8"))
             self.set_coord("f8", self.get_coord("h8"))
             self.set_coord("e8", "-")
             self.set_coord("h8", "-")
             self.black_can_castle_kingside = False
+            self.black_can_castle_queenside = False
         elif move_tuple[0] == "O-O-O" and self.side_to_move == -1:
             self.set_coord("c8", self.get_coord("e8"))
             self.set_coord("d8", self.get_coord("a8"))
             self.set_coord("e8", "-")
             self.set_coord("a8", "-")
             self.black_can_castle_queenside = False
+            self.black_can_castle_kingside = False
         else:
             self.set(move_tuple[2], self.get(move_tuple[1]))
             self.set(move_tuple[1], "-")

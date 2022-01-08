@@ -803,17 +803,18 @@ class Engine:
         return max_val, best_move
 
     def alpha_beta_search(self, board, final_depth):
-        depth = 1
-        max_val = -float("inf")
-        while depth <= final_depth:
-            val, move = self.alpha_beta(board, -float("inf"), float("inf"), depth)
-            if val == float("inf") or depth == final_depth:
-                max_val = val
-                best_move = move
-            if max_val == float("inf"):
-                return max_val, best_move
-            depth += 1
-        return max_val, best_move
+        # depth = 1
+        # max_val = -float("inf")
+        # while depth <= final_depth:
+        #     val, move = self.alpha_beta(board, -float("inf"), float("inf"), depth)
+        #     if val == float("inf") or depth == final_depth:
+        #         max_val = val
+        #         best_move = move
+        #     if max_val == float("inf"):
+        #         return max_val, best_move
+        #     depth += 1
+        # return max_val, best_move
+        return self.alpha_beta(board, -float("inf"), float("inf"), final_depth)
 
     def move(self, move_tuple):
         self.official_board.move(move_tuple)
@@ -871,16 +872,16 @@ class Engine:
         if self.is_it_stalemate(board) or board.threefold or board.half_move_count == 100:
             return (0.0, None) if first else 0.0
         move_list = self.generate_legal_moves(board)
-        best_move = move_list[0][0] if len(move_list) > 0 else None
+        best_move = move_list[0] if len(move_list) > 0 else None
         for move_tuple in move_list:
             variation_board = Board(None, board)
             variation_board.move(move_tuple)
             score = -self.alpha_beta(variation_board, -beta, -alpha, depth_left - 1, False)
             if score >= beta:
-                best_move = move_tuple[0]
+                best_move = move_tuple
                 return (beta, best_move) if first else beta
             if score > alpha:
-                best_move = move_tuple[0]
+                best_move = move_tuple
                 alpha = score
 
         return (alpha, best_move) if first else alpha
