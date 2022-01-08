@@ -802,6 +802,19 @@ class Engine:
             depth += 1
         return max_val, best_move
 
+    def alpha_beta_search(self, board, final_depth):
+        depth = 1
+        max_val = -float("inf")
+        while depth <= final_depth:
+            val, move = self.alpha_beta(board, -float("inf"), float("inf"), depth)
+            if val == float("inf") or depth == final_depth:
+                max_val = val
+                best_move = move
+            if max_val == float("inf"):
+                return max_val, best_move
+            depth += 1
+        return max_val, best_move
+
     def move(self, move_tuple):
         self.official_board.move(move_tuple)
         self.move_log.append(move_tuple[0])
@@ -823,3 +836,53 @@ class Engine:
                 pgn += move + " "
                 count += 1
         return pgn
+
+    def quiesce(self, board, alpha, beta):
+        stand_pat = self.evaluate(board)
+        if stand_pat >= beta:
+            return beta
+
+        delta = 200
+
+        if stand_pat < alpha - delta:
+            return alpha
+
+        if alpha < stand_pat:
+            alpha = stand_pat
+
+        move_list = self.generate_legal_moves(board)
+        for move_tuple in move_list:
+            if "x" in move_tuple[0]:
+                variation_board = Board(None, board)
+                variation_board.move(move_tuple)
+                score = -self.quiesce(variation_board, -beta, -alpha)
+
+                if score >= beta:
+                    return beta
+                if score > alpha:
+                    alpha = score
+        
+        return alpha
+
+    def alpha_beta(self, board, alpha, beta, depth_left, first=True):
+        if depth_left == 0:
+            return self.quiesce(board, alpha, beta)
+            # return self.evaluate(board)
+        if self.is_it_stalemate(board) or board.threefold or board.half_move_count == 100:
+            return (0.0, None) if first else 0.0
+        move_list = self.generate_legal_moves(board)
+        best_move = move_list[0][0] if len(move_list) > 0 else None
+        for move_tuple in move_list:
+            variation_board = Board(None, board)
+            variation_board.move(move_tuple)
+            score = -self.alpha_beta(variation_board, -beta, -alpha, depth_left - 1, False)
+            if score >= beta:
+                best_move = move_tuple[0]
+                return (beta, best_move) if first else beta
+            if score > alpha:
+                best_move = move_tuple[0]
+                alpha = score
+
+        return (alpha, best_move) if first else alpha
+
+
