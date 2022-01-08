@@ -605,7 +605,7 @@ class Engine:
         # print("Mobility Factor: " + str(mobility_factor))
 
         # Tempo Bonus
-        tempo_bonus = 0.2 * board.side_to_move
+        tempo_bonus = 20 * board.side_to_move
 
         # Check for checkmate / stalemate
 
@@ -838,8 +838,12 @@ class Engine:
                 count += 1
         return pgn
 
-    def quiesce(self, board, alpha, beta):
+    def quiesce(self, board, alpha, beta, depth):
         stand_pat = self.evaluate(board)
+
+        if depth == 0: # Correct???
+            return stand_pat
+
         if stand_pat >= beta:
             return beta
 
@@ -856,7 +860,7 @@ class Engine:
             if "x" in move_tuple[0]:
                 variation_board = Board(None, board)
                 variation_board.move(move_tuple)
-                score = -self.quiesce(variation_board, -beta, -alpha)
+                score = -self.quiesce(variation_board, -beta, -alpha, depth - 1)
 
                 if score >= beta:
                     return beta
@@ -867,10 +871,10 @@ class Engine:
 
     def alpha_beta(self, board, alpha, beta, depth_left, first=True):
         if depth_left == 0:
-            return self.quiesce(board, alpha, beta)
+            return self.quiesce(board, alpha, beta, 3)
             # return self.evaluate(board)
         if self.is_it_stalemate(board) or board.threefold or board.half_move_count == 100:
-            return (0.0, None) if first else 0.0
+            return 0.0
         move_list = self.generate_legal_moves(board)
         best_move = move_list[0] if len(move_list) > 0 else None
         for move_tuple in move_list:
@@ -878,8 +882,7 @@ class Engine:
             variation_board.move(move_tuple)
             score = -self.alpha_beta(variation_board, -beta, -alpha, depth_left - 1, False)
             if score >= beta:
-                best_move = move_tuple
-                return (beta, best_move) if first else beta
+                return beta
             if score > alpha:
                 best_move = move_tuple
                 alpha = score
