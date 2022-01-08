@@ -158,7 +158,8 @@ class Board:
 
             self.full_move_count = int(fen_parts[5])
 
-            self.BOARD = ["-" for i in range(64)]
+            self.BOARD = ["-" for _ in range(64)]
+            self.BOARD.extend([None for _ in range(20)]) # Over/Underflow buffer
 
             self.process_FEN(fen_parts[0])
 
@@ -259,7 +260,7 @@ class Board:
         for row in range(8):
             row_string = ""
             for col in range(8):
-                row_string += str(self.get(i)) + " "
+                row_string += str(self.BOARD[i]) + " "
                 i += 1
             i -= 16
             row_string += "\n"
@@ -308,8 +309,8 @@ class Board:
             self.set_coord("a8", "-")
             self.black_can_castle_queenside = False
             self.black_can_castle_kingside = False
-        else:
-            self.set(move_tuple[2], self.get(move_tuple[1]))
+        else: 
+            self.set(move_tuple[2], self.BOARD[move_tuple[1]])
             self.set(move_tuple[1], "-")
             if len(move_tuple) == 4:
                 self.set(move_tuple[3], "-")
@@ -349,8 +350,8 @@ class Board:
             self.half_move_count += 1
         self.side_to_move *= -1
 
-        self.history[str(self)] = self.history.get(str(self), 0) + 1
-        if self.history[str(self)] == 3:
+        self.history[tuple(self.BOARD)] = self.history.get(tuple(self.BOARD), 0) + 1
+        if self.history[tuple(self.BOARD)] == 3:
             self.threefold = True
 
     # Check if current position includes any checks on the king of specified color
@@ -359,107 +360,107 @@ class Board:
         # First find the king's location
         loc = -1
         for i in range(64):
-            if isinstance(self.get(i), King) and self.get(i).color == color:
+            if isinstance(self.BOARD[i], King) and self.get(i).color == color:
                 loc = i
         
         # Check for king checks (?)
-        if (isinstance(self.get(loc + 1), King) 
-            or isinstance(self.get(loc - 1), King) 
-            or isinstance(self.get(loc + 8), King) 
-            or isinstance(self.get(loc - 8), King)
-            or (isinstance(self.get(loc + 7), King) and Board.index_2_coord(loc)[0] != "a")
-            or (isinstance(self.get(loc + 9), King) and Board.index_2_coord(loc)[0] != "h")
-            or (isinstance(self.get(loc - 7), King) and Board.index_2_coord(loc)[0] != "h")
-            or (isinstance(self.get(loc - 9), King) and Board.index_2_coord(loc)[0] != "a")):
+        if (isinstance(self.BOARD[loc + 1], King) 
+            or isinstance(self.BOARD[loc - 1], King) 
+            or isinstance(self.BOARD[loc + 8], King) 
+            or isinstance(self.BOARD[loc - 8], King)
+            or (isinstance(self.BOARD[loc + 7], King) and Board.index_2_coord(loc)[0] != "a")
+            or (isinstance(self.BOARD[loc + 9], King) and Board.index_2_coord(loc)[0] != "h")
+            or (isinstance(self.BOARD[loc - 7], King) and Board.index_2_coord(loc)[0] != "h")
+            or (isinstance(self.BOARD[loc - 9], King) and Board.index_2_coord(loc)[0] != "a")):
             return True
 
         # Check for knight checks
-        if ((isinstance(self.get(loc + 10), Knight) and Board.index_2_coord(loc)[0] <= "f" and self.get(loc + 10).color == color * -1) or
-            (isinstance(self.get(loc + 17), Knight) and Board.index_2_coord(loc)[0] <= "g" and self.get(loc + 17).color == color * -1) or
-            (isinstance(self.get(loc + 6), Knight) and Board.index_2_coord(loc)[0] >= "c" and self.get(loc + 6).color == color * -1) or
-            (isinstance(self.get(loc + 15), Knight) and Board.index_2_coord(loc)[0] >= "b" and self.get(loc + 15).color == color * -1) or
-            (isinstance(self.get(loc - 10), Knight) and Board.index_2_coord(loc)[0] >= "c" and self.get(loc - 10).color == color * -1) or
-            (isinstance(self.get(loc - 17), Knight) and Board.index_2_coord(loc)[0] >= "b" and self.get(loc - 17).color == color * -1) or
-            (isinstance(self.get(loc - 6), Knight) and Board.index_2_coord(loc)[0] <= "f" and self.get(loc - 6).color == color * -1) or
-            (isinstance(self.get(loc - 15), Knight) and Board.index_2_coord(loc)[0] <= "g" and self.get(loc - 15).color == color * -1)):
+        if ((isinstance(self.BOARD[loc + 10], Knight) and Board.index_2_coord(loc)[0] <= "f" and self.BOARD[loc + 10].color == color * -1) or
+            (isinstance(self.BOARD[loc + 17], Knight) and Board.index_2_coord(loc)[0] <= "g" and self.BOARD[loc + 17].color == color * -1) or
+            (isinstance(self.BOARD[loc + 6], Knight) and Board.index_2_coord(loc)[0] >= "c" and self.BOARD[loc + 6].color == color * -1) or
+            (isinstance(self.BOARD[loc + 15], Knight) and Board.index_2_coord(loc)[0] >= "b" and self.BOARD[loc + 15].color == color * -1) or
+            (isinstance(self.BOARD[loc - 10], Knight) and Board.index_2_coord(loc)[0] >= "c" and self.BOARD[loc - 10].color == color * -1) or
+            (isinstance(self.BOARD[loc - 17], Knight) and Board.index_2_coord(loc)[0] >= "b" and self.BOARD[loc - 17].color == color * -1) or
+            (isinstance(self.BOARD[loc - 6], Knight) and Board.index_2_coord(loc)[0] <= "f" and self.BOARD[loc - 6].color == color * -1) or
+            (isinstance(self.BOARD[loc - 15], Knight) and Board.index_2_coord(loc)[0] <= "g" and self.BOARD[loc - 15].color == color * -1)):
             return True
         
         # Check for pawn checks
-        if (color == 1 and ((isinstance(self.get(loc + 7), Pawn) and self.get(loc + 7).color == color * -1 and Board.index_2_coord(loc)[0] >= "b") or (isinstance(self.get(loc + 9), Pawn) and self.get(loc + 9).color == color * -1 and Board.index_2_coord(loc)[0] <= "g"))):
+        if (color == 1 and ((isinstance(self.BOARD[loc + 7], Pawn) and self.BOARD[loc + 7].color == color * -1 and Board.index_2_coord(loc)[0] >= "b") or (isinstance(self.BOARD[loc + 9], Pawn) and self.BOARD[loc + 9].color == color * -1 and Board.index_2_coord(loc)[0] <= "g"))):
             return True
-        if (color == -1 and ((isinstance(self.get(loc - 7), Pawn) and self.get(loc - 7).color == color * -1 and Board.index_2_coord(loc)[0] <= "g") or (isinstance(self.get(loc - 9), Pawn) and self.get(loc - 9).color == color * -1 and Board.index_2_coord(loc)[0] >= "b"))):
+        if (color == -1 and ((isinstance(self.BOARD[loc - 7], Pawn) and self.BOARD[loc - 7].color == color * -1 and Board.index_2_coord(loc)[0] <= "g") or (isinstance(self.BOARD[loc - 9], Pawn) and self.BOARD[loc - 9].color == color * -1 and Board.index_2_coord(loc)[0] >= "b"))):
             return True
 
         # Check for bishop checks
         # NE Diagonal
         if Board.index_2_coord(loc)[0] != "h":
             j = loc
-            while self.get(j + 9) == "-" and Board.index_2_coord(j + 9)[0] != "h":
+            while self.BOARD[j + 9] == "-" and Board.index_2_coord(j + 9)[0] != "h":
                 j += 9
             j += 9
-            if (isinstance(self.get(j), Bishop) or isinstance(self.get(j), Queen)) and self.get(j).color == color * -1:
+            if (isinstance(self.BOARD[j], Bishop) or isinstance(self.BOARD[j], Queen)) and self.BOARD[j].color == color * -1:
                 return True
 
         # NW Diagonal
         if Board.index_2_coord(loc)[0] != "a":
             j = loc
-            while self.get(j + 7) == "-" and Board.index_2_coord(j + 7)[0] != "a":
+            while self.BOARD[j + 7] == "-" and Board.index_2_coord(j + 7)[0] != "a":
                 j += 7
             j += 7
-            if (isinstance(self.get(j), Bishop) or isinstance(self.get(j), Queen)) and self.get(j).color == color * -1:
+            if (isinstance(self.BOARD[j], Bishop) or isinstance(self.BOARD[j], Queen)) and self.BOARD[j].color == color * -1:
                 return True
 
         # SW Diagonal
         if Board.index_2_coord(loc)[0] != "a":
             j = loc
-            while self.get(j - 9) == "-" and Board.index_2_coord(j - 9)[0] != "a":
+            while self.BOARD[j - 9] == "-" and Board.index_2_coord(j - 9)[0] != "a":
                 j -= 9
             j -= 9
-            if (isinstance(self.get(j), Bishop) or isinstance(self.get(j), Queen)) and self.get(j).color == color * -1:
+            if (isinstance(self.BOARD[j], Bishop) or isinstance(self.BOARD[j], Queen)) and self.BOARD[j].color == color * -1:
                 return True
 
         # SE Diagonal
         if Board.index_2_coord(loc)[0] != "h":
             j = loc
-            while self.get(j - 7) == "-" and Board.index_2_coord(j - 7)[0] != "h":
+            while self.BOARD[j - 7] == "-" and Board.index_2_coord(j - 7)[0] != "h":
                 j -= 7
             j -= 7
-            if (isinstance(self.get(j), Bishop) or isinstance(self.get(j), Queen)) and self.get(j).color == color * -1:
+            if (isinstance(self.BOARD[j], Bishop) or isinstance(self.BOARD[j], Queen)) and self.BOARD[j].color == color * -1:
                 return True
 
         # Check for rook checks
         # North
         j = loc
-        while self.get(j + 8) == "-":
+        while self.BOARD[j + 8] == "-":
             j += 8
         j += 8
-        if (isinstance(self.get(j), Rook) or isinstance(self.get(j), Queen)) and self.get(j).color == color * -1:
+        if (isinstance(self.BOARD[j], Rook) or isinstance(self.BOARD[j], Queen)) and self.BOARD[j].color == color * -1:
             return True
 
         # South
         j = loc
-        while self.get(j - 8) == "-":
+        while self.BOARD[j - 8] == "-":
             j -= 8
         j -= 8
-        if (isinstance(self.get(j), Rook) or isinstance(self.get(j), Queen)) and self.get(j).color == color * -1:
+        if (isinstance(self.BOARD[j], Rook) or isinstance(self.BOARD[j], Queen)) and self.BOARD[j].color == color * -1:
             return True
 
         # East
         j = loc
         if Board.index_2_coord(j)[0] != "h":
-            while self.get(j + 1) == "-" and Board.index_2_coord(j + 1)[0] != "h":
+            while self.BOARD[j + 1] == "-" and Board.index_2_coord(j + 1)[0] != "h":
                 j += 1
             j += 1
-            if (isinstance(self.get(j), Rook) or isinstance(self.get(j), Queen)) and self.get(j).color == color * -1:
+            if (isinstance(self.BOARD[j], Rook) or isinstance(self.BOARD[j], Queen)) and self.BOARD[j].color == color * -1:
                 return True
 
         # West
         j = loc
         if Board.index_2_coord(j)[0] != "a":
-            while self.get(j - 1) == "-" and Board.index_2_coord(j - 1)[0] != "a":
+            while self.BOARD[j - 1] == "-" and Board.index_2_coord(j - 1)[0] != "a":
                 j -= 1
             j -= 1
-            if (isinstance(self.get(j), Rook) or isinstance(self.get(j), Queen)) and self.get(j).color == color * -1:
+            if (isinstance(self.BOARD[j], Rook) or isinstance(self.BOARD[j], Queen)) and self.BOARD[j].color == color * -1:
                 return True
 
         # Queen checks will be checked for within the bishop and rook check code

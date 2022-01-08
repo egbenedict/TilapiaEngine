@@ -6,6 +6,7 @@ from Bishop import *
 from King import *
 from Pawn import *
 import random
+import time
 
 class Engine:
 
@@ -17,6 +18,7 @@ class Engine:
         else:
             self.official_board = Board(None, board)
         self.move_log = []
+        self.current_node_count = 0
     
     # Return board object
     def get_board(self):
@@ -779,6 +781,7 @@ class Engine:
         move_list = self.generate_legal_moves(board)
         best_move = move_list[0][0] if len(move_list) > 0 else None
         for move_tuple in move_list:
+            self.current_node_count += 1
             variation_board = Board(None, board)
             variation_board.move(move_tuple)
             score = -self.negamax(variation_board, depth - 1, False)
@@ -858,6 +861,7 @@ class Engine:
         move_list = self.generate_legal_moves(board)
         for move_tuple in move_list:
             if "x" in move_tuple[0]:
+                self.current_node_count += 1
                 variation_board = Board(None, board)
                 variation_board.move(move_tuple)
                 score = -self.quiesce(variation_board, -beta, -alpha, depth - 1)
@@ -871,18 +875,20 @@ class Engine:
 
     def alpha_beta(self, board, alpha, beta, depth_left, first=True):
         if depth_left == 0:
-            return self.quiesce(board, alpha, beta, 3)
+            return self.quiesce(board, alpha, beta, 2) # !!!!!
             # return self.evaluate(board)
         if self.is_it_stalemate(board) or board.threefold or board.half_move_count == 100:
             return 0.0
         move_list = self.generate_legal_moves(board)
         best_move = move_list[0] if len(move_list) > 0 else None
         for move_tuple in move_list:
+            self.current_node_count += 1
             variation_board = Board(None, board)
             variation_board.move(move_tuple)
             score = -self.alpha_beta(variation_board, -beta, -alpha, depth_left - 1, False)
             if score >= beta:
-                return beta
+                best_move = move_tuple
+                return (beta, move_tuple) if first else beta
             if score > alpha:
                 best_move = move_tuple
                 alpha = score
