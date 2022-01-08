@@ -773,6 +773,8 @@ class Engine:
     def negamax(self, board, depth=3, first=True):
         if depth == 0:
             return self.evaluate(board)
+        if self.is_it_stalemate(board) or board.threefold or board.half_move_count == 100:
+            return 0.0
         max_val = -float("inf")
         move_list = self.generate_legal_moves(board)
         best_move = move_list[0][0] if len(move_list) > 0 else None
@@ -780,7 +782,7 @@ class Engine:
             variation_board = Board(None, board)
             variation_board.move(move_tuple)
             score = -self.negamax(variation_board, depth - 1, False)
-            if score >= max_val:
+            if score >= max_val: # Can add some element of randomness here!
                 max_val = score
                 best_move = move_tuple
 
@@ -803,5 +805,21 @@ class Engine:
     def move(self, move_tuple):
         self.official_board.move(move_tuple)
         self.move_log.append(move_tuple[0])
+        if self.official_board.threefold:
+            self.move_log.append("Draw by Threefold Repetition")
+        if self.official_board.half_move_count == 100:
+            self.move_log.append("Draw by 50 Move Rule")
 
-    
+    def get_pgn(self):
+        pgn = ""
+        count = 2
+        for move in self.move_log:
+            if "Draw" in move:
+                pgn += move
+                break
+            else:
+                if count % 2 == 0:
+                    pgn += str(int(count / 2)) + ". "
+                pgn += move + " "
+                count += 1
+        return pgn
