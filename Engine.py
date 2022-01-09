@@ -603,7 +603,7 @@ class Engine:
         # print("Pawn Factor: " + str(pawn_factor))
         
         # Mobility
-        mobility_factor = 0 #len(self.generate_legal_moves(board)) * 0.8 * board.side_to_move
+        mobility_factor = 0 if board.legal_moves == None else len(board.legal_moves) * 0.8 * board.side_to_move
         # print("Mobility Factor: " + str(mobility_factor))
 
         # Tempo Bonus
@@ -808,7 +808,7 @@ class Engine:
             depth += 1
         return max_val, best_move
 
-    def alpha_beta_search(self, board, final_depth):
+    def alpha_beta_search(self, board, final_depth, quiescence_depth=4):
         # depth = 1
         # max_val = -float("inf")
         # while depth <= final_depth:
@@ -820,7 +820,7 @@ class Engine:
         #         return max_val, best_move
         #     depth += 1
         # return max_val, best_move
-        return self.alpha_beta(board, -float("inf"), float("inf"), final_depth)
+        return self.alpha_beta(board, -float("inf"), float("inf"), final_depth, quiescence_depth)
 
     def move(self, move_tuple):
         self.official_board.move(move_tuple)
@@ -878,9 +878,9 @@ class Engine:
         
         return alpha
 
-    def alpha_beta(self, board, alpha, beta, depth_left, first=True):
+    def alpha_beta(self, board, alpha, beta, depth_left, quiescence_depth, first=True):
         if depth_left == 0:
-            return self.quiesce(board, alpha, beta, 2) # !!!!!
+            return self.quiesce(board, alpha, beta, quiescence_depth) # !!!!!
             # return self.evaluate(board)
         if self.is_it_stalemate(board) or board.threefold or board.half_move_count == 100:
             return 0.0
@@ -891,7 +891,7 @@ class Engine:
             variation_board = Board(None, board)
             variation_board.move(move_tuple)
             variation_board.legal_moves = self.generate_legal_moves(variation_board)
-            score = -self.alpha_beta(variation_board, -beta, -alpha, depth_left - 1, False)
+            score = -self.alpha_beta(variation_board, -beta, -alpha, depth_left - 1, quiescence_depth, False)
             if score >= beta:
                 best_move = move_tuple
                 return (beta, move_tuple) if first else beta

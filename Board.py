@@ -285,38 +285,57 @@ class Board:
     # Execute given move and update board metadata accordingly
     def move(self, move_tuple):
         if move_tuple[0] == "O-O" and self.side_to_move == 1:
-            self.set_coord("g1", self.get_coord("e1"))
-            self.set_coord("f1", self.get_coord("h1"))
-            self.set_coord("e1", "-")
-            self.set_coord("h1", "-")
+            # self.set_coord("g1", self.get_coord("e1"))
+            self.BOARD[Board.coord_to_index["g1"]] = self.BOARD[Board.coord_to_index["e1"]]
+            # self.set_coord("f1", self.get_coord("h1"))
+            self.BOARD[Board.coord_to_index["f1"]] = self.BOARD[Board.coord_to_index["h1"]]
+            # self.set_coord("e1", "-")
+            self.BOARD[Board.coord_to_index["e1"]] = "-"
+            # self.set_coord("h1", "-")
+            self.BOARD[Board.coord_to_index["h1"]] = "-"
             self.white_can_castle_kingside = False
             self.white_can_castle_queenside = False
         elif move_tuple[0] == "O-O-O" and self.side_to_move == 1:
-            self.set_coord("c1", self.get_coord("e1"))
-            self.set_coord("d1", self.get_coord("a1"))
-            self.set_coord("e1", "-")
-            self.set_coord("a1", "-")
+            # self.set_coord("c1", self.get_coord("e1"))
+            self.BOARD[Board.coord_to_index["c1"]] = self.BOARD[Board.coord_to_index["e1"]]
+            # self.set_coord("d1", self.get_coord("a1"))
+            self.BOARD[Board.coord_to_index["d1"]] = self.BOARD[Board.coord_to_index["a1"]]
+            # self.set_coord("e1", "-")
+            self.BOARD[Board.coord_to_index["e1"]] = "-"
+            # self.set_coord("a1", "-")
+            self.BOARD[Board.coord_to_index["a1"]] = "-"
             self.white_can_castle_queenside = False
             self.white_can_castle_kingside = False
         elif move_tuple[0] == "O-O" and self.side_to_move == -1:
-            self.set_coord("g8", self.get_coord("e8"))
-            self.set_coord("f8", self.get_coord("h8"))
-            self.set_coord("e8", "-")
-            self.set_coord("h8", "-")
+            # self.set_coord("g8", self.get_coord("e8"))
+            self.BOARD[Board.coord_to_index["g8"]] = self.BOARD[Board.coord_to_index["e8"]]
+            # self.set_coord("f8", self.get_coord("h8"))
+            self.BOARD[Board.coord_to_index["f8"]] = self.BOARD[Board.coord_to_index["h8"]]
+            # self.set_coord("e8", "-")
+            self.BOARD[Board.coord_to_index["e8"]] = "-"
+            # self.set_coord("h8", "-")
+            self.BOARD[Board.coord_to_index["h8"]] = "-"
             self.black_can_castle_kingside = False
             self.black_can_castle_queenside = False
         elif move_tuple[0] == "O-O-O" and self.side_to_move == -1:
-            self.set_coord("c8", self.get_coord("e8"))
-            self.set_coord("d8", self.get_coord("a8"))
-            self.set_coord("e8", "-")
-            self.set_coord("a8", "-")
+            # self.set_coord("c8", self.get_coord("e8"))
+            self.BOARD[Board.coord_to_index["c8"]] = self.BOARD[Board.coord_to_index["e8"]]
+            # self.set_coord("d8", self.get_coord("a8"))
+            self.BOARD[Board.coord_to_index["d8"]] = self.BOARD[Board.coord_to_index["a8"]]
+            # self.set_coord("e8", "-")
+            self.BOARD[Board.coord_to_index["e8"]] = "-"
+            # self.set_coord("a8", "-")
+            self.BOARD[Board.coord_to_index["a8"]] = "-"
             self.black_can_castle_queenside = False
             self.black_can_castle_kingside = False
         else: 
-            self.set(move_tuple[2], self.BOARD[move_tuple[1]])
-            self.set(move_tuple[1], "-")
+            # self.set(move_tuple[2], self.BOARD[move_tuple[1]])
+            self.BOARD[move_tuple[2]] = self.BOARD[move_tuple[1]]
+            # self.set(move_tuple[1], "-")
+            self.BOARD[move_tuple[1]] = "-"
             if len(move_tuple) == 4:
-                self.set(move_tuple[3], "-")
+                # self.set(move_tuple[3], "-")
+                self.BOARD[move_tuple[3]] = "-"
             if move_tuple[1] == 0 and self.side_to_move == 1:
                 self.white_can_castle_queenside = False
             if move_tuple[1] == 7 and self.side_to_move == 1:
@@ -324,22 +343,26 @@ class Board:
             if move_tuple[1] == 4 and self.side_to_move == 1:
                 self.white_can_castle_queenside = False
                 self.white_can_castle_kingside = False
-            if move_tuple[1] == 0 and self.side_to_move == -1:
+            if move_tuple[1] == 60 and self.side_to_move == -1:
                 self.black_can_castle_queenside = False
-            if move_tuple[1] == 7 and self.side_to_move == -1:
+            if move_tuple[1] == 63 and self.side_to_move == -1:
                 self.black_can_castle_kingside = False
-            if move_tuple[1] == 4 and self.side_to_move == -1:
+            if move_tuple[1] == 56 and self.side_to_move == -1:
                 self.black_can_castle_queenside = False
                 self.black_can_castle_kingside = False
         
             if "=Q" in move_tuple[0]:
-                self.set(move_tuple[2], Queen(self.side_to_move))
+                # self.set(move_tuple[2], Queen(self.side_to_move))
+                self.BOARD[move_tuple[2]] = Queen(self.side_to_move)
             if "=R" in move_tuple[0]:
-                self.set(move_tuple[2], Rook(self.side_to_move))
+                # self.set(move_tuple[2], Rook(self.side_to_move))
+                self.BOARD[move_tuple[2]] = Rook(self.side_to_move)
             if "=B" in move_tuple[0]:
-                self.set(move_tuple[2], Bishop(self.side_to_move))
+                # self.set(move_tuple[2], Bishop(self.side_to_move))
+                self.BOARD[move_tuple[2]] = Bishop(self.side_to_move)
             if "=N" in move_tuple[0]:
-                self.set(move_tuple[2], Knight(self.side_to_move))
+                # self.set(move_tuple[2], Knight(self.side_to_move))
+                self.BOARD[move_tuple[2]] = Knight(self.side_to_move)
 
             if len(move_tuple) == 5:
                 self.en_passant_square = move_tuple[4]
@@ -352,6 +375,7 @@ class Board:
         if (("N" in move_tuple[0] or "B" in move_tuple[0] or "Q" in move_tuple[0] or "R" in move_tuple[0] or "K" in move_tuple[0]) and "x" not in move_tuple[0]) or "O-O" in move_tuple[0]:
             self.half_move_count += 1
         self.side_to_move *= -1
+
 
         self.history[tuple(self.BOARD)] = self.history.get(tuple(self.BOARD), 0) + 1
         if self.history[tuple(self.BOARD)] == 3:
@@ -493,4 +517,57 @@ class Board:
         if minor_black == 0 and minor_white == 0:
             return True
         return False
+
+    def fen(self):
+        fen = ""
+        index = 0
+        for i in range(9):
+            rank_fen = ""
+            while index < i * 8:
+                if isinstance(self.BOARD[index], Pawn):
+                    if self.BOARD[index].color == 1: 
+                        rank_fen += "P"
+                    else:
+                        rank_fen += "p"
+                    index += 1
+                elif isinstance(self.BOARD[index], Knight):
+                    if self.BOARD[index].color == 1: 
+                        rank_fen += "N"
+                    else:
+                        rank_fen += "n"
+                    index += 1
+                elif isinstance(self.BOARD[index], Bishop):
+                    if self.BOARD[index].color == 1: 
+                        rank_fen += "B"
+                    else:
+                        rank_fen += "b"
+                    index += 1
+                elif isinstance(self.BOARD[index], Queen):
+                    if self.BOARD[index].color == 1: 
+                        rank_fen += "Q"
+                    else:
+                        rank_fen += "q"
+                    index += 1
+                elif isinstance(self.BOARD[index], Rook):
+                    if self.BOARD[index].color == 1: 
+                        rank_fen += "R"
+                    else:
+                        rank_fen += "r"
+                    index += 1
+                elif isinstance(self.BOARD[index], King):
+                    if self.BOARD[index].color == 1: 
+                        rank_fen += "K"
+                    else:
+                        rank_fen += "k"
+                    index += 1
+                else:
+                    count = 0
+                    while self.BOARD[index] == "-" and index < i * 8:
+                        index += 1
+                        count += 1
+                    rank_fen += str(count)
+            fen = "/" + rank_fen + fen
+        fen = fen[1:-1]
+        return fen
+
 
