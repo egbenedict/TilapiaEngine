@@ -12,9 +12,11 @@ engine = Engine("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 def play_itself(engine):
     while not engine.is_it_over(engine.official_board):
         print(engine.official_board)
-        move_tuple = engine.alpha_beta_search(engine.official_board, 3, 3)[1]
+        move_tuple = engine.alpha_beta_search(engine.official_board, 2, 2)[1]
         engine.move(move_tuple)
         print(move_tuple[0])
+        # print(engine.official_board.white_piece_count)
+        # print(engine.official_board.black_piece_count)
     print(engine.official_board)
     print(engine.get_pgn())
 
@@ -66,7 +68,7 @@ def play_human(engine):
                 if move == "h":
                     display_list = ""
                     for i in range(len(possible_moves)):
-                        display_list += str(possible_moves[i]) + " : [" + str(i) + "], "
+                        display_list += str(possible_moves[i][:2]) + " : [" + str(i) + "], "
                     print("")
                     print(display_list)
                     move = "-1"
@@ -115,7 +117,7 @@ def play_human(engine):
                 if move == "h":
                     display_list = ""
                     for i in range(len(possible_moves)):
-                        display_list += str(possible_moves[i]) + " : [" + str(i) + "], "
+                        display_list += str(possible_moves[i][:2]) + " : [" + str(i) + "], "
                     print("")
                     print(display_list)
                     move = "-1"
@@ -141,6 +143,9 @@ def play_human(engine):
 # print(engine.current_node_count)
 # print(end - start)
 # print(engine.evaluate(engine.official_board))
-play_human(engine)
-# cProfile.run('engine.alpha_beta_search(engine.official_board, 4, 4)')
-# print(engine.official_board.fen())
+# play_human(engine)
+# play_itself(engine)
+cProfile.run('engine.alpha_beta_search(engine.official_board, 4, 4)')
+# print(engine.official_board.white_piece_count)
+# print(engine.official_board.black_piece_count)
+# print(engine.calculate_pawn_factor(engine.official_board))

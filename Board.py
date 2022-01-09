@@ -161,6 +161,25 @@ class Board:
             self.BOARD.extend([None for _ in range(20)]) # Over/Underflow buffer
 
             self.process_FEN(fen_parts[0])
+            # pieces = fen_parts[0]
+
+            # self.white_piece_count = {
+            #     "pawn" : pieces.count("P"),
+            #     "knight" : pieces.count("N"),
+            #     "bishop" : pieces.count("B"),
+            #     "rook" : pieces.count("R"),
+            #     "queen" : pieces.count("Q"),
+            #     "king" : pieces.count("K")
+            # }
+
+            # self.black_piece_count = {
+            #     "pawn" : pieces.count("p"),
+            #     "knight" : pieces.count("n"),
+            #     "bishop" : pieces.count("b"),
+            #     "rook" : pieces.count("r"),
+            #     "queen" : pieces.count("q"),
+            #     "king" : pieces.count("k")
+            # }
 
             self.history = {}
 
@@ -180,6 +199,9 @@ class Board:
             self.BOARD = board.BOARD[:]
 
             self.history = board.history.copy()
+
+            # self.white_piece_count = board.white_piece_count.copy()
+            # self.black_piece_count = board.black_piece_count.copy()
 
             self.threefold = False
 
@@ -333,12 +355,21 @@ class Board:
             self.black_can_castle_kingside = False
         else: 
             # self.set(move_tuple[2], self.BOARD[move_tuple[1]])
+            # id = None if self.BOARD[move_tuple[2]] == "-" else self.BOARD[move_tuple[2]].id
             self.BOARD[move_tuple[2]] = self.BOARD[move_tuple[1]]
+            # if self.side_to_move == 1 and id != None:
+            #     self.black_piece_count[id] -= 1
+            # elif id != None:
+            #     self.white_piece_count[id] -= 1
             # self.set(move_tuple[1], "-")
             self.BOARD[move_tuple[1]] = "-"
             if len(move_tuple) == 4:
                 # self.set(move_tuple[3], "-")
                 self.BOARD[move_tuple[3]] = "-"
+                # if self.side_to_move == 1:
+                #     self.black_piece_count["pawn"] -= 1
+                # else:
+                #     self.white_piece_count["pawn"] -= 1
             if move_tuple[1] == 0 and self.side_to_move == 1:
                 self.white_can_castle_queenside = False
             if move_tuple[1] == 7 and self.side_to_move == 1:
@@ -357,15 +388,39 @@ class Board:
             if "=Q" in move_tuple[0]:
                 # self.set(move_tuple[2], Queen(self.side_to_move))
                 self.BOARD[move_tuple[2]] = Queen(self.side_to_move)
+                # if self.side_to_move == 1:
+                #     self.white_piece_count["pawn"] -= 1
+                #     self.white_piece_count["queen"] += 1
+                # else:
+                #     self.black_piece_count["pawn"] -= 1
+                #     self.black_piece_count["queen"] += 1
             if "=R" in move_tuple[0]:
                 # self.set(move_tuple[2], Rook(self.side_to_move))
                 self.BOARD[move_tuple[2]] = Rook(self.side_to_move)
+                # if self.side_to_move == 1:
+                #     self.white_piece_count["pawn"] -= 1
+                #     self.white_piece_count["rook"] += 1
+                # else:
+                #     self.black_piece_count["pawn"] -= 1
+                #     self.black_piece_count["rook"] += 1
             if "=B" in move_tuple[0]:
                 # self.set(move_tuple[2], Bishop(self.side_to_move))
                 self.BOARD[move_tuple[2]] = Bishop(self.side_to_move)
+                # if self.side_to_move == 1:
+                #     self.white_piece_count["pawn"] -= 1
+                #     self.white_piece_count["bishop"] += 1
+                # else:
+                #     self.black_piece_count["pawn"] -= 1
+                #     self.black_piece_count["bishop"] += 1
             if "=N" in move_tuple[0]:
                 # self.set(move_tuple[2], Knight(self.side_to_move))
                 self.BOARD[move_tuple[2]] = Knight(self.side_to_move)
+                # if self.side_to_move == 1:
+                #     self.white_piece_count["pawn"] -= 1
+                #     self.white_piece_count["knight"] += 1
+                # else:
+                #     self.black_piece_count["pawn"] -= 1
+                #     self.black_piece_count["knight"] += 1
 
             if len(move_tuple) == 5:
                 self.en_passant_square = move_tuple[4]

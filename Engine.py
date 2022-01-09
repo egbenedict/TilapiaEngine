@@ -645,41 +645,37 @@ class Engine:
     def calculate_pawn_factor(self, board):
         # Doubled pawns:
         doubled_pawns = [0, 0, 0]
-        for i in range(8):
-            white_pawns = 0
-            black_pawns = 0
-            for _ in range(8):
-                if isinstance(board.BOARD[i], Pawn) and board.BOARD[i].color == 1:
-                    white_pawns += 1
-                if isinstance(board.BOARD[i], Pawn) and board.BOARD[i].color == -1:
-                    black_pawns += 1
-                i += 8
-            doubled_pawns[1] -= (max(0, white_pawns - 1)) * 50
-            doubled_pawns[-1] -= (max(0, black_pawns - 1)) * 50
 
-        doubled_pawns_factor = doubled_pawns[1] - doubled_pawns[-1]
-        # print("Doubled Pawns Factor: " + str(doubled_pawns_factor))
-
-        # Backward Pawns:
         back_white_pawns = [0, 0, 0, 0, 0, 0, 0, 0]
         back_black_pawns = [0, 0, 0, 0, 0, 0, 0, 0]
-        for i in range(8):
-            j = i
-            c = 1
-            while not (isinstance(board.BOARD[j], Pawn) and board.BOARD[j].color == 1) and j < 64:
-                j += 8
-                c += 1
-            if j < 64:
-                back_white_pawns[i] = c 
-        for i in range(8):
-            j = i
-            c = 1
-            while j < 64:
-                if isinstance(board.BOARD[j], Pawn) and board.BOARD[j].color == -1:
-                    back_black_pawns[i] = c
-                j += 8
-                c += 1
 
+        front_white_pawns = [0, 0, 0, 0, 0, 0, 0, 0]
+        front_black_pawns = [0, 0, 0, 0, 0, 0, 0, 0]
+
+        for i in range(8):
+            white_pawns, black_pawns = 0, 0
+            for j in range(8):
+                index = i
+                index += 8 * j
+
+                if isinstance(board.BOARD[index], Pawn):
+                    if board.BOARD[index].color == 1:
+                        white_pawns += 1
+                        if back_white_pawns[i] == 0:
+                            back_white_pawns[i] = j + 1
+                        front_white_pawns[i] = j + 1
+                    else:
+                        black_pawns += 1
+                        if front_black_pawns[i] == 0:
+                            front_black_pawns[i] = j + 1
+                        back_black_pawns[i] = j + 1
+                
+            doubled_pawns[1] -= (max(0, white_pawns - 1)) * 50
+            doubled_pawns[-1] -= (max(0, black_pawns - 1)) * 50
+            # print(doubled_pawns)
+        doubled_pawns_factor = doubled_pawns[1] - doubled_pawns[-1]
+        
+        # Backward Pawns
         white_backward_pawns = 0
         black_backward_pawns = 0
         for n in range(1, 7):
@@ -689,29 +685,8 @@ class Engine:
                 black_backward_pawns += 1
 
         backward_pawn_factor = (white_backward_pawns - black_backward_pawns) * -30
-        # print("Backward Pawns Factor: " + str(backward_pawn_factor))
 
         # Passed Pawns
-        front_white_pawns = [0, 0, 0, 0, 0, 0, 0, 0]
-        front_black_pawns = [0, 0, 0, 0, 0, 0, 0, 0]
-
-        for i in range(8):
-            j = i
-            c = 1
-            while j < 64:
-                if isinstance(board.BOARD[j], Pawn) and board.BOARD[j].color == 1:
-                    front_white_pawns[i] = c
-                j += 8
-                c += 1
-        for i in range(8):
-            j = i
-            c = 1
-            while not (isinstance(board.BOARD[j], Pawn) and board.BOARD[j].color == -1) and j < 64:
-                j += 8
-                c += 1
-            if j < 64:
-                front_black_pawns[i] = c 
-
         white_passed_pawns = 0
         black_passed_pawns = 0
         for n in range(1, 7):
@@ -719,18 +694,18 @@ class Engine:
                 white_passed_pawns += 1
             if front_black_pawns[n] != 0 and (front_black_pawns[n] <= back_white_pawns[n - 1] or back_white_pawns[n - 1] == 0 ) and (front_black_pawns[n] <= back_white_pawns[n + 1] or back_white_pawns[n + 1] == 0) and (front_black_pawns[n] <= back_white_pawns[n] or back_white_pawns[n] == 0):
                 black_passed_pawns += 1
-        if front_white_pawns[0] >= back_black_pawns[1] and front_white_pawns[0] >= back_black_pawns[0]:
+        if front_white_pawns[0] >= back_black_pawns[1] and front_white_pawns[0] >= back_black_pawns[0] and front_white_pawns[0] != 0:
             white_passed_pawns += 1
-        if front_white_pawns[7] >= back_black_pawns[6] and front_white_pawns[7] >= back_black_pawns[7]:
+        if front_white_pawns[7] >= back_black_pawns[6] and front_white_pawns[7] >= back_black_pawns[7] and front_white_pawns[7] != 0:
             white_passed_pawns += 1
-        if (front_black_pawns[0] <= back_white_pawns[1] or back_white_pawns[1] == 0) and (back_white_pawns[0] == 0 or front_black_pawns[0] <= back_white_pawns[0]):
+        if (front_black_pawns[0] <= back_white_pawns[1] or back_white_pawns[1] == 0) and (back_white_pawns[0] == 0 or front_black_pawns[0] <= back_white_pawns[0]) and front_black_pawns[0] != 0:
             black_passed_pawns += 1
-        if (front_black_pawns[7] <= back_white_pawns[6] or back_white_pawns[6] == 0) and (front_black_pawns[7] <= back_white_pawns[7] or back_white_pawns[7] == 0):
+        if (front_black_pawns[7] <= back_white_pawns[6] or back_white_pawns[6] == 0) and (front_black_pawns[7] <= back_white_pawns[7] or back_white_pawns[7] == 0) and front_black_pawns[7] != 0:
             black_passed_pawns += 1
 
+        # print(front_black_pawns, back_white_pawns)
         passed_pawn_factor = (white_passed_pawns - black_passed_pawns) * 30
-        # print("Passed Pawns Factor: " + str(passed_pawn_factor))
-        
+
         # Pawn Islands
         white_island, black_island = False, False
         white_pawn_islands = 0
@@ -753,11 +728,13 @@ class Engine:
             
 
         # print(white_pawn_islands, black_pawn_islands)
-        pawn_island_factor = (white_pawn_islands - black_pawn_islands) * -10 if black_pawn_islands == 0 else 0
-        # print("Pawn Island Factor: " + str(pawn_island_factor))
+        pawn_island_factor = (white_pawn_islands - black_pawn_islands) * -10 if black_pawn_islands != 0 else 0
+
+        # print(backward_pawn_factor, passed_pawn_factor, doubled_pawns_factor, pawn_island_factor)
 
         pawn_factor = backward_pawn_factor + doubled_pawns_factor + passed_pawn_factor + pawn_island_factor
-        return pawn_factor
+        return pawn_factor        
+
 
     def is_it_checkmate(self, board):
         legal_moves = board.legal_moves if board.legal_moves != None else self.generate_legal_moves(board)
