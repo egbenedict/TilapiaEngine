@@ -22,6 +22,7 @@ def play_human(engine):
     print("Loading Tilapia Chess Engine ...")
     time.sleep(3)
     print("Tilapia Loaded!")
+
     print("Select a color: White [w] or Black [b]")
     color = ""
     while color != "w" and color != "b":
@@ -63,6 +64,7 @@ def play_human(engine):
                     print("Quitting Game")
                     quit()
                 if move == "h":
+                    display_list = ""
                     for i in range(len(possible_moves)):
                         display_list += str(possible_moves[i]) + " : [" + str(i) + "], "
                     print("")
@@ -78,6 +80,7 @@ def play_human(engine):
                     print("Draw by Threefold Repetition!")
                 else:
                     print("Draw by 50 Move Rule!")
+                break
             print(engine.official_board)
             comp_move = engine.alpha_beta_search(engine.official_board, depth, quies)[1]
             print("Tilapia's Move: " + comp_move[0])
@@ -96,6 +99,7 @@ def play_human(engine):
                     print("Draw by Threefold Repetition!")
                 else:
                     print("Draw by 50 Move Rule!")
+                break
             possible_moves = engine.generate_legal_moves(engine.official_board)
             display_list = ""
             for i in range(len(possible_moves)):
@@ -109,6 +113,7 @@ def play_human(engine):
                     print("Quitting Game")
                     quit()
                 if move == "h":
+                    display_list = ""
                     for i in range(len(possible_moves)):
                         display_list += str(possible_moves[i]) + " : [" + str(i) + "], "
                     print("")
@@ -126,7 +131,7 @@ def play_human(engine):
     print("")
     print(engine.official_board)
     print("")
-    print(engine.move_log)
+    print(engine.get_pgn())
 
 # print(engine.generate_legal_moves(engine.official_board))
 # print(engine.alpha_beta(engine.official_board, -float("inf"), float("inf"), 3))

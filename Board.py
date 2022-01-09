@@ -259,15 +259,18 @@ class Board:
 
     def __str__(self):
         i = 56
+        letters = "abcdefgh"
         final_string = ""
         for row in range(8):
             row_string = ""
+            row_string += " " + str(8 - row) + " "
             for col in range(8):
                 row_string += str(self.BOARD[i]) + " "
                 i += 1
             i -= 16
             row_string += "\n"
             final_string += row_string
+        final_string += "   a b c d e f g h\n"
         return final_string
 
     # Returns crude depiction of board state
