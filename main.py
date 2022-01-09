@@ -148,4 +148,4 @@ def play_human(engine):
 cProfile.run('engine.alpha_beta_search(engine.official_board, 4, 4)')
 # print(engine.official_board.white_piece_count)
 # print(engine.official_board.black_piece_count)
-# print(engine.calculate_pawn_factor(engine.official_board))
+# print(engine.generate_pawn_moves(engine.official_board))
