@@ -4,7 +4,6 @@ from Knight import *
 from Bishop import *
 from King import *
 from Pawn import *
-
 class Board:
 
     coord_to_index = {
@@ -166,6 +165,8 @@ class Board:
             self.history = {}
 
             self.threefold = False
+
+            self.legal_moves = None
         else:
             self.side_to_move = board.side_to_move
             self.white_can_castle_kingside = board.white_can_castle_kingside
@@ -181,6 +182,8 @@ class Board:
             self.history = board.history.copy()
 
             self.threefold = False
+
+            self.legal_moves = board.legal_moves
 
 
 
@@ -360,7 +363,7 @@ class Board:
         # First find the king's location
         loc = -1
         for i in range(64):
-            if isinstance(self.BOARD[i], King) and self.get(i).color == color:
+            if isinstance(self.BOARD[i], King) and self.BOARD[i].color == color:
                 loc = i
         
         # Check for king checks (?)
@@ -474,7 +477,7 @@ class Board:
         minor_black = 0
         minor_white = 0
         for i in range(64):
-            piece = self.get(i)
+            piece = self.BOARD[i]
             if piece != None and piece != "-":
                 if piece.color == 1 and isinstance(piece, Queen):
                     white_queens += 1

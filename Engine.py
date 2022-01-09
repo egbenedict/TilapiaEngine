@@ -41,7 +41,7 @@ class Engine:
         return move_list
 
     def print_legal_moves(self, board):
-        return [x[0] for x in self.generate_legal_moves(board)]
+        return [x[0] for x in board.legal_moves] if board.legal_moves != None else [x[0] for x in self.generate_legal_moves(board)]
 
     #TODO: incoroprate piece lists so no need to loop through entire board each time
 
@@ -49,10 +49,10 @@ class Engine:
     def generate_pawn_moves(self, board):
         pawn_moves = []
         for i in range(64):
-            piece = board.get(i)
+            piece = board.BOARD[i]
             if isinstance(piece, Pawn) and piece.color == board.side_to_move:
                 # 1 Square Ahead
-                if board.get(i + 8 * piece.color) == "-":
+                if board.BOARD[i + 8 * piece.color] == "-":
                     move = Board.index_2_coord(i + 8 * piece.color)
                     # Promotion
                     if (int(Board.index_2_coord(i)[1]) == 7 and piece.color == 1) or (int(Board.index_2_coord(i)[1]) == 2 and piece.color == -1):
@@ -66,13 +66,13 @@ class Engine:
                 # 2 Squares Ahead
                 if (((Board.index_2_coord(i)[1] == "2" and piece.color == 1)
                  or (Board.index_2_coord(i)[1] == "7" and piece.color == -1)) 
-                 and board.get(i + 8 * piece.color) == "-" 
-                 and board.get(i + 16 * piece.color) == "-"):
+                 and board.BOARD[i + 8 * piece.color] == "-" 
+                 and board.BOARD[i + 16 * piece.color] == "-"):
                     move = Board.index_2_coord(i + 16 * piece.color)
                     pawn_moves.append((move, i, i + 16 * piece.color, None, i + 8 * piece.color))
 
                 # Diagonal Captures
-                if (board.get(i + 7 * piece.color) != None and board.get(i + 7 * piece.color) != "-") and board.get(i + 7 * piece.color).color == piece.color * -1:
+                if (board.BOARD[i + 7 * piece.color] != None and board.BOARD[i + 7 * piece.color] != "-") and board.BOARD[i + 7 * piece.color].color == piece.color * -1:
                     if not((Board.index_2_coord(i)[0] == "a" and piece.color == 1) or (Board.index_2_coord(i)[0] == "h" and piece.color == -1)):
                         move = Board.index_2_coord(i)[0] + "x" + Board.index_2_coord(i + 7 * piece.color)
                         # Promotion
@@ -84,7 +84,7 @@ class Engine:
                         else:
                             pawn_moves.append((move, i, i + 7 * piece.color))
 
-                if (board.get(i + 9 * piece.color) != None and board.get(i + 9 * piece.color) != "-") and board.get(i + 9 * piece.color).color == piece.color * -1:
+                if (board.BOARD[i + 9 * piece.color] != None and board.BOARD[i + 9 * piece.color] != "-") and board.BOARD[i + 9 * piece.color].color == piece.color * -1:
                     if not((Board.index_2_coord(i)[0] == "h" and piece.color == 1) or (Board.index_2_coord(i)[0] == "a" and piece.color == -1)):
                         move = Board.index_2_coord(i)[0] + "x" + Board.index_2_coord(i + 9 * piece.color)
                         # Promotion
@@ -97,12 +97,12 @@ class Engine:
                             pawn_moves.append((move, i, i + 9 * piece.color))
 
                 # En Passant
-                if (board.get(i + 7 * piece.color) != None and Board.index_2_coord(i + 7 * piece.color) == board.en_passant_square):
+                if (board.BOARD[i + 7 * piece.color] != None and Board.index_2_coord(i + 7 * piece.color) == board.en_passant_square):
                     if not((Board.index_2_coord(i)[0] == "a" and piece.color == 1) or (Board.index_2_coord(i)[0] == "h" and piece.color == -1)):
                         move = Board.index_2_coord(i)[0] + "x" + board.en_passant_square
                         pawn_moves.append((move, i, i + 7 * piece.color, i - 1))
 
-                if (board.get(i + 9 * piece.color) != None and Board.index_2_coord(i + 9 * piece.color) == board.en_passant_square):
+                if (board.BOARD[i + 9 * piece.color] != None and Board.index_2_coord(i + 9 * piece.color) == board.en_passant_square):
                     if not((Board.index_2_coord(i)[0] == "h" and piece.color == 1) or (Board.index_2_coord(i)[0] == "a" and piece.color == -1)):
                         move = Board.index_2_coord(i)[0] + "x" + board.en_passant_square
                         pawn_moves.append((move, i, i + 9 * piece.color, i + 1))
@@ -113,73 +113,73 @@ class Engine:
     def generate_knight_moves(self, board):
         knight_moves = []
         for i in range(64):
-            piece = board.get(i)
+            piece = board.BOARD[i]
             if isinstance(piece, Knight) and piece.color == board.side_to_move:
                 # NE Squares
                 if int(Board.index_2_coord(i)[1]) < 7 and Board.index_2_coord(i)[0] != "h":
-                    if board.get(i + 17) == "-":
+                    if board.BOARD[i + 17] == "-":
                         move = "N" + Board.index_2_coord(i + 17)
                         knight_moves.append((move, i, i + 17))
-                    elif board.get(i + 17).color == piece.color * -1:
+                    elif board.BOARD[i + 17].color == piece.color * -1:
                         move = "Nx" + Board.index_2_coord(i + 17)
                         knight_moves.append((move, i, i + 17))
                     
                 if int(Board.index_2_coord(i)[1]) < 8 and Board.index_2_coord(i)[0] < "g":
-                    if board.get(i + 10) == "-":
+                    if board.BOARD[i + 10] == "-":
                         move = "N" + Board.index_2_coord(i + 10)
                         knight_moves.append((move, i, i + 10))
-                    elif board.get(i + 10).color == piece.color * -1:
+                    elif board.BOARD[i + 10].color == piece.color * -1:
                         move = "Nx" + Board.index_2_coord(i + 10)
                         knight_moves.append((move, i, i + 10))
 
                 # SE Squares
                 if int(Board.index_2_coord(i)[1]) > 1 and Board.index_2_coord(i)[0] < "g":
-                    if board.get(i - 6) == "-":
+                    if board.BOARD[i - 6] == "-":
                         move = "N" + Board.index_2_coord(i - 6)
                         knight_moves.append((move, i, i - 6))
-                    elif board.get(i - 6).color == piece.color * -1:
+                    elif board.BOARD[i - 6].color == piece.color * -1:
                         move = "Nx" + Board.index_2_coord(i - 6)
                         knight_moves.append((move, i, i - 6))
                     
                 if int(Board.index_2_coord(i)[1]) > 2 and Board.index_2_coord(i)[0] < "h":
-                    if board.get(i - 15) == "-":
+                    if board.BOARD[i - 15] == "-":
                         move = "N" + Board.index_2_coord(i - 15)
                         knight_moves.append((move, i, i - 15))
-                    elif board.get(i - 15).color == piece.color * -1:
+                    elif board.BOARD[i - 15].color == piece.color * -1:
                         move = "Nx" + Board.index_2_coord(i - 15)
                         knight_moves.append((move, i, i - 15))
                             
                 # SW Squares
                 if int(Board.index_2_coord(i)[1]) > 2 and Board.index_2_coord(i)[0] > "a":
-                    if board.get(i - 17) == "-":
+                    if board.BOARD[i - 17] == "-":
                         move = "N" + Board.index_2_coord(i - 17)
                         knight_moves.append((move, i, i - 17))
-                    elif board.get(i - 17).color == piece.color * -1:
+                    elif board.BOARD[i - 17].color == piece.color * -1:
                         move = "Nx" + Board.index_2_coord(i - 17)
                         knight_moves.append((move, i, i - 17))
                     
                 if int(Board.index_2_coord(i)[1]) > 1 and Board.index_2_coord(i)[0] > "b":
-                    if board.get(i - 10) == "-":
+                    if board.BOARD[i - 10] == "-":
                         move = "N" + Board.index_2_coord(i - 10)
                         knight_moves.append((move, i, i - 10))
-                    elif board.get(i - 10).color == piece.color * -1:
+                    elif board.BOARD[i - 10].color == piece.color * -1:
                         move = "Nx" + Board.index_2_coord(i - 10)
                         knight_moves.append((move, i, i - 10))
 
                 # NW Squares
                 if int(Board.index_2_coord(i)[1]) < 8 and Board.index_2_coord(i)[0] > "b":
-                    if board.get(i + 6) == "-":
+                    if board.BOARD[i + 6] == "-":
                         move = "N" + Board.index_2_coord(i + 6)
                         knight_moves.append((move, i, i + 6))
-                    elif board.get(i + 6).color == piece.color * -1:
+                    elif board.BOARD[i + 6].color == piece.color * -1:
                         move = "Nx" + Board.index_2_coord(i + 6)
                         knight_moves.append((move, i, i + 6))
                     
                 if int(Board.index_2_coord(i)[1]) < 7 and Board.index_2_coord(i)[0] > "a":
-                    if board.get(i + 15) == "-":
+                    if board.BOARD[i + 15] == "-":
                         move = "N" + Board.index_2_coord(i + 15)
                         knight_moves.append((move, i, i + 15))
-                    elif board.get(i + 15).color == piece.color * -1:
+                    elif board.BOARD[i + 15].color == piece.color * -1:
                         move = "Nx" + Board.index_2_coord(i + 15)
                         knight_moves.append((move, i, i + 15))
         return knight_moves
@@ -188,61 +188,61 @@ class Engine:
     def generate_bishop_moves(self, board):
         bishop_moves = []
         for i in range(64):
-            piece = board.get(i)
+            piece = board.BOARD[i]
             if isinstance(piece, Bishop) and piece.color == board.side_to_move:
                 # NE Diagonal
                 if Board.index_2_coord(i)[0] < "h":
                     j = i + 9
-                    while board.get(j) == "-" and Board.index_2_coord(j)[0] < "h" and int(Board.index_2_coord(j)[1]) < 8:
+                    while board.BOARD[j] == "-" and Board.index_2_coord(j)[0] < "h" and int(Board.index_2_coord(j)[1]) < 8:
                         move = "B" + Board.index_2_coord(j)
                         bishop_moves.append((move, i, j))
                         j += 9
-                    if board.get(j) == "-":
+                    if board.BOARD[j] == "-":
                         move = "B" + Board.index_2_coord(j)
                         bishop_moves.append((move, i, j))
-                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                    elif board.BOARD[j] != None and board.BOARD[j].color == piece.color * -1:
                         move = "Bx" + Board.index_2_coord(j)
                         bishop_moves.append((move, i, j))
 
                 # SE Diagonal
                 if Board.index_2_coord(i)[0] < "h":
                     j = i - 7
-                    while board.get(j) == "-" and Board.index_2_coord(j)[0] < "h" and int(Board.index_2_coord(j)[1]) > 1:
+                    while board.BOARD[j] == "-" and Board.index_2_coord(j)[0] < "h" and int(Board.index_2_coord(j)[1]) > 1:
                         move = "B" + Board.index_2_coord(j)
                         bishop_moves.append((move, i, j))
                         j -= 7
-                    if board.get(j) == "-":
+                    if board.BOARD[j] == "-":
                         move = "B" + Board.index_2_coord(j)
                         bishop_moves.append((move, i, j))
-                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                    elif board.BOARD[j] != None and board.BOARD[j].color == piece.color * -1:
                         move = "Bx" + Board.index_2_coord(j)
                         bishop_moves.append((move, i, j))
 
                 # SW Diagonal
                 if Board.index_2_coord(i)[0] > "a":
                     j = i - 9
-                    while board.get(j) == "-" and Board.index_2_coord(j)[0] > "a" and int(Board.index_2_coord(j)[1]) > 1:
+                    while board.BOARD[j] == "-" and Board.index_2_coord(j)[0] > "a" and int(Board.index_2_coord(j)[1]) > 1:
                         move = "B" + Board.index_2_coord(j)
                         bishop_moves.append((move, i, j))
                         j -= 9
-                    if board.get(j) == "-":
+                    if board.BOARD[j] == "-":
                         move = "B" + Board.index_2_coord(j)
                         bishop_moves.append((move, i, j))
-                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                    elif board.BOARD[j] != None and board.BOARD[j].color == piece.color * -1:
                         move = "Bx" + Board.index_2_coord(j)
                         bishop_moves.append((move, i, j))
 
                 # NW Diagonal
                 if Board.index_2_coord(i)[0] > "a":
                     j = i + 7
-                    while board.get(j) == "-" and Board.index_2_coord(j)[0] > "a" and int(Board.index_2_coord(j)[1]) < 8:
+                    while board.BOARD[j] == "-" and Board.index_2_coord(j)[0] > "a" and int(Board.index_2_coord(j)[1]) < 8:
                         move = "B" + Board.index_2_coord(j)
                         bishop_moves.append((move, i, j))
                         j += 7
-                    if board.get(j) == "-":
+                    if board.BOARD[j] == "-":
                         move = "B" + Board.index_2_coord(j)
                         bishop_moves.append((move, i, j))
-                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                    elif board.BOARD[j] != None and board.BOARD[j].color == piece.color * -1:
                         move = "Bx" + Board.index_2_coord(j)
                         bishop_moves.append((move, i, j))
 
@@ -252,115 +252,115 @@ class Engine:
     def generate_queen_moves(self, board):
         queen_moves = []
         for i in range(64):
-            piece = board.get(i)
+            piece = board.BOARD[i]
             if isinstance(piece, Queen) and piece.color == board.side_to_move:
                 # NE Diagonal
                 if Board.index_2_coord(i)[0] < "h":
                     j = i + 9
-                    while board.get(j) == "-" and Board.index_2_coord(j)[0] < "h" and int(Board.index_2_coord(j)[1]) < 8:
+                    while board.BOARD[j] == "-" and Board.index_2_coord(j)[0] < "h" and int(Board.index_2_coord(j)[1]) < 8:
                         move = "Q" + Board.index_2_coord(j)
                         queen_moves.append((move, i, j))
                         j += 9
-                    if board.get(j) == "-":
+                    if board.BOARD[j] == "-":
                         move = "Q" + Board.index_2_coord(j)
                         queen_moves.append((move, i, j))
-                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                    elif board.BOARD[j] != None and board.BOARD[j].color == piece.color * -1:
                         move = "Qx" + Board.index_2_coord(j)
                         queen_moves.append((move, i, j))
 
                 # SE Diagonal
                 if Board.index_2_coord(i)[0] < "h":
                     j = i - 7
-                    while board.get(j) == "-" and Board.index_2_coord(j)[0] < "h" and int(Board.index_2_coord(j)[1]) > 1:
+                    while board.BOARD[j] == "-" and Board.index_2_coord(j)[0] < "h" and int(Board.index_2_coord(j)[1]) > 1:
                         move = "Q" + Board.index_2_coord(j)
                         queen_moves.append((move, i, j))
                         j -= 7
-                    if board.get(j) == "-":
+                    if board.BOARD[j] == "-":
                         move = "Q" + Board.index_2_coord(j)
                         queen_moves.append((move, i, j))
-                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                    elif board.BOARD[j] != None and board.BOARD[j].color == piece.color * -1:
                         move = "Qx" + Board.index_2_coord(j)
                         queen_moves.append((move, i, j))
 
                 # SW Diagonal
                 if Board.index_2_coord(i)[0] > "a":
                     j = i - 9
-                    while board.get(j) == "-" and Board.index_2_coord(j)[0] > "a" and int(Board.index_2_coord(j)[1]) > 1:
+                    while board.BOARD[j] == "-" and Board.index_2_coord(j)[0] > "a" and int(Board.index_2_coord(j)[1]) > 1:
                         move = "Q" + Board.index_2_coord(j)
                         queen_moves.append((move, i, j))
                         j -= 9
-                    if board.get(j) == "-":
+                    if board.BOARD[j] == "-":
                         move = "Q" + Board.index_2_coord(j)
                         queen_moves.append((move, i, j))
-                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                    elif board.BOARD[j] != None and board.BOARD[j].color == piece.color * -1:
                         move = "Qx" + Board.index_2_coord(j)
                         queen_moves.append((move, i, j))
 
                 # NW Diagonal
                 if Board.index_2_coord(i)[0] > "a":
                     j = i + 7
-                    while board.get(j) == "-" and Board.index_2_coord(j)[0] > "a" and int(Board.index_2_coord(j)[1]) < 8:
+                    while board.BOARD[j] == "-" and Board.index_2_coord(j)[0] > "a" and int(Board.index_2_coord(j)[1]) < 8:
                         move = "Q" + Board.index_2_coord(j)
                         queen_moves.append((move, i, j))
                         j += 7
-                    if board.get(j) == "-":
+                    if board.BOARD[j] == "-":
                         move = "Q" + Board.index_2_coord(j)
                         queen_moves.append((move, i, j))
-                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                    elif board.BOARD[j] != None and board.BOARD[j].color == piece.color * -1:
                         move = "Qx" + Board.index_2_coord(j)
                         queen_moves.append((move, i, j))
 
                 # North
                 j = i + 8
-                while board.get(j) == "-" and int(Board.index_2_coord(j)[1]) < 8:
+                while board.BOARD[j] == "-" and int(Board.index_2_coord(j)[1]) < 8:
                     move = "Q" + Board.index_2_coord(j)
                     queen_moves.append((move, i, j))
                     j += 8
-                if board.get(j) == "-":
+                if board.BOARD[j] == "-":
                     move = "Q" + Board.index_2_coord(j)
                     queen_moves.append((move, i, j))
-                elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                elif board.BOARD[j] != None and board.BOARD[j].color == piece.color * -1:
                     move = "Qx" + Board.index_2_coord(j)
                     queen_moves.append((move, i, j))
 
                 # South
                 j = i - 8
-                while board.get(j) == "-" and int(Board.index_2_coord(j)[1]) > 1:
+                while board.BOARD[j] == "-" and int(Board.index_2_coord(j)[1]) > 1:
                     move = "Q" + Board.index_2_coord(j)
                     queen_moves.append((move, i, j))
                     j -= 8
-                if board.get(j) == "-":
+                if board.BOARD[j] == "-":
                     move = "Q" + Board.index_2_coord(j)
                     queen_moves.append((move, i, j))
-                elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                elif board.BOARD[j] != None and board.BOARD[j].color == piece.color * -1:
                     move = "Qx" + Board.index_2_coord(j)
                     queen_moves.append((move, i, j))
 
                 # West
                 if Board.index_2_coord(i)[0] > "a":
                     j = i - 1
-                    while board.get(j) == "-" and Board.index_2_coord(j)[0] > "a":
+                    while board.BOARD[j] == "-" and Board.index_2_coord(j)[0] > "a":
                         move = "Q" + Board.index_2_coord(j)
                         queen_moves.append((move, i, j))
                         j -= 1
-                    if board.get(j) == "-":
+                    if board.BOARD[j] == "-":
                         move = "Q" + Board.index_2_coord(j)
                         queen_moves.append((move, i, j))
-                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                    elif board.BOARD[j] != None and board.BOARD[j].color == piece.color * -1:
                         move = "Qx" + Board.index_2_coord(j)
                         queen_moves.append((move, i, j))
 
                 # East
                 if Board.index_2_coord(i)[0] < "h":
                     j = i + 1
-                    while board.get(j) == "-" and Board.index_2_coord(j)[0] < "h":
+                    while board.BOARD[j] == "-" and Board.index_2_coord(j)[0] < "h":
                         move = "Q" + Board.index_2_coord(j)
                         queen_moves.append((move, i, j))
                         j += 1
-                    if board.get(j) == "-":
+                    if board.BOARD[j] == "-":
                         move = "Q" + Board.index_2_coord(j)
                         queen_moves.append((move, i, j))
-                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                    elif board.BOARD[j] != None and board.BOARD[j].color == piece.color * -1:
                         move = "Qx" + Board.index_2_coord(j)
                         queen_moves.append((move, i, j))
 
@@ -370,69 +370,69 @@ class Engine:
     def generate_king_moves(self, board):
         king_moves = []
         for i in range(64):
-            piece = board.get(i)
+            piece = board.BOARD[i]
             if isinstance(piece, King) and piece.color == board.side_to_move:
                 # N
-                if board.get(i + 8) == "-":
+                if board.BOARD[i + 8] == "-":
                     move = "K" + Board.index_2_coord(i + 8)
                     king_moves.append((move, i, i + 8))
-                elif board.get(i + 8) != None and board.get(i + 8).color == piece.color * -1:
+                elif board.BOARD[i + 8] != None and board.BOARD[i + 8].color == piece.color * -1:
                     move = "Kx" + Board.index_2_coord(i + 8)
                     king_moves.append((move, i, i + 8))
                 
                 # S
-                if board.get(i - 8) == "-":
+                if board.BOARD[i - 8] == "-":
                     move = "K" + Board.index_2_coord(i - 8)
                     king_moves.append((move, i, i - 8))
-                elif board.get(i - 8) != None and board.get(i - 8).color == piece.color * -1:
+                elif board.BOARD[i - 8] != None and board.BOARD[i - 8].color == piece.color * -1:
                     move = "Kx" + Board.index_2_coord(i - 8)
                     king_moves.append((move, i, i - 8))
                 
                 # W
-                if Board.index_2_coord(i)[0] != "a" and board.get(i - 1) == "-":
+                if Board.index_2_coord(i)[0] != "a" and board.BOARD[i - 1] == "-":
                     move = "K" + Board.index_2_coord(i - 1)
                     king_moves.append((move, i, i - 1))
-                elif Board.index_2_coord(i)[0] != "a" and board.get(i - 1) != None and board.get(i - 1).color == piece.color * -1:
+                elif Board.index_2_coord(i)[0] != "a" and board.BOARD[i - 1] != None and board.BOARD[i - 1].color == piece.color * -1:
                     move = "Kx" + Board.index_2_coord(i - 1)
                     king_moves.append((move, i, i - 1))
 
                 # E
-                if Board.index_2_coord(i)[0] != "h" and board.get(i + 1) == "-":
+                if Board.index_2_coord(i)[0] != "h" and board.BOARD[i + 1] == "-":
                     move = "K" + Board.index_2_coord(i + 1)
                     king_moves.append((move, i, i + 1))
-                elif Board.index_2_coord(i)[0] != "h" and board.get(i + 1) != None and board.get(i + 1).color == piece.color * -1:
+                elif Board.index_2_coord(i)[0] != "h" and board.BOARD[i + 1] != None and board.BOARD[i + 1].color == piece.color * -1:
                     move = "Kx" + Board.index_2_coord(i + 1)
                     king_moves.append((move, i, i + 1))
 
                 # NW
-                if Board.index_2_coord(i)[0] != "a" and int(Board.index_2_coord(i)[1]) != 8 and board.get(i + 7) == "-":
+                if Board.index_2_coord(i)[0] != "a" and int(Board.index_2_coord(i)[1]) != 8 and board.BOARD[i + 7] == "-":
                     move = "K" + Board.index_2_coord(i + 7)
                     king_moves.append((move, i, i + 7))
-                elif Board.index_2_coord(i)[0] != "a" and int(Board.index_2_coord(i)[1]) != 8 and board.get(i + 7) != None and board.get(i + 7).color == piece.color * -1:
+                elif Board.index_2_coord(i)[0] != "a" and int(Board.index_2_coord(i)[1]) != 8 and board.BOARD[i + 7] != None and board.BOARD[i + 7].color == piece.color * -1:
                     move = "Kx" + Board.index_2_coord(i + 7)
                     king_moves.append((move, i, i + 7))
 
                 # NE
-                if Board.index_2_coord(i)[0] != "h" and int(Board.index_2_coord(i)[1]) != 8 and board.get(i + 9) == "-":
+                if Board.index_2_coord(i)[0] != "h" and int(Board.index_2_coord(i)[1]) != 8 and board.BOARD[i + 9] == "-":
                     move = "K" + Board.index_2_coord(i + 9)
                     king_moves.append((move, i, i + 9))
-                elif Board.index_2_coord(i)[0] != "h" and int(Board.index_2_coord(i)[1]) != 8 and board.get(i + 9) != None and board.get(i + 9).color == piece.color * -1:
+                elif Board.index_2_coord(i)[0] != "h" and int(Board.index_2_coord(i)[1]) != 8 and board.BOARD[i + 9] != None and board.BOARD[i + 9].color == piece.color * -1:
                     move = "Kx" + Board.index_2_coord(i + 9)
                     king_moves.append((move, i, i + 9))
 
                 # SW
-                if Board.index_2_coord(i)[0] != "a" and int(Board.index_2_coord(i)[1]) != 1 and board.get(i - 9) == "-":
+                if Board.index_2_coord(i)[0] != "a" and int(Board.index_2_coord(i)[1]) != 1 and board.BOARD[i - 9] == "-":
                     move = "K" + Board.index_2_coord(i - 9)
                     king_moves.append((move, i, i - 9))
-                elif Board.index_2_coord(i)[0] != "a" and int(Board.index_2_coord(i)[1]) != 1 and board.get(i - 9) != None and board.get(i - 9).color == piece.color * -1:
+                elif Board.index_2_coord(i)[0] != "a" and int(Board.index_2_coord(i)[1]) != 1 and board.BOARD[i - 9] != None and board.BOARD[i - 9].color == piece.color * -1:
                     move = "Kx" + Board.index_2_coord(i - 9)
                     king_moves.append((move, i, i - 9))
 
                 # SE
-                if Board.index_2_coord(i)[0] != "h" and int(Board.index_2_coord(i)[1]) != 1 and board.get(i - 7) == "-":
+                if Board.index_2_coord(i)[0] != "h" and int(Board.index_2_coord(i)[1]) != 1 and board.BOARD[i - 7] == "-":
                     move = "K" + Board.index_2_coord(i - 7)
                     king_moves.append((move, i, i - 7))
-                elif Board.index_2_coord(i)[0] != "h" and int(Board.index_2_coord(i)[1]) != 1 and board.get(i - 7) != None and board.get(i - 7).color == piece.color * -1:
+                elif Board.index_2_coord(i)[0] != "h" and int(Board.index_2_coord(i)[1]) != 1 and board.BOARD[i - 7] != None and board.BOARD[i - 7].color == piece.color * -1:
                     move = "Kx" + Board.index_2_coord(i - 7)
                     king_moves.append((move, i, i - 7))
         return king_moves
@@ -441,59 +441,59 @@ class Engine:
     def generate_rook_moves(self, board):
         rook_moves = []
         for i in range(64):
-            piece = board.get(i)
+            piece = board.BOARD[i]
             if isinstance(piece, Rook) and piece.color == board.side_to_move:
                 # North
                 j = i + 8
-                while board.get(j) == "-" and int(Board.index_2_coord(j)[1]) < 8:
+                while board.BOARD[j] == "-" and int(Board.index_2_coord(j)[1]) < 8:
                     move = "R" + Board.index_2_coord(j)
                     rook_moves.append((move, i, j))
                     j += 8
-                if board.get(j) == "-":
+                if board.BOARD[j] == "-":
                     move = "R" + Board.index_2_coord(j)
                     rook_moves.append((move, i, j))
-                elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                elif board.BOARD[j] != None and board.BOARD[j].color == piece.color * -1:
                     move = "Rx" + Board.index_2_coord(j)
                     rook_moves.append((move, i, j))
 
                 # South
                 j = i - 8
-                while board.get(j) == "-" and int(Board.index_2_coord(j)[1]) > 1:
+                while board.BOARD[j] == "-" and int(Board.index_2_coord(j)[1]) > 1:
                     move = "R" + Board.index_2_coord(j)
                     rook_moves.append((move, i, j))
                     j -= 8
-                if board.get(j) == "-":
+                if board.BOARD[j] == "-":
                     move = "R" + Board.index_2_coord(j)
                     rook_moves.append((move, i, j))
-                elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                elif board.BOARD[j] != None and board.BOARD[j].color == piece.color * -1:
                     move = "Rx" + Board.index_2_coord(j)
                     rook_moves.append((move, i, j))
 
                 # West
                 if Board.index_2_coord(i)[0] > "a":
                     j = i - 1
-                    while board.get(j) == "-" and Board.index_2_coord(j)[0] > "a":
+                    while board.BOARD[j] == "-" and Board.index_2_coord(j)[0] > "a":
                         move = "R" + Board.index_2_coord(j)
                         rook_moves.append((move, i, j))
                         j -= 1
-                    if board.get(j) == "-":
+                    if board.BOARD[j] == "-":
                         move = "R" + Board.index_2_coord(j)
                         rook_moves.append((move, i, j))
-                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                    elif board.BOARD[j] != None and board.BOARD[j].color == piece.color * -1:
                         move = "Rx" + Board.index_2_coord(j)
                         rook_moves.append((move, i, j))
 
                 # East
                 if Board.index_2_coord(i)[0] < "h":
                     j = i + 1
-                    while board.get(j) == "-" and Board.index_2_coord(j)[0] < "h":
+                    while board.BOARD[j] == "-" and Board.index_2_coord(j)[0] < "h":
                         move = "R" + Board.index_2_coord(j)
                         rook_moves.append((move, i, j))
                         j += 1
-                    if board.get(j) == "-":
+                    if board.BOARD[j] == "-":
                         move = "R" + Board.index_2_coord(j)
                         rook_moves.append((move, i, j))
-                    elif board.get(j) != None and board.get(j).color == piece.color * -1:
+                    elif board.BOARD[j] != None and board.BOARD[j].color == piece.color * -1:
                         move = "Rx" + Board.index_2_coord(j)
                         rook_moves.append((move, i, j))
 
@@ -603,7 +603,7 @@ class Engine:
         # print("Pawn Factor: " + str(pawn_factor))
         
         # Mobility
-        mobility_factor = len(self.generate_legal_moves(board)) * 0.8 * board.side_to_move
+        mobility_factor = 0 #len(self.generate_legal_moves(board)) * 0.8 * board.side_to_move
         # print("Mobility Factor: " + str(mobility_factor))
 
         # Tempo Bonus
@@ -624,7 +624,7 @@ class Engine:
     def calculate_material_factor(self, board):
         material_count = [0, 0, 0]
         for i in range(64):
-            piece = board.get(i)
+            piece = board.BOARD[i]
             if piece != None and piece != "-" and not isinstance(piece, King):
                 material_count[piece.color] += piece.base_value
     
@@ -635,7 +635,7 @@ class Engine:
         piece_square_bonuses = [0, 0, 0]
         endgame = board.is_endgame()
         for i in range(64):
-            piece = board.get(i)
+            piece = board.BOARD[i]
             if piece != None and piece != "-":
                 piece_square_bonuses[piece.color] += piece.get_bonus(i, endgame)
 
@@ -649,9 +649,9 @@ class Engine:
             white_pawns = 0
             black_pawns = 0
             for _ in range(8):
-                if isinstance(board.get(i), Pawn) and board.get(i).color == 1:
+                if isinstance(board.BOARD[i], Pawn) and board.BOARD[i].color == 1:
                     white_pawns += 1
-                if isinstance(board.get(i), Pawn) and board.get(i).color == -1:
+                if isinstance(board.BOARD[i], Pawn) and board.BOARD[i].color == -1:
                     black_pawns += 1
                 i += 8
             doubled_pawns[1] -= (max(0, white_pawns - 1)) * 50
@@ -666,7 +666,7 @@ class Engine:
         for i in range(8):
             j = i
             c = 1
-            while not (isinstance(board.get(j), Pawn) and board.get(j).color == 1) and j < 64:
+            while not (isinstance(board.BOARD[j], Pawn) and board.BOARD[j].color == 1) and j < 64:
                 j += 8
                 c += 1
             if j < 64:
@@ -675,7 +675,7 @@ class Engine:
             j = i
             c = 1
             while j < 64:
-                if isinstance(board.get(j), Pawn) and board.get(j).color == -1:
+                if isinstance(board.BOARD[j], Pawn) and board.BOARD[j].color == -1:
                     back_black_pawns[i] = c
                 j += 8
                 c += 1
@@ -699,14 +699,14 @@ class Engine:
             j = i
             c = 1
             while j < 64:
-                if isinstance(board.get(j), Pawn) and board.get(j).color == 1:
+                if isinstance(board.BOARD[j], Pawn) and board.BOARD[j].color == 1:
                     front_white_pawns[i] = c
                 j += 8
                 c += 1
         for i in range(8):
             j = i
             c = 1
-            while not (isinstance(board.get(j), Pawn) and board.get(j).color == -1) and j < 64:
+            while not (isinstance(board.BOARD[j], Pawn) and board.BOARD[j].color == -1) and j < 64:
                 j += 8
                 c += 1
             if j < 64:
@@ -760,12 +760,14 @@ class Engine:
         return pawn_factor
 
     def is_it_checkmate(self, board):
-        if len(self.generate_legal_moves(board)) == 0 and board.check_for_checks(board.side_to_move):
+        legal_moves = board.legal_moves if board.legal_moves != None else self.generate_legal_moves(board)
+        if len(legal_moves) == 0 and board.check_for_checks(board.side_to_move):
             return True
         return False
     
     def is_it_stalemate(self, board):
-        if len(self.generate_legal_moves(board)) == 0 and not board.check_for_checks(board.side_to_move):
+        legal_moves = board.legal_moves if board.legal_moves != None else self.generate_legal_moves(board)
+        if len(legal_moves) == 0 and not board.check_for_checks(board.side_to_move):
             return True
         return False
 
@@ -778,12 +780,13 @@ class Engine:
         if self.is_it_stalemate(board) or board.threefold or board.half_move_count == 100:
             return 0.0
         max_val = -float("inf")
-        move_list = self.generate_legal_moves(board)
+        move_list = board.legal_moves if board.legal_moves != None else self.generate_legal_moves(board)
         best_move = move_list[0][0] if len(move_list) > 0 else None
         for move_tuple in move_list:
             self.current_node_count += 1
             variation_board = Board(None, board)
             variation_board.move(move_tuple)
+            variation_board.legal_moves = self.generate_legal_moves(variation_board)
             score = -self.negamax(variation_board, depth - 1, False)
             if score >= max_val: # Can add some element of randomness here!
                 max_val = score
@@ -821,6 +824,7 @@ class Engine:
 
     def move(self, move_tuple):
         self.official_board.move(move_tuple)
+        self.official_board.legal_moves = self.generate_legal_moves(self.official_board)
         self.move_log.append(move_tuple[0])
         if self.official_board.threefold:
             self.move_log.append("Draw by Threefold Repetition")
@@ -858,12 +862,13 @@ class Engine:
         if alpha < stand_pat:
             alpha = stand_pat
 
-        move_list = self.generate_legal_moves(board)
+        move_list = board.legal_moves if board.legal_moves != None else self.generate_legal_moves(board)
         for move_tuple in move_list:
             if "x" in move_tuple[0]:
                 self.current_node_count += 1
                 variation_board = Board(None, board)
                 variation_board.move(move_tuple)
+                variation_board.legal_moves = self.generate_legal_moves(variation_board)
                 score = -self.quiesce(variation_board, -beta, -alpha, depth - 1)
 
                 if score >= beta:
@@ -879,12 +884,13 @@ class Engine:
             # return self.evaluate(board)
         if self.is_it_stalemate(board) or board.threefold or board.half_move_count == 100:
             return 0.0
-        move_list = self.generate_legal_moves(board)
+        move_list = board.legal_moves if board.legal_moves != None else self.generate_legal_moves(board)
         best_move = move_list[0] if len(move_list) > 0 else None
         for move_tuple in move_list:
             self.current_node_count += 1
             variation_board = Board(None, board)
             variation_board.move(move_tuple)
+            variation_board.legal_moves = self.generate_legal_moves(variation_board)
             score = -self.alpha_beta(variation_board, -beta, -alpha, depth_left - 1, False)
             if score >= beta:
                 best_move = move_tuple

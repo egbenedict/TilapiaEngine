@@ -28,4 +28,4 @@ def play_itself(engine):
 # print(end - start)
 # print(engine.evaluate(engine.official_board))
 # play_itself(engine)
-cProfile.run('engine.alpha_beta_search(engine.official_board, 3)')
+cProfile.run('engine.alpha_beta_search(engine.official_board, 4)')
