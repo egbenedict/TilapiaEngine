@@ -13,10 +13,12 @@ engine = Engine("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 def play_itself(engine):
     while not engine.is_it_over(engine.official_board):
         print(engine.official_board)
+        start = time.time()
         move_tuple = engine.alpha_beta_search(engine.official_board, 4, 4)[1]
+        end = time.time()
         engine.move(move_tuple)
         print(move_tuple[0])
-        print(engine.current_node_count)
+        print(str(engine.current_node_count) + " nodes in " + str(end - start) + " seconds\n")
         engine.current_node_count = 0
         # print(engine.official_board.white_piece_count)
         # print(engine.official_board.black_piece_count)
