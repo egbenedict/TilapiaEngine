@@ -46,16 +46,38 @@ def run(fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"):
                     player_clicks = [] # Reset
 
 
-        draw_game_state(screen, gs)
+        draw_game_state(screen, gs, sq_selected)
         clock.tick(MAX_FPS)
         p.display.flip() 
 
 def translate(tup):
     x, y = tup[0], tup[1]
-    return (7-x) * 8 + y
+    return int((7-x) * 8 + y)
 
-def draw_game_state(screen, gs):
+def untranslate(index):
+    x = 7 - (index // 8)
+    y = index - ((7-x) * 8)
+    return (x, y)
+
+def highlight_squares(screen, gs, sq_selected):
+    if sq_selected != ():
+        r, c = sq_selected
+        if gs.official_board.BOARD[translate(sq_selected)] != "-" and gs.official_board.BOARD[translate(sq_selected)].color == gs.official_board.side_to_move:
+            s = p.Surface((SQ_SIZE, SQ_SIZE))
+            s.set_alpha(100) # transparency
+            s.fill(p.Color('blue'))
+            screen.blit(s, (c*SQ_SIZE, r*SQ_SIZE))
+            s.fill(p.Color('yellow'))
+            possible_moves = gs.generate_legal_moves(gs.official_board)
+            for move_tuple in possible_moves:
+                if move_tuple[1] == translate(sq_selected):
+                    move = untranslate(move_tuple[2])
+                    print(move)
+                    screen.blit(s, (move[1] * SQ_SIZE, move[0] * SQ_SIZE))
+
+def draw_game_state(screen, gs, sq_selected):
     draw_board(screen)
+    highlight_squares(screen, gs, sq_selected)
     draw_pieces(screen, gs.official_board)
 
 def draw_board(screen):
