@@ -12,6 +12,15 @@ class Engine:
 
     startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
+    piece_values = {
+        "pawn" : 1,
+        "knight" : 3.2,
+        "bishop" : 3.3,
+        "rook" : 5,
+        "queen" : 9,
+        "king" : 200
+    }
+
     def __init__(self, fen = startingFEN, board = None):
         if board == None:
             self.official_board = Board(fen)
@@ -19,6 +28,8 @@ class Engine:
             self.official_board = Board(None, board)
         self.move_log = []
         self.current_node_count = 0
+
+        self.transposition_table = {}
     
     # Return board object
     def get_board(self):
@@ -873,13 +884,22 @@ class Engine:
 
     # Alpha beta pruning minimax search algorithm
     def alpha_beta(self, board, alpha, beta, depth_left, quiescence_depth, first=True):
+        key = (board.zobrist(), board.side_to_move)
+        if self.transposition_table.get(key, None) != None and self.transposition_table[key][2] >= depth_left:
+            return self.transposition_table[key][:2] if first else self.transposition_table[key][0]
+
         if depth_left == 0:
             return self.quiesce(board, alpha, beta, quiescence_depth) # !!!!!
-            # return self.evaluate(board)
         if self.is_it_stalemate(board) or board.threefold or board.half_move_count == 100:
             return 0.0
         move_list = board.legal_moves if board.legal_moves != None else self.generate_legal_moves(board)
+        move_list = self.mvv_lva(move_list, board)
         best_move = move_list[0] if len(move_list) > 0 else None
+        if self.transposition_table.get(key, None) != None:
+            for i in range(len(move_list)):
+                if move_list[i] == self.transposition_table[key][1]:
+                    # print("Hi")
+                    move_list.insert(0, move_list.pop(i))
         for move_tuple in move_list:
             self.current_node_count += 1
             variation_board = Board(None, board)
@@ -888,11 +908,18 @@ class Engine:
             score = -self.alpha_beta(variation_board, -beta, -alpha, depth_left - 1, quiescence_depth, False)
             if score >= beta:
                 best_move = move_tuple
+                self.transposition_table[key] = (beta, best_move, depth_left)
                 return (beta, move_tuple) if first else beta
             if score > alpha:
                 best_move = move_tuple
                 alpha = score
 
+        self.transposition_table[key] = (alpha, best_move, depth_left)
         return (alpha, best_move) if first else alpha
 
-
+    def mvv_lva(self, move_list, board):
+        captures = [m for m in move_list if "x" in m[0]]
+        noncaptures = [m for m in move_list if "x" not in m[0]]
+        captures.sort(key=lambda m: (-Engine.piece_values[board.BOARD[m[2]].id], Engine.piece_values[board.BOARD[m[1]].id]))
+        captures.extend(noncaptures)
+        return captures

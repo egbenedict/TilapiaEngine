@@ -207,9 +207,9 @@ class Board:
             self.legal_moves = None
 
             # Zobrist Initialization:
-            # if not Board.set_up:
-            #     Board.table = [[Board.rand_bitstring(64) for _ in range(12)] for _ in range(64)]
-            #     Board.set_up = True
+            if not Board.set_up:
+                Board.table = [[Board.rand_bitstring(64) for _ in range(12)] for _ in range(64)]
+                Board.set_up = True
 
         else:
             self.side_to_move = board.side_to_move
