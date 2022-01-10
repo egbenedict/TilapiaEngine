@@ -4,6 +4,7 @@ from Knight import *
 from Bishop import *
 from King import *
 from Pawn import *
+import random
 class Board:
 
     coord_to_index = {
@@ -140,6 +141,24 @@ class Board:
         63 : "h8",
     }
 
+    piece_indices = {
+        "wp" : 1,
+        "bp" : 2,
+        "wN" : 3,
+        "bN" : 4,
+        "wB": 5,
+        "bB" : 6,
+        "wR" : 7,
+        "bR": 8,
+        "wQ" : 9,
+        "bQ" : 10,
+        "wK" : 11,
+        "bK" : 12
+    }
+
+    set_up = False
+    table = []
+
     def __init__(self, fen, board = None):
         if board == None:
             fen_parts = fen.split(" ")
@@ -186,6 +205,12 @@ class Board:
             self.threefold = False
 
             self.legal_moves = None
+
+            # Zobrist Initialization:
+            # if not Board.set_up:
+            #     Board.table = [[Board.rand_bitstring(64) for _ in range(12)] for _ in range(64)]
+            #     Board.set_up = True
+
         else:
             self.side_to_move = board.side_to_move
             self.white_can_castle_kingside = board.white_can_castle_kingside
@@ -208,6 +233,13 @@ class Board:
             self.legal_moves = board.legal_moves
 
 
+    def rand_bitstring(p):
+        key1 = random.randint(0, 1)
+        for i in range(p - 1):
+            key1 *= 10
+            key1 += random.randint(0, 1)
+        return key1
+            
 
 
     # Populate board squares
@@ -628,5 +660,13 @@ class Board:
             fen = "/" + rank_fen + fen
         fen = fen[1:-1]
         return fen
+
+    def zobrist(self):
+        h = 0
+        for i in range(64):
+            if self.BOARD[i] != "-":
+                j = Board.piece_indices[self.BOARD[i].gui_id]
+                h = h ^ Board.table[i][j - 1]
+        return h
 
 

@@ -208,13 +208,13 @@ def driver():
     print("Tilapia Loaded!")
     print("")
     print("Select a Game Mode:")
-    print("- PvP [1]")
-    print("- CPU [2]")
+    print("- CPU [1]")
+    print("- PvP [2]")
     game_mode = ""
     while game_mode != "1" and game_mode != "2":
         game_mode = input()
     print("")
-    if game_mode == "1":
+    if game_mode == "2":
         print("Select an Option:")
         print("- New Game [1]")
         print("- Custom Position [2]")
