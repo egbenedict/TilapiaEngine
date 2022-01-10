@@ -80,6 +80,7 @@ class King:
     def __init__(self, color):
         self.color = color # 1 = white, -1 = black
         self.id = "king"
+        self.gui_id = "wK" if self.color == 1 else "bK"
 
     def __str__(self):
         return "♔" if self.color == 1 else "♚"

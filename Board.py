@@ -552,7 +552,7 @@ class Board:
 
         return False
 
-
+    # Determine if the board position can be classified as in the endgame
     def is_endgame(self):
         black_queens = 0
         white_queens = 0
@@ -576,6 +576,7 @@ class Board:
             return True
         return False
 
+    # Return the FEN of the current position on the board
     def fen(self):
         fen = ""
         index = 0

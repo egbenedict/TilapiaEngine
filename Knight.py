@@ -59,6 +59,7 @@ class Knight:
         self.color = color # 1 = white, -1 = black
         self.id = "knight"
         self.base_value = 320
+        self.gui_id = "wN" if self.color == 1 else "bN"
 
     def __str__(self):
         return "♘" if self.color == 1 else "♞"

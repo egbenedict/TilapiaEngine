@@ -80,6 +80,7 @@ class Bishop:
         self.color = color # 1 = white, -1 = black
         self.id = "bishop"
         self.base_value = 330
+        self.gui_id = "wB" if self.color == 1 else "bB"
 
     def __str__(self):
         return "♗" if self.color == 1 else "♝"

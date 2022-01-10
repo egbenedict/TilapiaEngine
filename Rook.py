@@ -62,6 +62,7 @@ class Rook:
         self.color = color # 1 = white, -1 = black
         self.id = "rook"
         self.base_value = 500
+        self.gui_id = "wR" if self.color == 1 else "bR"
 
     def __str__(self):
         return "♖" if self.color == 1 else "♜"

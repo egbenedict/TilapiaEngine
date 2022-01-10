@@ -79,6 +79,7 @@ class Pawn:
     def __init__(self, color):
         self.color = color # 1 = white, -1 = black
         self.id = "pawn"
+        self.gui_id = "wp" if self.color == 1 else "bp"
         self.base_value = 100
 
     def __str__(self):

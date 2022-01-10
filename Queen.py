@@ -81,6 +81,7 @@ class Queen:
         self.color = color # 1 = white, -1 = black
         self.id = "queen"
         self.base_value = 900
+        self.gui_id = "wQ" if self.color == 1 else "bQ"
 
     def __str__(self):
         return "♕" if self.color == 1 else "♛"

@@ -505,14 +505,14 @@ class Engine:
         # White
         if board.side_to_move == 1:
             if board.white_can_castle_kingside and board.get_coord("f1") == "-" and board.get_coord("g1") == "-":
-                castle_moves.append(("O-O", None))
+                castle_moves.append(("O-O", 4, 6))
             if board.white_can_castle_queenside and board.get_coord("b1") == "-" and board.get_coord("c1") == "-" and board.get_coord("d1") == "-":
-                castle_moves.append(("O-O-O", None))
+                castle_moves.append(("O-O-O", 4, 2))
         else: # Black
             if board.black_can_castle_kingside and board.get_coord("f8") == "-" and board.get_coord("g8") == "-":
-                castle_moves.append(("O-O", None))
+                castle_moves.append(("O-O", 60, 62))
             if board.black_can_castle_queenside and board.get_coord("b8") == "-" and board.get_coord("c8") == "-" and board.get_coord("d8") == "-":
-                castle_moves.append(("O-O-O", None))
+                castle_moves.append(("O-O-O", 60, 58))
 
         return castle_moves
 
@@ -621,6 +621,7 @@ class Engine:
         
         return (material_factor + square_bonus_factor + pawn_factor + mobility_factor + tempo_bonus) * board.side_to_move / 100.0
 
+    # Calculate a rudimentary material factor based off of basic piece centipawn values
     def calculate_material_factor(self, board):
         material_count = [0, 0, 0]
         for i in range(64):
@@ -631,6 +632,7 @@ class Engine:
         material_factor = material_count[1] - material_count[-1]
         return material_factor
 
+    # Calculate square bonuses for each piece based off of piece maps in respective classes
     def calculate_square_bonuses(self, board):
         piece_square_bonuses = [0, 0, 0]
         endgame = board.is_endgame()
@@ -642,6 +644,7 @@ class Engine:
         square_bonus_factor = piece_square_bonuses[1] - piece_square_bonuses[-1]
         return square_bonus_factor
 
+    # Calculate bonuses for good / bad pawn structures
     def calculate_pawn_factor(self, board):
         # Doubled pawns:
         doubled_pawns = [0, 0, 0]
@@ -735,22 +738,25 @@ class Engine:
         pawn_factor = backward_pawn_factor + doubled_pawns_factor + passed_pawn_factor + pawn_island_factor
         return pawn_factor        
 
-
+    # Check if the current board position is a checkmate
     def is_it_checkmate(self, board):
         legal_moves = board.legal_moves if board.legal_moves != None else self.generate_legal_moves(board)
         if len(legal_moves) == 0 and board.check_for_checks(board.side_to_move):
             return True
         return False
     
+    # Check if the current board position is a stalemate
     def is_it_stalemate(self, board):
         legal_moves = board.legal_moves if board.legal_moves != None else self.generate_legal_moves(board)
         if len(legal_moves) == 0 and not board.check_for_checks(board.side_to_move):
             return True
         return False
 
+    # Determine if the game is over or not
     def is_it_over(self, board):
         return self.is_it_checkmate(board) or self.is_it_stalemate(board) or self.official_board.threefold or self.official_board.half_move_count == 100
 
+    # Initial search algorithm, a form of minimax
     def negamax(self, board, depth=3, first=True):
         if depth == 0:
             return self.evaluate(board)
@@ -771,7 +777,7 @@ class Engine:
 
         return (max_val, best_move) if first else max_val
 
-
+    # The wrapper function for negamax
     def search(self, board, final_depth):
         depth = 1
         max_val = -float("inf")
@@ -785,6 +791,7 @@ class Engine:
             depth += 1
         return max_val, best_move
 
+    # Current search algorithm
     def alpha_beta_search(self, board, final_depth, quiescence_depth=4):
         # depth = 1
         # max_val = -float("inf")
@@ -799,6 +806,7 @@ class Engine:
         # return max_val, best_move
         return self.alpha_beta(board, -float("inf"), float("inf"), final_depth, quiescence_depth)
 
+    # Execute a move on the official board and update the move log
     def move(self, move_tuple):
         self.official_board.move(move_tuple)
         self.official_board.legal_moves = self.generate_legal_moves(self.official_board)
@@ -808,6 +816,13 @@ class Engine:
         if self.official_board.half_move_count == 100:
             self.move_log.append("Draw by 50 Move Rule")
 
+    def gui_move(self, move_duple):
+        possible_moves = self.official_board.legal_moves if self.official_board.legal_moves != None else self.generate_legal_moves(self.official_board)
+        for move_tuple in possible_moves:
+            if move_tuple[1] == move_duple[0] and move_tuple[2] == move_duple[1]:
+                self.move(move_tuple)
+
+    # Return the pgn of the game to the current point (although still not 100% correct)
     def get_pgn(self):
         pgn = ""
         count = 2
@@ -822,6 +837,7 @@ class Engine:
                 count += 1
         return pgn
 
+    # Quiescent search for alpha beta minimax
     def quiesce(self, board, alpha, beta, depth):
         stand_pat = self.evaluate(board)
 
@@ -855,6 +871,7 @@ class Engine:
         
         return alpha
 
+    # Alpha beta pruning minimax search algorithm
     def alpha_beta(self, board, alpha, beta, depth_left, quiescence_depth, first=True):
         if depth_left == 0:
             return self.quiesce(board, alpha, beta, quiescence_depth) # !!!!!
