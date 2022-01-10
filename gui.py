@@ -1,5 +1,8 @@
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame as p
 from Engine import *
+import sys
 
 WIDTH = HEIGHT = 512
 DIMENSION = 8
@@ -16,14 +19,14 @@ def load_images():
     for piece in pieces:
         IMAGES[piece] = p.image.load("images/" + piece + ".png")
 
-def run(fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"):
+def run_pvp(fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"):
+    gs = Engine(fen)
     p.init()
     screen = p.display.set_mode((WIDTH + MOVE_LOG_WIDTH, HEIGHT))
     clock = p.time.Clock()
     move_log_font = p.font.SysFont("Helvitca", 16, True, False)
     heading_font = p.font.SysFont("Helvitca", 32, True, False)
     screen.fill(p.Color("white"))
-    gs = Engine(fen)
     load_images()
     running = True
     sq_selected = ()
@@ -57,9 +60,77 @@ def run(fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"):
         clock.tick(MAX_FPS)
         p.display.flip() 
 
+def run_cpu(color, depth, quies, fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"):
+    gs = Engine(fen)
+    p.init()
+    screen = p.display.set_mode((WIDTH + MOVE_LOG_WIDTH, HEIGHT))
+    clock = p.time.Clock()
+    move_log_font = p.font.SysFont("Helvitca", 16, True, False)
+    heading_font = p.font.SysFont("Helvitca", 32, True, False)
+    screen.fill(p.Color("white"))
+    load_images()
+    running = True
+    sq_selected = ()
+    player_clicks = []
+    while running:
+        draw_game_state(screen, gs, sq_selected, move_log_font, heading_font)
+        clock.tick(MAX_FPS)
+        p.display.flip() 
+        while gs.official_board.side_to_move == color:
+            for e in p.event.get():
+                draw_game_state(screen, gs, sq_selected, move_log_font, heading_font)
+                clock.tick(MAX_FPS)
+                p.display.flip() 
+                if e.type == p.QUIT:
+                    running = False
+                    quit()
+                elif e.type == p.MOUSEBUTTONDOWN:
+                    location = p.mouse.get_pos() # (X,Y) location of mouse cursor
+                    col = location[0] // SQ_SIZE
+                    row = location[1] // SQ_SIZE
+                    if sq_selected == (row, col) or col >= 8: # Clicked same square twice or clicked move log
+                        sq_selected = () # Deselect
+                        player_clicks = [] # Clear
+                    else:
+                        sq_selected = (row, col)
+                        player_clicks.append(sq_selected)
+                    if len(player_clicks) == 2: # After second click
+                        if gs.official_board.BOARD[translate(player_clicks[0])] != "-" and gs.official_board.BOARD[translate(player_clicks[1])] != "-" and gs.official_board.BOARD[translate(player_clicks[0])].color == gs.official_board.BOARD[translate(player_clicks[1])].color:
+                            sq_selected = player_clicks[1]
+                            player_clicks = [sq_selected]
+                        else:
+                            move = (translate(player_clicks[0]), translate(player_clicks[1]))
+                            gs.gui_move(move)
+                            sq_selected = () # Reset
+                            player_clicks = [] # Reset
+
+        draw_game_state(screen, gs, sq_selected, move_log_font, heading_font)
+        clock.tick(MAX_FPS)
+        p.display.flip() 
+                        
+        comp_move = gs.alpha_beta_search(gs.official_board, depth, quies)[1]
+        if comp_move != None:
+            gs.move(comp_move)
+
+        draw_game_state(screen, gs, sq_selected, move_log_font, heading_font)
+        clock.tick(MAX_FPS)
+        p.display.flip()
+
+        if gs.is_it_over(gs.official_board):
+            over_func()
+
 def translate(tup):
     x, y = tup[0], tup[1]
     return int((7-x) * 8 + y)
+
+def over_func():
+    running = True
+    while running:
+        for e in p.event.get():
+            if e.type == p.QUIT:
+                running = False
+    quit()
+        
 
 def untranslate(index):
     x = 7 - (index // 8)
@@ -131,6 +202,96 @@ def draw_move_log(screen, gs, font, heading_font):
         screen.blit(text_obj, text_loc)
         textY += text_obj.get_height() + line_spacing
 
-run()
+def driver():
+    print("Loading Tilapia Chess Engine ...")
+    time.sleep(3)
+    print("Tilapia Loaded!")
+    print("")
+    print("Select a Game Mode:")
+    print("- PvP [1]")
+    print("- CPU [2]")
+    game_mode = ""
+    while game_mode != "1" and game_mode != "2":
+        game_mode = input()
+    print("")
+    if game_mode == "1":
+        print("Select an Option:")
+        print("- New Game [1]")
+        print("- Custom Position [2]")
+        option = ""
+        while option != "1" and option != "2":
+            option = input().strip()
+        print("")
+        if option == "1":
+            run_pvp()
+        else:
+            print("Input FEN:")
+            valid = False
+            while not valid:
+                fen = input().strip()
+                try:
+                    run_pvp(fen)
+                    valid = True
+                except:
+                    print("\nFEN Invalid! Try again:")
+    else:
+        print("Select a color:")
+        print("White [w]")
+        print("Black [b]")
+        color = ""
+        while color != "w" and color != "b":
+            color = input().strip()
+        color = 1 if color == "w" else -1
+        print("")
+        print("Select Difficulty:")
+        print("Easy [e]")
+        print("Medium [m]")
+        print("Hard [h]")
+        difficulty = ""
+        while difficulty != "e" and difficulty != "m" and difficulty != "h":
+            difficulty = input().strip()
+
+        print("")
+
+        if difficulty == "e":
+            depth = 2
+            quies = 2
+        elif difficulty == "m":
+            depth = 3
+            quies = 3
+        else:
+            depth = 4
+            quies = 4
+
+        print("Select an Option:")
+        print("- New Game [1]")
+        print("- Custom Position [2]")
+        option = ""
+        while option != "1" and option != "2":
+            option = input().strip()
+        print("")
+
+        if option == "1":
+            run_cpu(color, depth, quies)
+        else:
+            print("Input FEN:")
+            valid = False
+            while not valid:
+                try:
+                    fen = input().strip()
+                except ValueError:
+                    print("")
+                    exit()
+                try:
+                    run_cpu(color, depth, quies, fen)
+                    valid = True
+                except ValueError:
+                    print("")
+                    exit()
+                except:
+                    print("\nFEN Invalid! Try again:")
+        
+
+driver()
 
 
