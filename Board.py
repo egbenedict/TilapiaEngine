@@ -598,9 +598,11 @@ class Board:
         white_queens = 0
         minor_black = 0
         minor_white = 0
+        pieces = 0
         for i in range(64):
             piece = self.BOARD[i]
             if piece != None and piece != "-":
+                pieces += 1
                 if piece.color == 1 and isinstance(piece, Queen):
                     white_queens += 1
                 if piece.color == -1 and isinstance(piece, Queen):
@@ -613,6 +615,8 @@ class Board:
         if black_queens == 0 and white_queens == 0:
             return True
         if minor_black == 0 and minor_white == 0:
+            return True
+        if pieces <= 7:
             return True
         return False
 
