@@ -468,7 +468,6 @@ class Board:
             self.half_move_count += 1
         else:
             self.half_move_count = 0
-            
         self.side_to_move *= -1
 
         key = tuple(self.BOARD)

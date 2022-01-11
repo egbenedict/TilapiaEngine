@@ -30,8 +30,6 @@ class Engine:
         self.current_node_count = 0
 
         self.transposition_table = {}
-
-        self.check_checks = {}
     
     # Return board object
     def get_board(self):
@@ -829,7 +827,6 @@ class Engine:
         if self.official_board.half_move_count == 100:
             self.move_log.append("Draw by 50 Move Rule")
 
-    # Interface for GUI move
     def gui_move(self, move_duple):
         possible_moves = self.official_board.legal_moves if self.official_board.legal_moves != None else self.generate_legal_moves(self.official_board)
         for move_tuple in possible_moves:
@@ -923,7 +920,6 @@ class Engine:
         self.transposition_table[key] = (alpha, best_move, depth_left)
         return (alpha, best_move) if first else alpha
 
-    # Sorts moves based off of Most Valuable Victim - Least Valuable Aggressor Principle
     def mvv_lva(self, move_list, board):
         captures = [m for m in move_list if "x" in m[0]]
         noncaptures = [m for m in move_list if "x" not in m[0]]
