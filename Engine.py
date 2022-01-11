@@ -886,10 +886,7 @@ class Engine:
     def alpha_beta(self, board, alpha, beta, depth_left, quiescence_depth, first=True):
         key = (board.zobrist(), board.side_to_move)
         if self.transposition_table.get(key, None) != None and self.transposition_table[key][2] >= depth_left:
-            variation_board = Board(None, board)
-            variation_board.move(self.transposition_table[key][1])
-            if not variation_board.twofold and variation_board.half_move_count != 100:
-                return self.transposition_table[key][:2] if first else self.transposition_table[key][0]
+            return self.transposition_table[key][:2] if first else self.transposition_table[key][0]
 
         if depth_left == 0:
             return self.quiesce(board, alpha, beta, quiescence_depth) # !!!!!
