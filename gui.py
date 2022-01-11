@@ -204,6 +204,7 @@ def draw_move_log(screen, gs, font, heading_font):
 
 def driver():
     print("Loading Tilapia Chess Engine ...")
+    print("Copyright 2022, Uri Kreindler\n")
     time.sleep(3)
     print("Tilapia Loaded!")
     print("")
