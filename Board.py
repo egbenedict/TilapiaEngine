@@ -203,6 +203,7 @@ class Board:
             self.history = {}
 
             self.threefold = False
+            self.twofold = False
 
             self.legal_moves = None
 
@@ -228,7 +229,8 @@ class Board:
             # self.white_piece_count = board.white_piece_count.copy()
             # self.black_piece_count = board.black_piece_count.copy()
 
-            self.threefold = False
+            self.threefold = board.threefold
+            self.twofold = board.twofold
 
             self.legal_moves = board.legal_moves
 
@@ -464,12 +466,18 @@ class Board:
         
         if (("N" in move_tuple[0] or "B" in move_tuple[0] or "Q" in move_tuple[0] or "R" in move_tuple[0] or "K" in move_tuple[0]) and "x" not in move_tuple[0]) or "O-O" in move_tuple[0]:
             self.half_move_count += 1
+        else:
+            self.half_move_count = 0
+
         self.side_to_move *= -1
 
 
-        self.history[tuple(self.BOARD)] = self.history.get(tuple(self.BOARD), 0) + 1
-        if self.history[tuple(self.BOARD)] == 3:
+        key = tuple(self.BOARD)
+        self.history[key] = self.history.get(key, 0) + 1
+        if self.history[key] == 3:
             self.threefold = True
+        elif self.history[key] == 2:
+            self.twofold = True
 
     # Check if current position includes any checks on the king of specified color
     def check_for_checks(self, color):
