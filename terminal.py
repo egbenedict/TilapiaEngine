@@ -21,6 +21,7 @@ def play_itself(engine):
 
 def play_human(engine):
     print("Loading Tilapia Chess Engine ...")
+    print("Copyright 2022, Uri Kreindler")
     time.sleep(3)
     print("Tilapia Loaded!")
 
