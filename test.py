@@ -6,8 +6,9 @@ sys.setrecursionlimit(10**6)
 
 startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
-engine = Engine("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+engine = Engine("rnbqkbnr/ppp1ppp1/7p/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 3")
 # print(engine.official_board)
+# print(engine.generate_legal_moves(engine.official_board))
 # print(engine.official_board.zobrist())
 
 def play_itself(engine):
@@ -147,7 +148,7 @@ def play_human(engine):
 # end = time.time()
 # print(end - start)
 # print(engine.evaluate(engine.official_board))
-play_itself(engine)
+# play_itself(engine)
 # cProfile.run('engine.alpha_beta_search(engine.official_board, 4, 4)')
 # print(engine.current_node_count)
 # print(engine.official_board.white_piece_count)

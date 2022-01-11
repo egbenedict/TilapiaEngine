@@ -147,6 +147,7 @@ def highlight_squares(screen, gs, sq_selected):
             screen.blit(s, (c*SQ_SIZE, r*SQ_SIZE))
             s.fill(p.Color('yellow'))
             possible_moves = gs.generate_legal_moves(gs.official_board)
+            # print(possible_moves)
             for move_tuple in possible_moves:
                 if move_tuple[1] == translate(sq_selected):
                     move = untranslate(move_tuple[2])

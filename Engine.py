@@ -923,8 +923,8 @@ class Engine:
 
     # Sorts moves based off of Most Valuable Victim - Least Valuable Aggressor Principle
     def mvv_lva(self, move_list, board):
-        captures = [m for m in move_list if "x" in m[0]]
-        noncaptures = [m for m in move_list if "x" not in m[0]]
+        captures = [m for m in move_list if "x" in m[0] and len(m) != 4]
+        noncaptures = [m for m in move_list if "x" not in m[0] or len(m) == 4]
         captures.sort(key=lambda m: (-Engine.piece_values[board.BOARD[m[2]].id], Engine.piece_values[board.BOARD[m[1]].id]))
         captures.extend(noncaptures)
         return captures

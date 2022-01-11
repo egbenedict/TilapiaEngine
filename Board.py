@@ -170,7 +170,7 @@ class Board:
             self.black_can_castle_kingside = True if "k" in fen_parts[2] else False
             self.black_can_castle_queenside = True if "q" in fen_parts[2] else False
 
-            self.en_passant_square = None if fen_parts[3] == "-" else fen_parts[3]
+            self.en_passant_square = "-" if fen_parts[3] == "-" else fen_parts[3]
 
             self.half_move_count = int(fen_parts[4])
 
@@ -457,7 +457,7 @@ class Board:
                 #     self.black_piece_count["knight"] += 1
 
             if len(move_tuple) == 5:
-                self.en_passant_square = move_tuple[4]
+                self.en_passant_square = Board.index_to_coord[move_tuple[4]]
             else:
                 self.en_passant_square = "-"
 
