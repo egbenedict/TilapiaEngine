@@ -5,6 +5,8 @@ from Bishop import *
 from King import *
 from Pawn import *
 import random
+import hashlib
+import numpy as np
 class Board:
 
     coord_to_index = {
