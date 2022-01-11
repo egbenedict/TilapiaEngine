@@ -206,7 +206,6 @@ def driver():
     print("Loading Tilapia Chess Engine ...")
     time.sleep(3)
     print("Tilapia Loaded!")
-    print("Copyright 2022, Uri Kreindler")
     print("")
     print("Select a Game Mode:")
     print("- CPU [1]")

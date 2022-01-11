@@ -23,7 +23,6 @@ def play_human(engine):
     print("Loading Tilapia Chess Engine ...")
     time.sleep(3)
     print("Tilapia Loaded!")
-    print("Copyright 2022, Uri Kreindler")
 
     print("Select a color: White [w] or Black [b]")
     color = ""
