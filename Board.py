@@ -5,6 +5,8 @@ from Bishop import *
 from King import *
 from Pawn import *
 import random
+import urllib.request
+
 class Board:
 
     coord_to_index = {
@@ -207,6 +209,8 @@ class Board:
 
             self.legal_moves = None
 
+            self.syzygy = False
+
             # Zobrist Initialization:
             if not Board.set_up:
                 Board.table = [[Board.rand_bitstring(64) for _ in range(13)] for _ in range(64)]
@@ -233,6 +237,8 @@ class Board:
             self.twofold = board.twofold
 
             self.legal_moves = board.legal_moves
+
+            self.syzygy = board.syzygy
 
 
     def rand_bitstring(p):
@@ -709,8 +715,17 @@ class Board:
                 h = h ^ Board.table[i][12]
         return h
 
-    def syzygy_move(self):
-        pass
+    # Determine if there are 7 or less pieces on the board
+    def syzygy_time(self):
+        piece_count = 0
+        for i in range(64):
+            if self.BOARD[i] != "-":
+                piece_count += 1
+        if piece_count <= 7:
+            self.syzygy = True
+        return self.syzygy
+
+
 
 
 

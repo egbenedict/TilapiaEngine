@@ -62,7 +62,7 @@ def run_pvp(fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"):
         clock.tick(MAX_FPS)
         p.display.flip() 
 
-def run_cpu(color, depth, quies, fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"):
+def run_cpu(color, depth, quies, tablesbases, fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"):
     gs = Engine(fen)
     p.init()
     screen = p.display.set_mode((WIDTH + MOVE_LOG_WIDTH, HEIGHT))
@@ -110,7 +110,7 @@ def run_cpu(color, depth, quies, fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN
         clock.tick(MAX_FPS)
         p.display.flip() 
                         
-        comp_move = gs.alpha_beta_search(gs.official_board, depth, quies)[1]
+        comp_move = gs.alpha_beta_search(gs.official_board, depth, quies, tablesbases)[1]
         if comp_move != None:
             gs.move(comp_move)
 
@@ -260,12 +260,15 @@ def driver():
         if difficulty == "e":
             depth = 2
             quies = 2
+            tablebases = False
         elif difficulty == "m":
             depth = 3
             quies = 3
+            tablebases = False
         else:
             depth = 4
             quies = 4
+            tablebases = True
 
         print("Select an Option:")
         print("- New Game [1]")
@@ -276,7 +279,7 @@ def driver():
         print("")
 
         if option == "1":
-            run_cpu(color, depth, quies)
+            run_cpu(color, depth, quies, tablebases)
         else:
             print("Input FEN:")
             valid = False
@@ -287,7 +290,7 @@ def driver():
                     print("")
                     exit()
                 try:
-                    run_cpu(color, depth, quies, fen)
+                    run_cpu(color, depth, quies, tablebases, fen)
                     valid = True
                 except ValueError:
                     print("")

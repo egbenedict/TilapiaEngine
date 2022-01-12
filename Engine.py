@@ -30,6 +30,10 @@ class Engine:
         self.current_node_count = 0
 
         self.transposition_table = {}
+
+        self.just_syzygied = False
+
+        self.last_try = 0
     
     # Return board object
     def get_board(self):
@@ -803,18 +807,21 @@ class Engine:
         return max_val, best_move
 
     # Current search algorithm
-    def alpha_beta_search(self, board, final_depth, quiescence_depth=4):
-        # depth = 1
-        # max_val = -float("inf")
-        # while depth <= final_depth:
-        #     val, move = self.alpha_beta(board, -float("inf"), float("inf"), depth)
-        #     if val == float("inf") or depth == final_depth:
-        #         max_val = val
-        #         best_move = move
-        #     if max_val == float("inf"):
-        #         return max_val, best_move
-        #     depth += 1
-        # return max_val, best_move
+    def alpha_beta_search(self, board, final_depth, quiescence_depth=4, tablebases=True):
+        if tablebases:
+            if board.syzygy or board.syzygy_time():
+                # print("just syzygied")
+                too_soon = (board.syzygy and not self.just_syzygied and time.time() - self.last_try < 60 and self.last_try != 0)
+                if not too_soon:
+                    self.just_syzygied = True
+                    try:
+                        return (None, self.syzygy_move(board))
+                    except:
+                        self.last_try = time.time()
+                        print("Syzygy Failed! (either too many requests or poor internet connection)")
+                        self.just_syzygied = False
+                        return self.alpha_beta(board, -float("inf"), float("inf"), final_depth, quiescence_depth)
+        self.just_syzygied = False
         return self.alpha_beta(board, -float("inf"), float("inf"), final_depth, quiescence_depth)
 
     # Execute a move on the official board and update the move log
@@ -930,6 +937,33 @@ class Engine:
         captures.extend(noncaptures)
         return captures
 
+    def syzygy_move(self, board):
+        # print("syzygied")
+        base_url = "https://tablebase.lichess.ovh/standard?fen="
+        url = base_url + board.fen().replace(" ", "_")
+        fp = urllib.request.urlopen(url)
+        mybytes = fp.read()
+        contents = mybytes.decode("utf8")
+        fp.close()
 
+        move = contents.split("\"")[25]
+
+        # print(move)
+
+        sq1 = Board.coord_to_index[move[:2]]
+        sq2 = Board.coord_to_index[move[2:4]]
+        promote_to = None
+        if len(move) == 5:
+            promote_to = move[4].upper()
+
+        possible_moves = self.generate_legal_moves(board)
+        if promote_to != None:
+            for move_tuple in possible_moves:
+                if move_tuple[1] == sq1 and move_tuple[2] == sq2 and ("=" + promote_to) in move_tuple[0]:
+                    return move_tuple
+        else:
+            for move_tuple in possible_moves:
+                if move_tuple[1] == sq1 and move_tuple[2] == sq2:
+                    return move_tuple
 
     
