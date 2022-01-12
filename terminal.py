@@ -11,7 +11,7 @@ engine = Engine("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 def play_itself(engine):
     while not engine.is_it_over(engine.official_board):
         print(engine.official_board)
-        move_tuple = engine.alpha_beta_search(engine.official_board, 2, 2)[1]
+        move_tuple = engine.alpha_beta_search(engine.official_board, 4, 4, True)[1]
         engine.move(move_tuple)
         print(move_tuple[0])
         # print(engine.official_board.white_piece_count)
@@ -43,12 +43,15 @@ def play_human(engine):
     if difficulty == "e":
         depth = 2
         quies = 2
+        tablebases = False
     elif difficulty == "m":
         depth = 3
         quies = 3
+        tablebases = False
     else:
         depth = 4
         quies = 4
+        tablebases = True
 
     while not engine.is_it_over(engine.official_board):
         print(engine.official_board)
@@ -84,11 +87,11 @@ def play_human(engine):
                     print("Draw by 50 Move Rule!")
                 break
             print(engine.official_board)
-            comp_move = engine.alpha_beta_search(engine.official_board, depth, quies)[1]
+            comp_move = engine.alpha_beta_search(engine.official_board, depth, quies, tablebases)[1]
             print("Tilapia's Move: " + comp_move[0])
             engine.move(comp_move)
         else:
-            comp_move = engine.alpha_beta_search(engine.official_board, depth, quies)[1]
+            comp_move = engine.alpha_beta_search(engine.official_board, depth, quies, tablebases)[1]
             print("Tilapia's Move: " + comp_move[0])
             engine.move(comp_move)
             print(engine.official_board)

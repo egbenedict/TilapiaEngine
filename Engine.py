@@ -831,8 +831,12 @@ class Engine:
         self.move_log.append(move_tuple[0])
         if self.official_board.threefold:
             self.move_log.append("Draw by Threefold Repetition")
-        if self.official_board.half_move_count == 100:
+        elif self.official_board.half_move_count == 100:
             self.move_log.append("Draw by 50 Move Rule")
+        elif self.is_it_checkmate(self.official_board):
+            self.move_log.append("Checkmate")
+        elif self.is_it_stalemate(self.official_board):
+            self.move_log.append("Stalemate")
 
     # Interface for GUI move
     def gui_move(self, move_duple):

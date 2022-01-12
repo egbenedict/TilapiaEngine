@@ -109,6 +109,9 @@ def run_cpu(color, depth, quies, tablesbases, fen="rnbqkbnr/pppppppp/8/8/8/8/PPP
         draw_game_state(screen, gs, sq_selected, move_log_font, heading_font)
         clock.tick(MAX_FPS)
         p.display.flip() 
+
+        if gs.is_it_over(gs.official_board):
+            over_func()
                         
         comp_move = gs.alpha_beta_search(gs.official_board, depth, quies, tablesbases)[1]
         if comp_move != None:
