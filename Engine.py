@@ -115,12 +115,12 @@ class Engine:
                 if (board.BOARD[i + 7 * piece.color] != None and Board.index_2_coord(i + 7 * piece.color) == board.en_passant_square):
                     if not((Board.index_2_coord(i)[0] == "a" and piece.color == 1) or (Board.index_2_coord(i)[0] == "h" and piece.color == -1)):
                         move = Board.index_2_coord(i)[0] + "x" + board.en_passant_square
-                        pawn_moves.append((move, i, i + 7 * piece.color, i - 1))
+                        pawn_moves.append((move, i, i + 7 * piece.color, i - piece.color))
 
                 if (board.BOARD[i + 9 * piece.color] != None and Board.index_2_coord(i + 9 * piece.color) == board.en_passant_square):
                     if not((Board.index_2_coord(i)[0] == "h" and piece.color == 1) or (Board.index_2_coord(i)[0] == "a" and piece.color == -1)):
                         move = Board.index_2_coord(i)[0] + "x" + board.en_passant_square
-                        pawn_moves.append((move, i, i + 9 * piece.color, i + 1))
+                        pawn_moves.append((move, i, i + 9 * piece.color, i + piece.color))
 
         return pawn_moves
 
