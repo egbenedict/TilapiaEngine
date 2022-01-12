@@ -868,6 +868,7 @@ class Engine:
             alpha = stand_pat
 
         move_list = board.legal_moves if board.legal_moves != None else self.generate_legal_moves(board)
+        move_list = self.mvv_lva(move_list, board)
         for move_tuple in move_list:
             if "x" in move_tuple[0]:
                 self.current_node_count += 1

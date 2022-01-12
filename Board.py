@@ -617,7 +617,7 @@ class Board:
         if minor_black == 0 and minor_white == 0:
             return True
         if pieces <= 7:
-            return True
+            return
         return False
 
     # Return the FEN of the current position on the board
