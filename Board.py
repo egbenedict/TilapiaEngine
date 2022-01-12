@@ -209,7 +209,7 @@ class Board:
 
             # Zobrist Initialization:
             if not Board.set_up:
-                Board.table = [[Board.rand_bitstring(64) for _ in range(12)] for _ in range(64)]
+                Board.table = [[Board.rand_bitstring(64) for _ in range(13)] for _ in range(64)]
                 Board.set_up = True
 
         else:
@@ -679,6 +679,8 @@ class Board:
             if self.BOARD[i] != "-":
                 j = Board.piece_indices[self.BOARD[i].gui_id]
                 h = h ^ Board.table[i][j - 1]
+            if self.BOARD[i] == "-":
+                h = h ^ Board.table[i][12]
         return h
 
 
