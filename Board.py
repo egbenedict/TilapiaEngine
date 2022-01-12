@@ -671,8 +671,34 @@ class Board:
                     rank_fen += str(count)
             fen = "/" + rank_fen + fen
         fen = fen[1:-1]
+
+        fen = fen + " w " if self.side_to_move == 1 else fen + " b "
+
+        castle = False
+        if self.white_can_castle_kingside:
+            fen += "K"
+            castle = True
+        if self.white_can_castle_queenside:
+            fen += "Q"
+            castle = True
+        if self.black_can_castle_kingside:
+            fen += "k"
+            castle = True
+        if self.black_can_castle_queenside:
+            fen += "q"
+            castle = True
+        if not castle:
+            fen += "-"
+
+        fen += " " + self.en_passant_square + " "
+
+        fen += str(self.half_move_count) + " "
+
+        fen += str(self.full_move_count)
+
         return fen
 
+    # Produce unique Zobrist Hash of the Board
     def zobrist(self):
         h = 0
         for i in range(64):
@@ -682,5 +708,9 @@ class Board:
             if self.BOARD[i] == "-":
                 h = h ^ Board.table[i][12]
         return h
+
+    def syzygy_move(self):
+        pass
+
 
 
