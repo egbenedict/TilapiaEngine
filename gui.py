@@ -13,6 +13,8 @@ MAX_FPS = 15
 IMAGES = {}
 COLORS = [p.Color("white"), p.Color("tan")]
 
+VERSION = "1.0.2"
+
 
 def load_images():
     pieces = ['wp', 'wR', 'wN', 'wB', 'wK', 'wQ', 'bp', 'bR', 'bN', 'bB', 'bK', 'bQ']
@@ -175,10 +177,10 @@ def draw_pieces(screen, board):
 def draw_move_log(screen, gs, font, heading_font):
     heading_log_rect = p.Rect(WIDTH, 0, MOVE_LOG_WIDTH, 30)
     p.draw.rect(screen, p.Color('white'), heading_log_rect)
-    text_obj = heading_font.render("Tilapia 1.0", True, p.Color('black'))
+    text_obj = heading_font.render("Tilapia " + VERSION, True, p.Color('black'))
     text_loc = heading_log_rect.move(5, 5)
     screen.blit(text_obj, text_loc)
-    screen.blit(p.image.load("images/tilapia_2_60x30.png"), p.Rect(WIDTH + 150, 0, 60, 30))
+    screen.blit(p.image.load("images/tilapia_2_60x30.png"), p.Rect(WIDTH + 180, 0, 60, 30))
     move_log_rect = p.Rect(WIDTH, 30, MOVE_LOG_WIDTH, MOVE_LOG_HEIGHT)
     p.draw.rect(screen, p.Color('black'), move_log_rect)
     move_log = gs.move_log
