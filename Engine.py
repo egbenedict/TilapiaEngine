@@ -811,7 +811,7 @@ class Engine:
         if tablebases:
             if board.syzygy or board.syzygy_time():
                 # print("just syzygied")
-                too_soon = (board.syzygy and not self.just_syzygied and time.time() - self.last_try < 60 and self.last_try != 0)
+                too_soon = (board.syzygy and not self.just_syzygied and (time.time() - self.last_try < 60 or self.last_try != 0))
                 if not too_soon:
                     self.just_syzygied = True
                     try:
