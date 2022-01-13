@@ -877,6 +877,7 @@ class Engine:
 
     # Quiescent search for alpha beta minimax
     def quiesce(self, board, alpha, beta, depth):
+        self.current_node_count += 1
         stand_pat = self.evaluate(board)
 
         if depth == 0: # Correct???
@@ -897,7 +898,6 @@ class Engine:
         move_list = self.mvv_lva(move_list, board)
         for move_tuple in move_list:
             if "x" in move_tuple[0]:
-                self.current_node_count += 1
                 variation_board = Board(None, board)
                 variation_board.move(move_tuple)
                 variation_board.legal_moves = self.generate_legal_moves(variation_board)
@@ -916,6 +916,7 @@ class Engine:
         if self.transposition_table.get(key, None) != None and self.transposition_table[key][2] >= depth_left and self.transposition_table[key][1] != None:
             variation_board = Board(None, board)
             variation_board.move(self.transposition_table[key][1])
+            self.current_node_count += 1
             if not variation_board.twofold and variation_board.half_move_count != 100:
                 return self.transposition_table[key][:2] if first else self.transposition_table[key][0]
 
@@ -932,9 +933,9 @@ class Engine:
                     # print("Hi")
                     move_list.insert(0, move_list.pop(i))
         for move_tuple in move_list:
-            self.current_node_count += 1
             variation_board = Board(None, board)
             variation_board.move(move_tuple)
+            self.current_node_count += 1
             variation_board.legal_moves = self.generate_legal_moves(variation_board)
             score = -self.alpha_beta(variation_board, -beta, -alpha, depth_left - 1, quiescence_depth, False)
             if score >= beta:
