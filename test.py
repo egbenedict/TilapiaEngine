@@ -147,6 +147,7 @@ def play_human(engine):
 # print(engine.alpha_beta(engine.official_board, -float("inf"), float("inf"), 3))
 # start = time.time()
 # print(engine.alpha_beta_search(engine.official_board, 4, 4))
+# print(engine.current_node_count)
 # end = time.time()
 # print(end - start)
 # print(engine.evaluate(engine.official_board))

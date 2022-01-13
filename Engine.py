@@ -858,7 +858,8 @@ class Engine:
         possible_moves = self.official_board.legal_moves if self.official_board.legal_moves != None else self.generate_legal_moves(self.official_board)
         for move_tuple in possible_moves:
             if move_tuple[1] == move_duple[0] and move_tuple[2] == move_duple[1]:
-                self.move(move_tuple)
+                if "=R" not in move_tuple[0] and "=B" not in move_tuple[0] and "=N" not in move_tuple[0]:
+                    self.move(move_tuple)
 
     # Return the pgn of the game to the current point (although still not 100% correct)
     def get_pgn(self):
