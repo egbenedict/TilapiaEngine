@@ -639,12 +639,27 @@ class Engine:
     # Calculate a rudimentary material factor based off of basic piece centipawn values
     def calculate_material_factor(self, board):
         material_count = [0, 0, 0]
+        white_bishops = 0
+        black_bishops = 0
         for i in range(64):
             piece = board.BOARD[i]
+            if isinstance(piece, Bishop):
+                if piece.color == 1:
+                    white_bishops += 1
+                else:
+                    black_bishops += 1
             if piece != None and piece != "-" and not isinstance(piece, King):
                 material_count[piece.color] += piece.base_value
     
         material_factor = material_count[1] - material_count[-1]
+
+        black_bishop_pair = 10 if black_bishops >= 2 else 0
+        white_bishop_pair = 10 if white_bishops >= 2 else 0
+
+        # print(white_bishop_pair - black_bishop_pair)
+
+        material_factor += white_bishop_pair - black_bishop_pair
+
         return material_factor
 
     # Calculate square bonuses for each piece based off of piece maps in respective classes
