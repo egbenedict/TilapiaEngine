@@ -880,13 +880,13 @@ class Engine:
         self.current_node_count += 1
         stand_pat = self.evaluate(board)
 
-        if depth == 0: # Correct???
-            return stand_pat
+        # if depth == 0: # Correct???
+        #     return stand_pat
 
         if stand_pat >= beta:
             return beta
 
-        delta = 200
+        delta = 975 # As opposed to 200
 
         if stand_pat < alpha - delta:
             return alpha

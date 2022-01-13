@@ -15,7 +15,7 @@ def play_itself(engine):
     while not engine.is_it_over(engine.official_board):
         print(engine.official_board)
         start = time.time()
-        move_tuple = engine.alpha_beta_search(engine.official_board, 4, 4, True)[1]
+        move_tuple = engine.alpha_beta_search(engine.official_board, 4, 8, True)[1]
         end = time.time()
         engine.move(move_tuple)
         print(move_tuple[0])
