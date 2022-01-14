@@ -832,10 +832,10 @@ class Engine:
             if not too_soon:
                 self.just_booked = True
                 try:
-                    # print("Probing book...")
+                    print("Probing book...")
                     move = self.book_move(board)
                     if move != None:
-                        # print("Found a move")
+                        print("Found a move")
                         return move
                 except:
                     self.last_book_try = time.time()
@@ -1017,10 +1017,15 @@ class Engine:
         contents = mybytes.decode("utf8")
         fp.close()
 
-        contents = contents.split("{")
-
+        temp = contents.split("{")
+        contents = []
+        for i in range(len(temp)):
+            if "id" not in temp[i] and "name" not in temp[i]:
+                contents.append(temp[i])
+            
+        # print(contents[2])
         total_position_info = contents[1]
-        if len(contents) == 6:
+        if len(contents) >= 6:
             move1_info = contents[2]
             move2_info = contents[3]
             move3_info = contents[4]
