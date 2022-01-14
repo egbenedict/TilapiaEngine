@@ -832,10 +832,10 @@ class Engine:
             if not too_soon:
                 self.just_booked = True
                 try:
-                    print("Probing book...")
+                    # print("Probing book...")
                     move = self.book_move(board)
                     if move != None:
-                        print("Found a move")
+                        # print("Found a move")
                         return move
                 except:
                     self.last_book_try = time.time()
@@ -1023,7 +1023,6 @@ class Engine:
             if "id" not in temp[i] and "name" not in temp[i]:
                 contents.append(temp[i])
             
-        # print(contents[2])
         total_position_info = contents[1]
         if len(contents) >= 6:
             move1_info = contents[2]
@@ -1033,6 +1032,7 @@ class Engine:
 
             move1_info = move1_info.split("\"")
             move1 = move1_info[3]
+            move1_name = move1_info[7]
             move1_white = int(move1_info[12][1:-1])
             move1_draw = int(move1_info[14][1:-1])
             move1_black = int(move1_info[16][1:-1])
@@ -1040,6 +1040,7 @@ class Engine:
 
             move2_info = move2_info.split("\"")
             move2 = move2_info[3]
+            move2_name = move2_info[7]
             move2_white = int(move2_info[12][1:-1])
             move2_draw = int(move2_info[14][1:-1])
             move2_black = int(move2_info[16][1:-1])
@@ -1047,6 +1048,7 @@ class Engine:
 
             move3_info = move3_info.split("\"")
             move3 = move3_info[3]
+            move3_name = move3_info[7]
             move3_white = int(move3_info[12][1:-1])
             move3_draw = int(move3_info[14][1:-1])
             move3_black = int(move3_info[16][1:-1])
@@ -1054,6 +1056,7 @@ class Engine:
 
             move4_info = move4_info.split("\"")
             move4 = move4_info[3]
+            move4_name = move4_info[7]
             move4_white = int(move4_info[12][1:-1])
             move4_draw = int(move4_info[14][1:-1])
             move4_black = int(move4_info[16][1:-1])
@@ -1070,12 +1073,16 @@ class Engine:
 
             if rand_decimal < move1_ratio:
                 move = move1
+                move_name = move1_name
             elif rand_decimal < move1_ratio + move2_ratio:
                 move = move2
+                move_name = move2_name
             elif rand_decimal < move1_ratio + move2_ratio + move3_ratio:
                 move = move3
+                move_name = move3_name
             else:
                 move = move4
+                move_name = move4_name
         elif len(contents) == 5:
             move1_info = contents[2]
             move2_info = contents[3]
@@ -1083,6 +1090,7 @@ class Engine:
 
             move1_info = move1_info.split("\"")
             move1 = move1_info[3]
+            move1_name = move1_info[7]
             move1_white = int(move1_info[12][1:-1])
             move1_draw = int(move1_info[14][1:-1])
             move1_black = int(move1_info[16][1:-1])
@@ -1090,6 +1098,7 @@ class Engine:
 
             move2_info = move2_info.split("\"")
             move2 = move2_info[3]
+            move2_name = move2_info[7]
             move2_white = int(move2_info[12][1:-1])
             move2_draw = int(move2_info[14][1:-1])
             move2_black = int(move2_info[16][1:-1])
@@ -1097,6 +1106,7 @@ class Engine:
 
             move3_info = move3_info.split("\"")
             move3 = move3_info[3]
+            move3_name = move3_info[7]
             move3_white = int(move3_info[12][1:-1])
             move3_draw = int(move3_info[14][1:-1])
             move3_black = int(move3_info[16][1:-1])
@@ -1112,16 +1122,20 @@ class Engine:
 
             if rand_decimal < move1_ratio:
                 move = move1
+                move_name = move1_name
             elif rand_decimal < move1_ratio + move2_ratio:
                 move = move2
+                move_name = move2_name
             else:
                 move = move3
+                move_name = move3_name
         elif len(contents) == 4:
             move1_info = contents[2]
             move2_info = contents[3]
 
             move1_info = move1_info.split("\"")
             move1 = move1_info[3]
+            move1_name = move1_info[7]
             move1_white = int(move1_info[12][1:-1])
             move1_draw = int(move1_info[14][1:-1])
             move1_black = int(move1_info[16][1:-1])
@@ -1129,6 +1143,7 @@ class Engine:
 
             move2_info = move2_info.split("\"")
             move2 = move2_info[3]
+            move2_name = move2_info[7]
             move2_white = int(move2_info[12][1:-1])
             move2_draw = int(move2_info[14][1:-1])
             move2_black = int(move2_info[16][1:-1])
@@ -1143,13 +1158,16 @@ class Engine:
 
             if rand_decimal < move1_ratio:
                 move = move1
+                move_name = move1_name
             else:
                 move = move2
+                move_name = move2_name
         elif len(contents) == 3:
             move1_info = contents[2]
 
             move1_info = move1_info.split("\"")
             move1 = move1_info[3]
+            move1_name = move1_info[7]
             move1_white = int(move1_info[12][1:-1])
             move1_draw = int(move1_info[14][1:-1])
             move1_black = int(move1_info[16][1:-1])
@@ -1163,11 +1181,21 @@ class Engine:
 
             if rand_decimal < move1_ratio:
                 move = move1
+                move_name = move1_name
             else:
-                move = "pass"
+                move = None
         else:
             return None
         
+        if move_name == "O-O" and board.side_to_move == 1:
+            move = "e1g1"
+        elif move_name == "O-O" and board.side_to_move == -1:
+            move = "e8g8"
+        elif move_name == "O-O-O" and board.side_to_move == 1:
+            move = "e1c1"
+        elif move_name == "O-O-O" and board.side_to_move == -1:
+            move = "e8c8"
+
         # print(move)
 
         sq1 = Board.coord_to_index[move[:2]]
