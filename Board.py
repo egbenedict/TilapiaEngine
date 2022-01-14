@@ -349,6 +349,7 @@ class Board:
 
     # Execute given move and update board metadata accordingly
     def move(self, move_tuple):
+        # print(move_tuple)
         if move_tuple[0] == "O-O" and self.side_to_move == 1:
             # self.set_coord("g1", self.get_coord("e1"))
             self.BOARD[Board.coord_to_index["g1"]] = self.BOARD[Board.coord_to_index["e1"]]

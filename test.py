@@ -6,7 +6,7 @@ sys.setrecursionlimit(10**6)
 
 startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
-engine = Engine("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+engine = Engine("8/5k2/8/8/7N/3B1K2/8/8 w - - 0 1")
 # print(engine.official_board)
 # print(engine.generate_legal_moves(engine.official_board))
 # print(engine.official_board.zobrist())
@@ -15,13 +15,15 @@ def play_itself(engine):
     while not engine.is_it_over(engine.official_board):
         print(engine.official_board)
         start = time.time()
-        move_tuple = engine.alpha_beta_search(engine.official_board, 4, 8, True)[1]
+        move_tuple = engine.alpha_beta_search(engine.official_board, 4, 8, True, True)[1]
         end = time.time()
         engine.move(move_tuple)
         print(move_tuple[0])
         print(str(engine.current_node_count) + " nodes in " + str(end - start) + " seconds\n")
         if engine.just_syzygied:
             print("Move taken from Syzygy Tablebases")
+        if engine.just_booked:
+            print("Move taken from Book")
         engine.current_node_count = 0
         # print(engine.official_board.white_piece_count)
         # print(engine.official_board.black_piece_count)
@@ -51,12 +53,18 @@ def play_human(engine):
     if difficulty == "e":
         depth = 2
         quies = 2
+        tablebases = False
+        book = False
     elif difficulty == "m":
         depth = 3
         quies = 3
+        tablebases = False
+        book = False
     else:
         depth = 4
         quies = 4
+        tablebases = True
+        book = True
 
     while not engine.is_it_over(engine.official_board):
         print(engine.official_board)
@@ -92,11 +100,11 @@ def play_human(engine):
                     print("Draw by 50 Move Rule!")
                 break
             print(engine.official_board)
-            comp_move = engine.alpha_beta_search(engine.official_board, depth, quies)[1]
+            comp_move = engine.alpha_beta_search(engine.official_board, depth, quies, book, tablebases)[1]
             print("Tilapia's Move: " + comp_move[0])
             engine.move(comp_move)
         else:
-            comp_move = engine.alpha_beta_search(engine.official_board, depth, quies)[1]
+            comp_move = engine.alpha_beta_search(engine.official_board, depth, quies, book, tablebases)[1]
             print("Tilapia's Move: " + comp_move[0])
             engine.move(comp_move)
             print(engine.official_board)
@@ -146,11 +154,11 @@ def play_human(engine):
 # print(engine.generate_legal_moves(engine.official_board))
 # print(engine.alpha_beta(engine.official_board, -float("inf"), float("inf"), 3))
 # start = time.time()
-# print(engine.alpha_beta_search(engine.official_board, 4, 4))
+# print(engine.alpha_beta_search(engine.official_board, 8, 8))
 # print(engine.current_node_count)
 # end = time.time()
 # print(end - start)
-# print(engine.evaluate(engine.official_board))
+# print(engine.book_move(engine.official_board))
 play_itself(engine)
 # print(engine.syzygy_move(engine.official_board))
 # cProfile.run('engine.alpha_beta_search(engine.official_board, 4, 4)')

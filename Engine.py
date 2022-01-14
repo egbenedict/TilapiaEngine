@@ -21,6 +21,8 @@ class Engine:
         "king" : 200
     }
 
+    NUM_BOOK_MOVES = 10
+
     def __init__(self, fen = startingFEN, board = None):
         if board == None:
             self.official_board = Board(fen)
@@ -32,8 +34,10 @@ class Engine:
         self.transposition_table = {}
 
         self.just_syzygied = False
+        self.just_booked = False
 
-        self.last_try = 0
+        self.last_table_try = 0
+        self.last_book_try = 0
     
     # Return board object
     def get_board(self):
@@ -822,21 +826,38 @@ class Engine:
         return max_val, best_move
 
     # Current search algorithm
-    def alpha_beta_search(self, board, final_depth, quiescence_depth=4, tablebases=True):
+    def alpha_beta_search(self, board, final_depth, quiescence_depth=4, book=True, tablebases=True):
+        if board.full_move_count <= Engine.NUM_BOOK_MOVES and book:
+            too_soon = not self.just_booked and (time.time() - self.last_book_try < 60 and self.last_book_try != 0)
+            if not too_soon:
+                self.just_booked = True
+                try:
+                    # print("Probing book...")
+                    move = self.book_move(board)
+                    if move != None:
+                        # print("Found a move")
+                        return move
+                except:
+                    self.last_book_try = time.time()
+                    print("Opening Book Failed! (either too many requests or poor internet connection)")
+                    self.just_booked = False
+                    return self.alpha_beta(board, -float("inf"), float("inf"), final_depth, quiescence_depth)
         if tablebases:
             if board.syzygy or board.syzygy_time():
                 # print("just syzygied")
-                too_soon = (board.syzygy and not self.just_syzygied and (time.time() - self.last_try < 60 or self.last_try != 0))
+                too_soon = (not self.just_syzygied and (time.time() - self.last_table_try < 60 and self.last_table_try != 0))
                 if not too_soon:
                     self.just_syzygied = True
                     try:
+                        # print("Probing Syzygy Tablebases...")
                         return (None, self.syzygy_move(board))
                     except:
-                        self.last_try = time.time()
+                        self.last_table_try = time.time()
                         print("Syzygy Failed! (either too many requests or poor internet connection)")
                         self.just_syzygied = False
                         return self.alpha_beta(board, -float("inf"), float("inf"), final_depth, quiescence_depth)
         self.just_syzygied = False
+        self.just_booked = False
         return self.alpha_beta(board, -float("inf"), float("inf"), final_depth, quiescence_depth)
 
     # Execute a move on the official board and update the move log
@@ -987,4 +1008,177 @@ class Engine:
                 if move_tuple[1] == sq1 and move_tuple[2] == sq2:
                     return move_tuple
 
-    
+    # Probes the Lichess Opening Explorer database and chooses one of the top 4 moves
+    def book_move(self, board):
+        base_url = "https://explorer.lichess.ovh/masters?fen="
+        url = base_url + board.fen().replace(" ", "_") + "&moves=4&topGames=0"
+        fp = urllib.request.urlopen(url)
+        mybytes = fp.read()
+        contents = mybytes.decode("utf8")
+        fp.close()
+
+        contents = contents.split("{")
+
+        total_position_info = contents[1]
+        if len(contents) == 6:
+            move1_info = contents[2]
+            move2_info = contents[3]
+            move3_info = contents[4]
+            move4_info = contents[5]
+
+            move1_info = move1_info.split("\"")
+            move1 = move1_info[3]
+            move1_white = int(move1_info[12][1:-1])
+            move1_draw = int(move1_info[14][1:-1])
+            move1_black = int(move1_info[16][1:-1])
+            move1_games = move1_white + move1_draw + move1_black
+
+            move2_info = move2_info.split("\"")
+            move2 = move2_info[3]
+            move2_white = int(move2_info[12][1:-1])
+            move2_draw = int(move2_info[14][1:-1])
+            move2_black = int(move2_info[16][1:-1])
+            move2_games = move2_white + move2_draw + move2_black
+
+            move3_info = move3_info.split("\"")
+            move3 = move3_info[3]
+            move3_white = int(move3_info[12][1:-1])
+            move3_draw = int(move3_info[14][1:-1])
+            move3_black = int(move3_info[16][1:-1])
+            move3_games = move3_white + move3_draw + move3_black
+
+            move4_info = move4_info.split("\"")
+            move4 = move4_info[3]
+            move4_white = int(move4_info[12][1:-1])
+            move4_draw = int(move4_info[14][1:-1])
+            move4_black = int(move4_info[16][1:-1])
+            move4_games = move4_white + move4_draw + move4_black
+
+            total_games = move1_games + move2_games + move3_games + move4_games
+
+            move1_ratio = move1_games / total_games
+            move2_ratio = move2_games / total_games
+            move3_ratio = move3_games / total_games
+            move4_ratio = move4_games / total_games
+
+            rand_decimal = random.random()
+
+            if rand_decimal < move1_ratio:
+                move = move1
+            elif rand_decimal < move1_ratio + move2_ratio:
+                move = move2
+            elif rand_decimal < move1_ratio + move2_ratio + move3_ratio:
+                move = move3
+            else:
+                move = move4
+        elif len(contents) == 5:
+            move1_info = contents[2]
+            move2_info = contents[3]
+            move3_info = contents[4]
+
+            move1_info = move1_info.split("\"")
+            move1 = move1_info[3]
+            move1_white = int(move1_info[12][1:-1])
+            move1_draw = int(move1_info[14][1:-1])
+            move1_black = int(move1_info[16][1:-1])
+            move1_games = move1_white + move1_draw + move1_black
+
+            move2_info = move2_info.split("\"")
+            move2 = move2_info[3]
+            move2_white = int(move2_info[12][1:-1])
+            move2_draw = int(move2_info[14][1:-1])
+            move2_black = int(move2_info[16][1:-1])
+            move2_games = move2_white + move2_draw + move2_black
+
+            move3_info = move3_info.split("\"")
+            move3 = move3_info[3]
+            move3_white = int(move3_info[12][1:-1])
+            move3_draw = int(move3_info[14][1:-1])
+            move3_black = int(move3_info[16][1:-1])
+            move3_games = move3_white + move3_draw + move3_black
+
+            total_games = move1_games + move2_games + move3_games
+
+            move1_ratio = move1_games / total_games
+            move2_ratio = move2_games / total_games
+            move3_ratio = move3_games / total_games
+
+            rand_decimal = random.random()
+
+            if rand_decimal < move1_ratio:
+                move = move1
+            elif rand_decimal < move1_ratio + move2_ratio:
+                move = move2
+            else:
+                move = move3
+        elif len(contents) == 4:
+            move1_info = contents[2]
+            move2_info = contents[3]
+
+            move1_info = move1_info.split("\"")
+            move1 = move1_info[3]
+            move1_white = int(move1_info[12][1:-1])
+            move1_draw = int(move1_info[14][1:-1])
+            move1_black = int(move1_info[16][1:-1])
+            move1_games = move1_white + move1_draw + move1_black
+
+            move2_info = move2_info.split("\"")
+            move2 = move2_info[3]
+            move2_white = int(move2_info[12][1:-1])
+            move2_draw = int(move2_info[14][1:-1])
+            move2_black = int(move2_info[16][1:-1])
+            move2_games = move2_white + move2_draw + move2_black
+
+            total_games = move1_games + move2_games
+
+            move1_ratio = move1_games / total_games
+            move2_ratio = move2_games / total_games
+
+            rand_decimal = random.random()
+
+            if rand_decimal < move1_ratio:
+                move = move1
+            else:
+                move = move2
+        elif len(contents) == 3:
+            move1_info = contents[2]
+
+            move1_info = move1_info.split("\"")
+            move1 = move1_info[3]
+            move1_white = int(move1_info[12][1:-1])
+            move1_draw = int(move1_info[14][1:-1])
+            move1_black = int(move1_info[16][1:-1])
+            move1_games = move1_white + move1_draw + move1_black
+
+            total_games = move1_games
+
+            move1_ratio = move1_games / total_games
+
+            rand_decimal = random.random()
+
+            if rand_decimal < move1_ratio:
+                move = move1
+            else:
+                move = "pass"
+        else:
+            return None
+        
+        # print(move)
+
+        sq1 = Board.coord_to_index[move[:2]]
+        sq2 = Board.coord_to_index[move[2:4]]
+        promote_to = None
+        if len(move) == 5:
+            promote_to = move[4].upper()
+
+        possible_moves = self.generate_legal_moves(board)
+        if promote_to != None:
+            for move_tuple in possible_moves:
+                if move_tuple[1] == sq1 and move_tuple[2] == sq2 and ("=" + promote_to) in move_tuple[0]:
+                    # print(move_tuple)
+                    return (None, move_tuple)
+        else:
+            for move_tuple in possible_moves:
+                if move_tuple[1] == sq1 and move_tuple[2] == sq2:
+                    # print(move_tuple)
+                    return (None, move_tuple)

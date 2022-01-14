@@ -13,7 +13,7 @@ MAX_FPS = 15
 IMAGES = {}
 COLORS = [p.Color("white"), p.Color("tan")]
 
-VERSION = "1.0.4"
+VERSION = "1.1.0"
 
 
 def load_images():
@@ -62,7 +62,7 @@ def run_pvp(fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"):
         clock.tick(MAX_FPS)
         p.display.flip() 
 
-def run_cpu(color, depth, quies, tablesbases, fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"):
+def run_cpu(color, depth, quies, book, tablesbases, fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"):
     gs = Engine(fen)
     p.init()
     screen = p.display.set_mode((WIDTH + MOVE_LOG_WIDTH, HEIGHT))
@@ -264,14 +264,17 @@ def driver():
             depth = 2
             quies = 2
             tablebases = False
+            book = False
         elif difficulty == "m":
             depth = 3
             quies = 3
             tablebases = False
+            book = False
         else:
             depth = 4
             quies = 4
             tablebases = True
+            book = True
 
         print("Select an Option:")
         print("- New Game [1]")
@@ -282,7 +285,7 @@ def driver():
         print("")
 
         if option == "1":
-            run_cpu(color, depth, quies, tablebases)
+            run_cpu(color, depth, quies, book, tablebases)
         else:
             print("Input FEN:")
             valid = False
@@ -293,7 +296,7 @@ def driver():
                     print("")
                     exit()
                 try:
-                    run_cpu(color, depth, quies, tablebases, fen)
+                    run_cpu(color, depth, quies, book, tablebases, fen)
                     valid = True
                 except ValueError:
                     print("")
