@@ -72,6 +72,7 @@ There is also currently no way to flip the board if you are playing black. This 
 - Correct PGN Notation
 - Timed Games
 - Texel Tuned Parameters
+- Flip Board Option
 
 
 ## Why Tilapia?
