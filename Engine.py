@@ -879,8 +879,28 @@ class Engine:
         possible_moves = self.official_board.legal_moves if self.official_board.legal_moves != None else self.generate_legal_moves(self.official_board)
         for move_tuple in possible_moves:
             if move_tuple[1] == move_duple[0] and move_tuple[2] == move_duple[1]:
-                if "=R" not in move_tuple[0] and "=B" not in move_tuple[0] and "=N" not in move_tuple[0]:
-                    self.move(move_tuple)
+                if "=" in move_tuple[0]:
+                    print("Select the piece to promote to:")
+                    print("Queen [q]\nRook [r]\nBishop [b]\nKnight [n]")
+                    piece = None
+                    while piece != "q" and piece != "r" and piece != "b" and piece != "n":
+                        piece = input()
+                    if piece == "q":
+                        move_tuple = (move_tuple[0][:-1] + "Q", move_tuple[1], move_tuple[2])
+                        print("Promoted to Queen")
+                    elif piece == "r":
+                        move_tuple = (move_tuple[0][:-1] + "R", move_tuple[1], move_tuple[2])
+                        print("Promoted to Rook")
+                    elif piece == "b":
+                        move_tuple = (move_tuple[0][:-1] + "B", move_tuple[1], move_tuple[2])
+                        print("Promoted to Bishop")
+                    elif piece == "n":
+                        move_tuple = (move_tuple[0][:-1] + "N", move_tuple[1], move_tuple[2])
+                        print("Promoted to Knight")
+
+                # if "=R" not in move_tuple[0] and "=B" not in move_tuple[0] and "=N" not in move_tuple[0]:
+                self.move(move_tuple)
+                break
 
     # Return the pgn of the game to the current point (although still not 100% correct)
     def get_pgn(self):
