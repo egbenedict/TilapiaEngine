@@ -80,7 +80,8 @@ I think every good chess engine should be named after a fish.
 
 ## Acknowledgements
 - Chess Programming Wiki was a major resource
-- My GUI is essentially a copy of Eddie Sharick's GUI in his Python chess engine Youtube series
+- Eddie Sharick's Python Chess Engine Youtubue series helped me set up the GUI
+- Lichess, for its easy-to-use opening book and tablebase API
 
 ## License
 [GPL GNU v3](https://www.gnu.org/licenses/gpl-3.0.en.html)
