@@ -8,7 +8,7 @@ Tilapia is an open-source chess engine coded entirely in Python over the course 
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install pygame (if planning to use the Tilapia GUI).
+After cloning the repo, use the package manager [pip](https://pip.pypa.io/en/stable/) to install pygame (if planning to use the Tilapia GUI).
 ```bash
 pip3 install pygame
 ```
@@ -62,7 +62,7 @@ There is also currently no way to flip the board if you are playing black. This 
 - MVV-LVA move ordering (Most Valuable Victim - Least Valuable Aggressor)
 - Full Transposition Table with Zobrist Hashing
 - Complete Syzygy 7-piece Tablebases (internet connection required)
-- Lichess API Opening Book
+- Lichess API Opening Book (internet connection required)
 
 ## Features to Come (hopefully)
 - King Safety Evaluation
@@ -81,7 +81,7 @@ I think every good chess engine should be named after a fish.
 ## Acknowledgements
 - Chess Programming Wiki was a major resource
 - Eddie Sharick's Python Chess Engine Youtubue series helped me set up the GUI
-- Lichess, for its easy-to-use opening book and tablebase API
+- Lichess, for its easy-to-use (and free) opening book and tablebase API
 
 ## License
 [GPL GNU v3](https://www.gnu.org/licenses/gpl-3.0.en.html)
