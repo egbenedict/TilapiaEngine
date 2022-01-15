@@ -13,7 +13,7 @@ MAX_FPS = 15
 IMAGES = {}
 COLORS = [p.Color("white"), p.Color("tan")]
 
-VERSION = "1.1.1"
+VERSION = "1.1.2"
 
 
 def load_images():

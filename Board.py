@@ -479,7 +479,7 @@ class Board:
         self.side_to_move *= -1
 
 
-        key = tuple(self.BOARD)
+        key = (tuple(self.BOARD), self.side_to_move)
         self.history[key] = self.history.get(key, 0) + 1
         if self.history[key] == 3:
             self.threefold = True
