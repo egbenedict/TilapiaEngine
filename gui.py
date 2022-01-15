@@ -13,7 +13,7 @@ MAX_FPS = 15
 IMAGES = {}
 COLORS = [p.Color("white"), p.Color("tan")]
 
-VERSION = "1.1.2"
+VERSION = "1.1.3"
 
 
 def load_images():
@@ -269,7 +269,7 @@ def driver():
             depth = 3
             quies = 3
             tablebases = False
-            book = False
+            book = True
         else:
             depth = 4
             quies = 4

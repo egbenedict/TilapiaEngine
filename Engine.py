@@ -939,7 +939,7 @@ class Engine:
         move_list = board.legal_moves if board.legal_moves != None else self.generate_legal_moves(board)
         move_list = self.mvv_lva(move_list, board)
         for move_tuple in move_list:
-            if "x" in move_tuple[0]:
+            if "x" in move_tuple[0] or "=" in move_tuple[0]:
                 variation_board = Board(None, board)
                 variation_board.move(move_tuple)
                 variation_board.legal_moves = self.generate_legal_moves(variation_board)
