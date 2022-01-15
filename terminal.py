@@ -49,7 +49,7 @@ def play_human(engine):
         depth = 3
         quies = 3
         tablebases = False
-        book = False
+        book = True
     else:
         depth = 4
         quies = 4
