@@ -765,7 +765,7 @@ class Engine:
             
 
         # print(white_pawn_islands, black_pawn_islands)
-        pawn_island_factor = (white_pawn_islands - black_pawn_islands) * -10 if black_pawn_islands != 0 else 0
+        pawn_island_factor = (white_pawn_islands - black_pawn_islands) * -10 if black_pawn_islands != 0 and white_pawn_islands != 0 else 0
 
         # print(backward_pawn_factor, passed_pawn_factor, doubled_pawns_factor, pawn_island_factor)
 
