@@ -23,7 +23,7 @@ class Engine:
 
     NUM_BOOK_MOVES = 10
 
-    BOOK = {
+    BOOK = { # Can Add Custom Book Lines Here
         "r1bqk1nr/pppp1Bpp/2n5/2b1p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 0 4" : ("Kxf7", 60, 53)
     }
 
