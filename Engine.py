@@ -23,6 +23,10 @@ class Engine:
 
     NUM_BOOK_MOVES = 10
 
+    BOOK = {
+        "r1bqk1nr/pppp1Bpp/2n5/2b1p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 0 4" : ("Kxf7", 60, 53)
+    }
+
     def __init__(self, fen = startingFEN, board = None):
         if board == None:
             self.official_board = Board(fen)
@@ -1030,8 +1034,13 @@ class Engine:
 
     # Probes the Lichess Opening Explorer database and chooses one of the top 4 moves
     def book_move(self, board):
+        fen = board.fen()
+        book_move = Engine.BOOK.get(fen, None)
+        if book_move != None:
+            return (None, book_move)
+        
         base_url = "https://explorer.lichess.ovh/masters?fen="
-        url = base_url + board.fen().replace(" ", "_") + "&moves=4&topGames=0"
+        url = base_url + fen.replace(" ", "_") + "&moves=4&topGames=0"
         fp = urllib.request.urlopen(url)
         mybytes = fp.read()
         contents = mybytes.decode("utf8")
