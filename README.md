@@ -4,7 +4,7 @@
 
 ## Introduction
 
-Tilapia is an open-source chess engine coded entirely in Python over the course of 10 days in January of 2022. Tilapia currently has an ELO of approximately 1900-2000. While not optimized for runtime efficiency, Tilapia is definitely a lot more readable than a magic bitboard based engine. However, its slower speeds mean that it searches at lower depths, at times resulting in uncharacteristic blunders. If using for another project, please credit source as per the license. 
+Tilapia is an open-source chess engine coded entirely in Python over the course of 10 days in January of 2022. While not optimized for runtime efficiency, Tilapia is definitely a lot more readable than a magic bitboard based engine. However, its slower speeds mean that it searches at lower depths, at times resulting in uncharacteristic (and sometimes devastating) blunders... If using for another project, please credit source as per the license. 
 
 ## Installation
 
