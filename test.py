@@ -6,7 +6,7 @@ sys.setrecursionlimit(10**6)
 
 startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
-engine = Engine("rn2kb1r/p4ppp/2p1pn2/qp3b2/2B5/2N2N1P/PPPP1PP1/R1BQR1K1 w kq b6 0 9")
+engine = Engine("7k/pN2R2p/1b2P3/8/8/1P2p1P1/P4r1P/7K w - - 0 30")
 print(engine.official_board)
 # print(engine.generate_legal_moves(engine.official_board))
 # print(engine.official_board.zobrist())
@@ -20,6 +20,7 @@ def play_itself(engine):
         engine.move(move_tuple)
         print(move_tuple[0])
         print(str(engine.current_node_count) + " nodes in " + str(end - start) + " seconds\n")
+        engine.transposition_table = {} # Gets rid of weird blunder moves somehow...
         if engine.just_syzygied:
             print("Move taken from Syzygy Tablebases")
         if engine.just_booked:
@@ -153,11 +154,11 @@ def play_human(engine):
 
 # print(engine.generate_legal_moves(engine.official_board))
 # print(engine.alpha_beta(engine.official_board, -float("inf"), float("inf"), 3))
-# start = time.time()
+start = time.time()
 print(engine.alpha_beta_search(engine.official_board, 4, 4, True, True))
-# print(engine.current_node_count)
-# end = time.time()
-# print(end - start)
+print(engine.current_node_count)
+end = time.time()
+print(end - start)
 # print(engine.book_move(engine.official_board))
 # play_itself(engine)
 # print(engine.evaluate(engine.official_board))

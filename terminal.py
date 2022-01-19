@@ -13,6 +13,7 @@ def play_itself(engine):
         print(engine.official_board)
         move_tuple = engine.alpha_beta_search(engine.official_board, 4, 4, True, True)[1]
         engine.move(move_tuple)
+        engine.transposition_table = {} # Gets rid of weird blunder moves somehow...
         print(move_tuple[0])
         # print(engine.official_board.white_piece_count)
         # print(engine.official_board.black_piece_count)
@@ -93,11 +94,13 @@ def play_human(engine):
             comp_move = engine.alpha_beta_search(engine.official_board, depth, quies, book, tablebases)[1]
             print("Tilapia's Move: " + comp_move[0])
             engine.move(comp_move)
+            engine.transposition_table = {} # Gets rid of weird blunder moves somehow...
         else:
             comp_move = engine.alpha_beta_search(engine.official_board, depth, quies, book, tablebases)[1]
             print("Tilapia's Move: " + comp_move[0])
             engine.move(comp_move)
             print(engine.official_board)
+            engine.transposition_table = {} # Gets rid of weird blunder moves somehow...
             if engine.is_it_over(engine.official_board):
                 if engine.is_it_checkmate(engine.official_board):
                     print("Checkmate!")

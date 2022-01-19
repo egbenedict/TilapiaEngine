@@ -117,6 +117,8 @@ def run_cpu(color, depth, quies, book, tablesbases, fen="rnbqkbnr/pppppppp/8/8/8
         if comp_move != None:
             gs.move(comp_move)
 
+        gs.transposition_table = {} # Gets rid of weird blunder moves somehow...
+
         draw_game_state(screen, gs, sq_selected, move_log_font, heading_font)
         clock.tick(MAX_FPS)
         p.display.flip()
