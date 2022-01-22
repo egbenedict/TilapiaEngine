@@ -6,7 +6,7 @@ sys.setrecursionlimit(10**6)
 
 startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
-engine = Engine("7k/pN2R2p/1b2P3/8/8/1P2p1P1/P4r1P/7K w - - 0 30")
+engine = Engine("5rk1/2p1bppp/q2p1n2/4p1B1/4P3/1PNP1P2/1P3P1P/3QR1K1 b - - 2 18")
 print(engine.official_board)
 # print(engine.generate_legal_moves(engine.official_board))
 # print(engine.official_board.zobrist())

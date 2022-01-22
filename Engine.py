@@ -986,7 +986,7 @@ class Engine:
             score = -self.alpha_beta(variation_board, -beta, -alpha, depth_left - 1, quiescence_depth, False)
             if score >= beta:
                 best_move = move_tuple
-                self.transposition_table[key] = (beta, best_move, depth_left)
+                # self.transposition_table[key] = (beta, best_move, depth_left) A lot of blunders from this line....
                 return (beta, move_tuple) if first else beta
             if score > alpha:
                 best_move = move_tuple
